@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  [Master Stylesheet]
 
-  Project:	龙源风电功率预测系统油专特供版online
+  Project:	CelestialUI Admin
   Version:	1.0.0
 -------------------------------------------------------------------*/
 /*-------------------------------------------------------------------
@@ -10958,46 +10958,47 @@ fieldset:disabled a.btn {
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #242eba;
-  border-color: #242eba;
+  background-color: #1f29b3;
+  border-color: #1f29b3;
 }
 
 .btn-primary:focus, .btn-primary.focus {
-  box-shadow: 0 0 0 0.2rem rgba(244, 54, 118, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(37, 43, 126, 0.5);
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
   color: #fff;
-  background-color: #f2125e;
-  border-color: #f2125e;
+  background-color: #2733e1;
+  border-color: #2733e1;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #c60b4a;
-  border-color: #ba0a46;
+  background-color: #1f29b3;
+  border-color: #1f29b3;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
 .show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(244, 54, 118, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(37, 43, 126, 0.5);
 }
 
 .btn-secondary {
   color: #fff;
-  background-color: #392ccd;
-  border-color: #392ccd;
+  background-color: #1b1b29;
+  border-color: #1b1b29;
 }
 
 .btn-secondary:hover {
   color: #fff;
-  background-color: #3025ae;
-  border-color: #2d23a3;
+  background-color: #0d0d12;
+  border-color: #0d0d12;
+  text-decoration: none;
 }
 
 .btn-secondary:focus, .btn-secondary.focus {
-  box-shadow: 0 0 0 0.2rem rgba(87, 76, 213, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
 }
 
 .btn-secondary.disabled, .btn-secondary:disabled {
@@ -18109,7 +18110,7 @@ button.bg-dark:focus,
 }
 
 a.text-primary:hover, .list-wrapper .completed a.remove:hover, a.text-primary:focus, .list-wrapper .completed a.remove:focus {
-  color: #242eba !important;
+  color: #1f2692 !important;
 }
 
 .text-secondary, .list-wrapper .remove {
@@ -25262,5 +25263,52 @@ body.avgrund-active {
   margin-right: .5rem;
   color: #9a9ea2;
 }
+
+.title_1{
+  font-size: 30px;
+  font-weight: bold;
+  text-indent: 50px;
+  line-height: 100px;
+}
+.title_2{
+  font-size: 25px;
+  font-weight: bold;
+  text-indent: 50px;
+  line-height: 30px;
+}
+.title_3{
+  font-size: 19px;
+  line-height: 30px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.pre{
+  background: white;
+  font-size: 16px;
+  font-family: Consolas;
+  text-indent: 0px;
+}
+.code{
+  display: block; /* 设置为块级元素 */
+  margin-left: 30px;
+  width: 95%; /* 设置宽度 */
+  height: auto;
+  overflow: auto;
+  word-wrap: break-word; /* 自动换行 */
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-color: black;
+}
+.api_table {
+  border-collapse: collapse;
+  margin-left: 50px;
+  margin-bottom: 15px;
+}
+
+.api_table th, .api_table td {
+  border: 1px solid #000;
+  padding: 8px;
+}
+
 
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */

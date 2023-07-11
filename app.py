@@ -56,9 +56,9 @@ def query_data(turbid, year, month, day, hour, length):
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
 
-    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM data0 WHERE STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
+    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM data0 WHERE Turbid=%s AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
 
-    cursor.execute(sql, (previous_date, current_date))
+    cursor.execute(sql, (turbid, previous_date, current_date))
     # 获取查询结果
     result = cursor.fetchall()
     # 关闭连接
@@ -262,8 +262,20 @@ def offline():
 
 @app.route('/index')
 def to_index():
-    return render_template('/index.html')
+    return render_template('index.html')
 
+@app.route('/admin')
+def to_admin():
+    return render_template('basic-table.html')
+
+@app.route('/api')
+def to_api():
+    return render_template('api.html')
+
+
+@app.route('/predict')
+def to_predict():
+    return render_template('predict.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=80)
