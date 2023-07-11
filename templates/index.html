@@ -1,73 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+<head>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>-->
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
     <!-- base:css -->
-    <link rel="stylesheet" href="static/css/typicons.css">
-    <link rel="stylesheet" href="static/css/vendor.bundle.base.css">
+    <link href="static/css/typicons.css" rel="stylesheet">
+    <link href="static/css/vendor.bundle.base.css" rel="stylesheet">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <link href="static/css/style.css" rel="stylesheet">
     <!-- endinject -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
+            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
 
-  </head>
-  <body>
-    <i id="bannerClose"></i>
-    <div class="container-scroller">
-      <!-- partial:partials/_navbar.html -->
-      <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+</head>
+<body>
+<i id="bannerClose"></i>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href=""><img src="static/picture/logo.svg" alt="logo"></a>
-          <a class="navbar-brand brand-logo-mini" href=""><img src="static/picture/logo-mini.svg" alt="logo"></a>
-          <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button" data-toggle="minimize">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="static/picture/logo-mini.svg"></a>
+            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-          <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item d-none d-lg-flex  mr-2">
-              <a class="nav-link" href="/">
-                退出登录
-              </a>
-          </ul>
-          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    <a class="nav-link" href="/">
+                        退出登录
+                    </a>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
-      </nav>
-      <!-- partial -->
-      <div class="container-fluid page-body-wrapper">
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
         <div class="theme-setting-wrapper">
 
-          <div id="theme-settings" class="settings-panel">
-            <i class="settings-close typcn typcn-delete-outline"></i>
-            <p class="settings-heading">SIDEBAR SKINS</p>
-            <div class="sidebar-bg-options" id="sidebar-light-theme">
-              <div class="img-ss rounded-circle bg-light border mr-3"></div>
-              Light
+            <div class="settings-panel" id="theme-settings">
+                <i class="settings-close typcn typcn-delete-outline"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                    Light
+                </div>
+                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                    Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles primary"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default border"></div>
+                </div>
             </div>
-            <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-              <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-              Dark
-            </div>
-            <p class="settings-heading mt-2">HEADER SKINS</p>
-            <div class="color-tiles mx-0 px-4">
-              <div class="tiles success"></div>
-              <div class="tiles warning"></div>
-              <div class="tiles danger"></div>
-              <div class="tiles primary"></div>
-              <div class="tiles info"></div>
-              <div class="tiles dark"></div>
-              <div class="tiles default border"></div>
-            </div>
-          </div>
         </div>
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
@@ -193,549 +199,912 @@
       </nav>
         <!-- partial -->
         <div class="main-panel">
-          <div class="content-wrapper">
-            <div class="row">
-              <div class="col-sm-6"></div>
-              <div class="col-sm-6">
-                <div class="d-flex align-items-center justify-content-md-end">
-                  <div class="mb-3 mb-xl-0 pr-1">
-                      <div class="dropdown">
-                        <button class="btn bg-white btn-sm dropdown-toggle btn-icon-text border mr-2" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="typcn typcn-calendar-outline mr-2"></i>Last 7 days
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuSizeButton3" data-x-placement="top-start">
-                          <h6 class="dropdown-header">Last 14 days</h6>
-                          <a class="dropdown-item" href="#">Last 21 days</a>
-                          <a class="dropdown-item" href="#">Last 28 days</a>
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <div class="mb-3 mb-xl-0 pr-1">
+                                <div class="dropdown">
+                                    <button aria-expanded="false"
+                                            aria-haspopup="true" class="btn bg-white btn-sm dropdown-toggle btn-icon-text border mr-2" data-toggle="dropdown" id="dropdownMenu3"
+                                            type="button">
+                                        <i class="typcn typcn-calendar-outline mr-2"></i>Last 7 days
+                                    </button>
+                                    <div aria-labelledby="dropdownMenuSizeButton3" class="dropdown-menu"
+                                         data-x-placement="top-start">
+                                        <h6 class="dropdown-header">Last 14 days</h6>
+                                        <a class="dropdown-item" href="#">Last 21 days</a>
+                                        <a class="dropdown-item" href="#">Last 28 days</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pr-1 mb-3 mr-2 mb-xl-0">
+                                <button class="btn btn-sm bg-white btn-icon-text border" type="button"><i
+                                        class="typcn typcn-arrow-forward-outline mr-2"></i>Export
+                                </button>
+                            </div>
+                            <div class="pr-1 mb-3 mb-xl-0">
+                                <button class="btn btn-sm bg-white btn-icon-text border" type="button"><i
+                                        class="typcn typcn-info-large-outline mr-2"></i>info
+                                </button>
+                            </div>
                         </div>
-                      </div>
-                  </div>
-                  <div class="pr-1 mb-3 mr-2 mb-xl-0">
-                    <button type="button" class="btn btn-sm bg-white btn-icon-text border"><i class="typcn typcn-arrow-forward-outline mr-2"></i>Export</button>
-                  </div>
-                  <div class="pr-1 mb-3 mb-xl-0">
-                    <button type="button" class="btn btn-sm bg-white btn-icon-text border"><i class="typcn typcn-info-large-outline mr-2"></i>info</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row  mt-3">
-              <div class="col-xl-5 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Sessions by Channel</h4>
                     </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div id="circleProgress6" class="progressbar-js-circle rounded p-3"></div>
-                          </div>
-                          <div class="col-lg-6">
-                            <ul class="session-by-channel-legend">
-                              <li>
-                                <div>Firewalls(3)</div>
-                                <div>4(100%)</div>
-                              </li>
-                              <li>
-                                <div>Ports(12)</div>
-                                <div>12(100%)</div>
-                              </li>
-                              <li>
-                                <div>Servers(233)</div>
-                                <div>2(100%)</div>
-                              </li>
-                              <li>
-                                <div>Firewalls(3)</div>
-                                <div>7(100%)</div>
-                              </li>
-                              <li>
-                                <div>Firewalls(3)</div>
-                                <div>6(70%)</div>
-                              </li>
-                            </ul>
-                          </div>
+                </div>
+                <div class="row  mt-3">
+                    <div class="col-xl-5 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sessions by Channel</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="progressbar-js-circle rounded p-3"
+                                                     id="circleProgress6"></div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <ul class="session-by-channel-legend">
+                                                    <li>
+                                                        <div>Firewalls(3)</div>
+                                                        <div>4(100%)</div>
+                                                    </li>
+                                                    <li>
+                                                        <div>Ports(12)</div>
+                                                        <div>12(100%)</div>
+                                                    </li>
+                                                    <li>
+                                                        <div>Servers(233)</div>
+                                                        <div>2(100%)</div>
+                                                    </li>
+                                                    <li>
+                                                        <div>Firewalls(3)</div>
+                                                        <div>7(100%)</div>
+                                                    </li>
+                                                    <li>
+                                                        <div>Firewalls(3)</div>
+                                                        <div>6(70%)</div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Events</h4>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="d-flex justify-content-between mb-md-5 mt-3">
-                              <div class="small">Critical</div>
-                              <div class="text-danger small">Error</div>
-                              <div class="text-warning small">Warning</div>
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Events</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="d-flex justify-content-between mb-md-5 mt-3">
+                                                    <div class="small">Critical</div>
+                                                    <div class="text-danger small">Error</div>
+                                                    <div class="text-warning small">Warning</div>
+                                                </div>
+                                                <canvas id="eventChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <canvas id="eventChart"></canvas>
-                          </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-4 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Device stats</h4>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="d-flex justify-content-between mb-4">
-                              <div>Uptime</div>
-                              <div class="text-muted">195 Days, 8 hours</div>
+                    <div class="col-xl-4 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Device stats</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Uptime</div>
+                                                    <div class="text-muted">195 Days, 8 hours</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>First Seen</div>
+                                                    <div class="text-muted">23 Sep 2019, 2.04PM</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Collected time</div>
+                                                    <div class="text-muted">23 Sep 2019, 2.04PM</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Memory space</div>
+                                                    <div class="text-muted">168.3GB</div>
+                                                </div>
+                                                <div class="progress progress-md mt-4">
+                                                    <div aria-valuemax="100" aria-valuemin="0"
+                                                         aria-valuenow="50" class="progress-bar bg-success" role="progressbar"
+                                                         style="width: 50%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div>First Seen</div>
-                              <div class="text-muted">23 Sep 2019, 2.04PM</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div>Collected time</div>
-                              <div class="text-muted">23 Sep 2019, 2.04PM</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div>Memory space</div>
-                              <div class="text-muted">168.3GB</div>
-                            </div>
-                            <div class="progress progress-md mt-4">
-                              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                          </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-3 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Sessions by Channel</h4>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="font-weight-medium">Empolyee Name</div>
-                              <div class="font-weight-medium">This Month</div>
+                <div class="row">
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sessions by Channel</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="font-weight-medium">Empolyee Name</div>
+                                                    <div class="font-weight-medium">This Month</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Connor Chandler</div>
+                                                    <div class="small">$ 4909</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Russell Floyd</div>
+                                                    <div class="small">$857</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Douglas White</div>
+                                                    <div class="small">$612</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Alta Fletcher</div>
+                                                    <div class="small">$233</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Marguerite Pearson
+                                                    </div>
+                                                    <div class="small">$233</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Leonard Gutierrez
+                                                    </div>
+                                                    <div class="small">$35</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Helen Benson</div>
+                                                    <div class="small">$43</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="text-secondary font-weight-medium">Helen Benson</div>
+                                                    <div class="small">$43</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Connor Chandler</div>
-                              <div class="small">$ 4909</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Russell Floyd</div>
-                              <div class="small">$857</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Douglas White</div>
-                              <div class="small">$612	</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Alta Fletcher </div>
-                              <div class="small">$233</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Marguerite Pearson</div>
-                              <div class="small">$233</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Leonard Gutierrez</div>
-                              <div class="small">$35</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-4">
-                              <div class="text-secondary font-weight-medium">Helen Benson</div>
-                              <div class="small">$43</div>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="text-secondary font-weight-medium">Helen Benson</div>
-                                <div class="small">$43</div>
-                              </div>
-                          </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-6 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Sales Analytics</h4>
-                      <button type="button" class="btn btn-sm btn-light">Month</button>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="d-md-flex mb-4">
-                          <div class="mr-md-5 mb-4">
-                            <h5 class="mb-1"><i class="typcn typcn-globe-outline mr-1"></i>Online</h5>
-                            <h2 class="text-primary mb-1 font-weight-bold">23,342</h2>
-                          </div>
-                          <div class="mr-md-5 mb-4">
-                            <h5 class="mb-1"><i class="typcn typcn-archive mr-1"></i>Offline</h5>
-                            <h2 class="text-secondary mb-1 font-weight-bold">13,221</h2>
-                          </div>
-                          <div class="mr-md-5 mb-4">
-                            <h5 class="mb-1"><i class="typcn typcn-tags mr-1"></i>Marketing</h5>
-                            <h2 class="text-warning mb-1 font-weight-bold">1,542</h2>
-                          </div>
+                    <div class="col-xl-6 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sales Analytics</h4>
+                                    <button class="btn btn-sm btn-light" type="button">Month</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="d-md-flex mb-4">
+                                            <div class="mr-md-5 mb-4">
+                                                <h5 class="mb-1"><i class="typcn typcn-globe-outline mr-1"></i>Online
+                                                </h5>
+                                                <h2 class="text-primary mb-1 font-weight-bold">23,342</h2>
+                                            </div>
+                                            <div class="mr-md-5 mb-4">
+                                                <h5 class="mb-1"><i class="typcn typcn-archive mr-1"></i>Offline</h5>
+                                                <h2 class="text-secondary mb-1 font-weight-bold">13,221</h2>
+                                            </div>
+                                            <div class="mr-md-5 mb-4">
+                                                <h5 class="mb-1"><i class="typcn typcn-tags mr-1"></i>Marketing</h5>
+                                                <h2 class="text-warning mb-1 font-weight-bold">1,542</h2>
+                                            </div>
+                                        </div>
+                                        <canvas id="salesanalyticChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <canvas id="salesanalyticChart"></canvas>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Card Title</h4>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="mb-5">
-                          <div class="mr-1">
-                            <div class="text-info mb-1">
-                              Total Earning
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Card Title</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-5">
+                                            <div class="mr-1">
+                                                <div class="text-info mb-1">
+                                                    Total Earning
+                                                </div>
+                                                <h2 class="mb-2 mt-2 font-weight-bold">287,493$</h2>
+                                                <div class="font-weight-bold">
+                                                    1.4% Since Last Month
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="mr-1">
+                                                <div class="text-info mb-1">
+                                                    Total Earning
+                                                </div>
+                                                <h2 class="mb-2 mt-2  font-weight-bold">87,493</h2>
+                                                <div class="font-weight-bold">
+                                                    5.43% Since Last Month
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <canvas id="barChartStacked"></canvas>
+                                    </div>
+                                </div>
                             </div>
-                            <h2 class="mb-2 mt-2 font-weight-bold">287,493$</h2>
-                            <div class="font-weight-bold">
-                              1.4%  Since Last Month
-                            </div>
-                          </div>
-                          <hr>
-                          <div class="mr-1">
-                            <div class="text-info mb-1">
-                              Total Earning
-                            </div>
-                            <h2 class="mb-2 mt-2  font-weight-bold">87,493</h2>
-                            <div class="font-weight-bold">
-                              5.43%  Since Last Month
-                            </div>
-                          </div>
                         </div>
-                        <canvas id="barChartStacked"></canvas>
-                      </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div id="main" style="width: 1100px;height:400px;"></div>
-                    <script type="text/javascript">
-                      // 基于准备好的dom，初始化echarts实例
-                      var myChart = echarts.init(document.getElementById('main'));
+                <div class="row">
+                    <div class="col-lg-12 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="main" style="width: 1100px;height:400px;"></div>
+                                <script type="text/javascript">
+                                    // 基于准备好的dom，初始化echarts实例
+                                    var myChart = echarts.init(document.getElementById('main'));
 
-                      let base = +new Date(1988, 9, 3);
-                      let oneDay = 24 * 3600 * 1000;
-                      let data = [[base, Math.random() * 300]];
-                      for (let i = 1; i < 20000; i++) {
-                        let now = new Date((base += oneDay));
-                        data.push([+now, Math.round((Math.random() - 0.5) * 20 + data[i - 1][1])]);
-                      }
-                      option = {
-                        tooltip: {
-                          trigger: 'axis',
-                          position: function (pt) {
-                            return [pt[0], '10%'];
-                          }
-                        },
-                        title: {
-                          left: 'center',
-                          text: 'Large Ara Chart'
-                        },
-                        toolbox: {
-                          feature: {
-                            dataZoom: {
-                              yAxisIndex: 'none'
-                            },
-                            restore: {},
-                            saveAsImage: {}
-                          }
-                        },
-                        xAxis: {
-                          type: 'time',
-                          boundaryGap: false
-                        },
-                        yAxis: {
-                          type: 'value',
-                          boundaryGap: [0, '100%']
-                        },
-                        dataZoom: [
-                          {
-                            type: 'inside',
-                            start: 0,
-                            end: 20
-                          },
-                          {
-                            start: 0,
-                            end: 20
-                          }
-                        ],
-                        series: [
-                          {
-                            name: 'Fake Data',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            areaStyle: {},
-                            data: data
-                          }
-                        ]
-                      };
+                                    let datetime = [];
+                                    let pre_round = [];
+                                    let pre_yd15 = [];
+                                    let round = [];
+                                    let yd15 = [];
+                                    let DATETIME = '';
+                                    let PRE_ROUND = '';
+                                    let PRE_YD15 = '';
+                                    let ROUND = '';
+                                    let YD15 = '';
+                                    let datetimey = [];
+                                    let datay = [];
 
-                      // 使用刚指定的配置项和数据显示图表。
-                      myChart.setOption(option);
-                    </script>
 
-                  </div>
+
+
+                                    let turbid = 11;
+                                    let year = 2021;
+                                    let month = 11;
+                                    let day = 1;
+                                    let hour = 18;
+                                    let length = 10;// 单位小时
+
+                                    // 导入axios库
+                                    // const axios = require('axios');
+
+
+                                    const baseurl = 'http://localhost:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                        '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
+                                    // let params = new URLSearchParams(baseurl.searchParams);
+                                    // params.append('year', year);
+                                    // params.append('month', month);
+                                    // params.append('day', day);
+                                    // params.append('hour', hour);
+                                    // params.append('length', length);
+                                    console.log('测试ssy:', baseurl);
+                                    let base = +new Date(year, month, day);
+                                    let step = 900 * 1000;
+                                    let datax = [[base, Math.random() * 3000]];
+                                    for (let i = 1; i < length*4; i++) {
+                                        let now = new Date((base -= step));
+                                        datax.push([+now, Math.round((Math.random() - 0.5) * 20 + datax[i - 1][1])]);
+                                        datetimey.push(+now);
+                                        datay.push(Math.round((Math.random() - 0.5) * 20 + datax[i - 1][1]))
+                                        // console.log('原始数据date', datax[i][0])
+                                    }
+
+
+
+                                    // GET请求
+                                    axios.get(baseurl)
+                                        .then(res => {
+                                            console.log('测试resdata', res.data)
+                                            let datetimeline = Object.entries(res.data)[0][1];
+                                            let pre_roundline = Object.entries(res.data)[1][1];
+                                            let pre_yd15line = Object.entries(res.data)[2][1];
+                                            let roundline = Object.entries(res.data)[3][1];
+                                            let yd15line = Object.entries(res.data)[4][1];
+                                            DATETIME = Object.entries(res.data)[0][0];
+                                            PRE_ROUND = Object.entries(res.data)[1][0];
+                                            PRE_YD15 = Object.entries(res.data)[2][0];
+                                            ROUND = Object.entries(res.data)[3][0];
+                                            YD15 = Object.entries(res.data)[4][0];
+
+
+                                            console.log('测试datetimeline', datetimeline)
+                                            console.log('测试pre_roundline', pre_roundline)
+                                            console.log('测试pre_yd15line', pre_yd15line)
+                                            console.log('测试roundline', roundline)
+                                            console.log('测试yd15line', yd15line)
+                                            for(let i = 0; i < datetimeline.length; i ++) {
+                                                datetime.push(datetimeline[i])
+                                                // +Date.parse(datetimeline[i])
+                                                pre_round.push([+new Date(datetimeline[i]), Math.round(pre_roundline[i])])
+                                                pre_yd15.push([+new Date(datetimeline[i]), Math.round(pre_yd15line[i])])
+                                                round.push([+new Date(datetimeline[i]), Math.round(roundline[i])])
+                                                yd15.push([+new Date(datetimeline[i]), Math.round(yd15line[i])])
+                                                // pre_round.push(pre_roundline[i])
+                                                // pre_yd15.push(pre_yd15line[i])
+                                                // round.push(roundline[i])
+                                                // yd15.push(yd15line[i])
+                                                // console.log('使用数据date', yd15[i][0])
+                                            }
+                                            console.log('测试datetime', datetime)
+                                            console.log('测试pre_round', pre_round)
+                                            console.log('测试pre_yd15', pre_yd15)
+                                            console.log('测试round', round)
+                                            console.log('测试yd15', yd15)
+                                        })
+                                        .catch(err => {
+                                            console.error('axios请求错误'+err)
+                                        })
+
+                                    let option = {
+                                        tooltip: {
+                                            trigger: 'axis',
+                                            position: function (pt) {
+                                                return [pt[0], '10%'];
+                                            }
+                                        },
+                                        title: {
+                                            left: 'center',
+                                            text: '供、发电量及其预测数据'
+                                        },
+                                        toolbox: {
+                                            feature: {
+                                                dataZoom: {
+                                                    // yAxisIndex: 'none'
+                                                },
+                                                restore: {},
+                                                saveAsImage: {}
+                                            }
+                                        },
+                                        xAxis: {
+                                            type: 'value',
+                                            boundaryGap: false,
+                                            // data: datetime
+                                        },
+                                        yAxis: {
+                                            type: 'value',
+                                            boundaryGap: [0, '100%']
+                                        },
+                                        dataZoom: [
+                                            {
+                                                type: 'inside',
+                                                start: 0,
+                                                end: 20
+                                            },
+                                            {
+                                                start: 0,
+                                                end: 20
+                                            }
+                                        ],
+                                        series: [
+                                            // {
+                                            //     name: '随机数据',
+                                            //     type: 'line',
+                                            //     smooth: true,
+                                            //     symbol: 'none',
+                                            //     areaStyle: {},
+                                            //     data: data
+                                            // },
+                                            {
+                                                name: '供电量',
+                                                type: 'line',
+                                                smooth: true,
+                                                symbol: 'none',
+                                                areaStyle: {},
+                                                data: yd15
+                                            },
+                                            // {
+                                            //     name: '发电量',
+                                            //     type: 'line',
+                                            //     smooth: true,
+                                            //     symbol: 'none',
+                                            //     areaStyle: {},
+                                            //     data: round
+                                            // },
+                                            // {
+                                            //     name: '供电量预测',
+                                            //     type: 'line',
+                                            //     smooth: true,
+                                            //     symbol: 'none',
+                                            //     areaStyle: {},
+                                            //     data: pre_yd15
+                                            // },
+                                            // {
+                                            //     name: '发电量预测',
+                                            //     type: 'line',
+                                            //     smooth: true,
+                                            //     symbol: 'none',
+                                            //     areaStyle: {},
+                                            //     data: pre_round
+                                            // },
+
+                                        ]
+                                    };
+
+                                    // option1 = {
+                                    //     tooltip: {
+                                    //         trigger: "axis",
+                                    //         axisPointer: {
+                                    //             type: "shadow",
+                                    //             textStyle: {
+                                    //                 color: "#fff"
+                                    //             }
+                                    //
+                                    //         },
+                                    //     },
+                                    //     calculable: true,
+                                    //     xAxis: [{
+                                    //         type: "category",
+                                    //         splitLine: {
+                                    //             show: false
+                                    //         },
+                                    //         axisLabel: {
+                                    //             show: true,
+                                    //             fontSize: 14,
+                                    //             textStyle: {
+                                    //                 color: '#333333'
+                                    //             }
+                                    //         },
+                                    //         axisLine: {
+                                    //             show: false,
+                                    //             onZero: false
+                                    //         },
+                                    //         axisTick: {
+                                    //             show: false,
+                                    //         },
+                                    //         data: _this.data.xData,
+                                    //     }],
+                                    //
+                                    //     yAxis: [{
+                                    //         splitNumber: 3,//控制x，y轴对应的展示几个字段
+                                    //         type: "value",
+                                    //         splitLine: {
+                                    //             show: false
+                                    //         },
+                                    //         axisLabel: {
+                                    //             show: true,
+                                    //             fontSize: 14,
+                                    //             textStyle: {
+                                    //                 color: '#333333'
+                                    //             }
+                                    //         },
+                                    //         axisLine: {
+                                    //             show: false,
+                                    //             onZero: false
+                                    //         },
+                                    //         axisTick: {
+                                    //             show: false,
+                                    //         },
+                                    //
+                                    //     }],
+                                    //     dataZoom: [{
+                                    //         show: true,
+                                    //         backgroundColor: "#D8D8D8", //组件的背景颜色
+                                    //         height: 6,
+                                    //         xAxisIndex: [0],
+                                    //         bottom: 30,
+                                    //         "start": 10,
+                                    //         "end": 40,
+                                    //         // 拖拽手柄样式 svg 路径
+                                    //         handleIcon: 'M512 512m-208 0a6.5 6.5 0 1 0 416 0 6.5 6.5 0 1 0-416 0Z M512 192C335.264 192 192 335.264 192 512c0 176.736 143.264 320 320 320s320-143.264 320-320C832 335.264 688.736 192 512 192zM512 800c-159.072 0-288-128.928-288-288 0-159.072 128.928-288 288-288s288 128.928 288 288C800 671.072 671.072 800 512 800z',
+                                    //         handleColor: '#fff',
+                                    //         handleSize: 16,
+                                    //         handleStyle: {
+                                    //             borderColor: '#D8D8D8',
+                                    //             // shadowBlur: 4,
+                                    //             // shadowOffsetX: 1,
+                                    //             // shadowOffsetY: 1,
+                                    //             // shadowColor: '#e5e5e5'
+                                    //         },
+                                    //         textStyle: {
+                                    //             color: "#333333",
+                                    //         },
+                                    //         fillerColor: "#5260FF",
+                                    //         borderColor: "#D8D8D8",
+                                    //
+                                    //     }, {
+                                    //         type: "inside",
+                                    //         show: true,
+                                    //         height: 15,
+                                    //         start: 1,
+                                    //         end: 35
+                                    //     }],
+                                    //     series: [{
+                                    //         type: "line",
+                                    //         symbolSize: 4,
+                                    //         symbol: 'circle',
+                                    //         symbol: 'none',
+                                    //         smooth: true, //曲线平滑
+                                    //         itemStyle: {
+                                    //             normal: {
+                                    //                 color: "#6236FF",
+                                    //                 borderColor: "#6236FF",
+                                    //                 borderWidth: 6,
+                                    //                 lineStyle: { //线的颜色
+                                    //                     color: '#6236FF',
+                                    //                     width: 4
+                                    //                 },
+                                    //             },
+                                    //         },
+                                    //         data: _this.data.dataCur,
+                                    //     }]
+                                    // }
+
+                                    let option2= {
+                                        // 设置图表标题
+                                        title: {
+                                            left: 'center',
+                                            text: '供、发电量及其预测数据'
+                                        },
+                                        // 图表提示框组件
+                                        tooltip: {
+                                            //触发方式  axis坐标轴触发
+                                            trigger: 'axis'
+                                        },
+                                        //图例组件
+                                        legend: {
+                                            data: ['ROUND', 'PRE_ROUND', 'YD15', 'PRE_YD15']
+                                        },
+                                        //网格配置 grid可以控制线性图 柱状图 图表大小
+                                        grid: {
+                                            //设置 上下左右距离dom容器距离 控制图标大小
+                                            left: '3%',
+                                            right: '4%',
+                                            bottom: '3%',
+                                            //是否显示刻度标签 true显示
+                                            containLabel: true
+                                        },
+                                        //工具箱组件
+                                        toolbox: {
+                                            feature: {
+                                                dataZoom: {
+                                                    // yAxisIndex: 'none'
+                                                },
+                                                restore: {},
+                                                saveAsImage: {}
+                                            }
+                                        },
+                                        //直角坐标系配置
+                                        //设置x轴配置
+                                        xAxis: {
+                                            //type: category显示类目
+                                            type: 'time',
+                                            //是否让线条与坐标轴之间有缝隙
+                                            boundaryGap: false,
+                                            //x轴显示的相关数据
+                                            // data: datetimey
+                                        },
+                                        //设置y轴配置
+                                        yAxis: {
+                                            type: 'value', //数值
+                                            // boundaryGap: [0, '100%']
+                                        },
+                                        dataZoom: [
+                                            {
+                                                id: 'dataZoomX',
+                                                type: 'slider',
+                                                xAxisIndex: [0],
+                                                filterMode: 'filter', // 设定为 'filter' 从而 X 的窗口变化会影响 Y 的范围。
+                                                start: 0,
+                                                end: 100
+                                            },
+                                            {
+                                                id: 'dataZoomY',
+                                                type: 'slider',
+                                                yAxisIndex: [0],
+                                                filterMode: 'empty',
+                                                start: 0,
+                                                end: 100
+                                            }
+                                        ],
+                                        // 图表系列配置，决定图表数据怎样显示（柱状、折线、、、等）
+                                        series: [
+                                            {
+                                                //数据线条名称
+                                                //小技巧:series中有name值==> legend的data可以删掉
+                                                name: ROUND,
+                                                //数据线条类型 此处line折线
+                                                type: 'line',
+                                                //设置数据堆叠，一般应用不需要
+                                                stack: '功率',
+                                                //线条数据
+                                                data: datax
+                                            },
+                                            {
+                                                name: PRE_ROUND,
+                                                type: 'line',
+                                                stack: '功率',
+                                                //因为数据堆叠 此处数组第一个的  真实数据值应该是120+220=340;
+                                                data: pre_round
+                                            },
+                                            // {
+                                            //     name: YD15,
+                                            //     type: 'line',
+                                            //     stack: '功率',
+                                            //      //因为数据堆叠 此处数组第一个的  真实数据值应该是120+220+150=490;
+                                            //     data: yd15
+                                            // },
+                                            // {
+                                            //     name: PRE_YD15,
+                                            //     type: 'line',
+                                            //     stack: '功率',
+                                            //      //因为数据堆叠 此处数组第一个的  真实数据值应该是120+220+150+320=810;
+                                            //     data: pre_yd15
+                                            // }
+                                        ],
+                                        //设置数据线条颜色
+                                       color:['red','green','pink','black'],
+
+                                    }
+
+                                    // 使用刚指定的配置项和数据显示图表。
+                                    myChart.setOption(option2);
+                                </script>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+                <div class="row">
+                    <div class="col-lg-4 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sale Analysis Trend</h4>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Order Value</small>
+                                        <small>155.5%</small>
+                                    </div>
+                                    <div class="progress progress-md  mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-secondary" role="progressbar" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Total Products</small>
+                                        <small>238.2%</small>
+                                    </div>
+                                    <div class="progress progress-md  mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-success" role="progressbar" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 mb-5">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Quantity</small>
+                                        <small>23.30%</small>
+                                    </div>
+                                    <div class="progress progress-md mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-warning" role="progressbar" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <canvas id="salesTopChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Project status</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face30.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold mt-1">volkswagen</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$2322</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">88%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">07 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face31.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Land Rover</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$12022</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">70%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">08 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face32.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Bentley</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$8,725</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">87%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">11 Jun 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face33.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Morgan</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$5,220</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">65%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">26 Oct 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face34.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">volkswagen</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$2322</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success mt-1">88%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">07 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-              <div class="col-lg-4 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Sale Analysis Trend</h4>
-                    </div>
-                    <div class="mt-2">
-                      <div class="d-flex justify-content-between">
-                        <small>Order Value</small>
-                        <small>155.5%</small>
-                      </div>
-                      <div class="progress progress-md  mt-2">
-                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 80%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                    <div class="mt-4">
-                      <div class="d-flex justify-content-between">
-                        <small>Total Products</small>
-                        <small>238.2%</small>
-                      </div>
-                      <div class="progress progress-md  mt-2">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                    <div class="mt-4 mb-5">
-                      <div class="d-flex justify-content-between">
-                        <small>Quantity</small>
-                        <small>23.30%</small>
-                      </div>
-                      <div class="progress progress-md mt-2">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                    <canvas id="salesTopChart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-8 d-flex grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <h4 class="card-title mb-3">Project status</h4>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div class="d-flex">
-                                <img class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face30.png" alt="profile image">
-                                <div>
-                                  <div> Company</div>
-                                  <div class="font-weight-bold mt-1">volkswagen</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              Budget
-                              <div class="font-weight-bold  mt-1">$2322 </div>
-                            </td>
-                            <td>
-                              Status
-                              <div class="font-weight-bold text-success  mt-1">88% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div class="font-weight-bold  mt-1">07 Nov 2019</div>
-                            </td>
-                            <td>
-                              <button type="button" class="btn btn-sm btn-secondary">edit actions</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex">
-                                <img class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face31.png" alt="profile image">
-                                <div>
-                                  <div> Company</div>
-                                  <div class="font-weight-bold  mt-1">Land Rover</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              Budget
-                              <div class="font-weight-bold  mt-1">$12022  </div>
-                            </td>
-                            <td>
-                              Status
-                              <div class="font-weight-bold text-success  mt-1">70% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div class="font-weight-bold  mt-1">08 Nov 2019</div>
-                            </td>
-                            <td>
-                              <button type="button" class="btn btn-sm btn-secondary">edit actions</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex">
-                                <img class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face32.png" alt="profile image">
-                                <div>
-                                  <div> Company</div>
-                                  <div class="font-weight-bold  mt-1">Bentley </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              Budget
-                              <div class="font-weight-bold  mt-1">$8,725</div>
-                            </td>
-                            <td>
-                              Status
-                              <div class="font-weight-bold text-success  mt-1">87% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div class="font-weight-bold  mt-1">11 Jun 2019</div>
-                            </td>
-                            <td>
-                              <button type="button" class="btn btn-sm btn-secondary">edit actions</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex">
-                                <img class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face33.png" alt="profile image">
-                                <div>
-                                  <div> Company</div>
-                                  <div class="font-weight-bold  mt-1">Morgan </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              Budget
-                              <div class="font-weight-bold  mt-1">$5,220 </div>
-                            </td>
-                            <td>
-                              Status
-                              <div class="font-weight-bold text-success  mt-1">65% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div class="font-weight-bold  mt-1">26 Oct 2019</div>
-                            </td>
-                            <td>
-                              <button type="button" class="btn btn-sm btn-secondary">edit actions</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex">
-                                <img class="img-sm rounded-circle mb-md-0 mr-2" src="static/picture/face34.png" alt="profile image">
-                                <div>
-                                  <div> Company</div>
-                                  <div class="font-weight-bold  mt-1">volkswagen</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              Budget
-                              <div class="font-weight-bold  mt-1">$2322 </div>
-                            </td>
-                            <td>
-                              Status
-                              <div class="font-weight-bold text-success mt-1">88% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div class="font-weight-bold  mt-1">07 Nov 2019</div>
-                            </td>
-                            <td>
-                              <button type="button" class="btn btn-sm btn-secondary">edit actions</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-center text-sm-left d-block d-sm-inline-block">Copyright &copy; 2022.Company name All rights reserved.<a target="_blank" href="https://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>
+            <!-- content-wrapper ends -->
+            <!-- partial:partials/_footer.html -->
+            <footer class="footer">
+                <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-center text-sm-left d-block d-sm-inline-block">Copyright &copy; 2022.Company name All rights reserved.<a
+                      href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>
 
               </span>
 
-            </div>
-          </footer>
-          <!-- partial -->
+                </div>
+            </footer>
+            <!-- partial -->
         </div>
         <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
-    <!-- base:js -->
-    <script src="static/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="static/js/off-canvas.js"></script>
-    <script src="static/js/hoverable-collapse.js"></script>
-    <script src="static/js/template.js"></script>
-    <script src="static/js/settings.js"></script>
-    <script src="static/js/todolist.js"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
-    <script src="static/js/progressbar.min.js"></script>
-    <script src="static/js/Chart.min.js"></script>
-    <!-- End plugin js for this page -->
-    <!-- Custom js for this page-->
-    <script src="static/js/dashboard.js"></script>
-    <!-- End custom js for this page-->
-  </body>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<!-- base:js -->
+<script src="static/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="static/js/off-canvas.js"></script>
+<script src="static/js/hoverable-collapse.js"></script>
+<script src="static/js/template.js"></script>
+<script src="static/js/settings.js"></script>
+<script src="static/js/todolist.js"></script>
+<!-- endinject -->
+<!-- plugin js for this page -->
+<script src="static/js/progressbar.min.js"></script>
+<script src="static/js/Chart.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="static/js/dashboard.js"></script>
+<!-- End custom js for this page-->
+</body>
 </html>
