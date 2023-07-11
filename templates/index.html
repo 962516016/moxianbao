@@ -474,15 +474,15 @@
                                     let pre_yd15 = [];
                                     let round = [];
                                     let yd15 = [];
+
                                     let DATETIME = '';
                                     let PRE_ROUND = '';
                                     let PRE_YD15 = '';
                                     let ROUND = '';
                                     let YD15 = '';
+
                                     let datetimey = [];
                                     let datay = [];
-
-
 
 
                                     let turbid = 11;
@@ -498,21 +498,17 @@
 
                                     const baseurl = 'http://localhost:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
                                         '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
-                                    // let params = new URLSearchParams(baseurl.searchParams);
-                                    // params.append('year', year);
-                                    // params.append('month', month);
-                                    // params.append('day', day);
-                                    // params.append('hour', hour);
-                                    // params.append('length', length);
                                     console.log('测试ssy:', baseurl);
-                                    let base = +new Date(year, month, day);
+
+                                    let base = +new Date(year, month-1, day);
+                                    console.log('base日期:', base);
                                     let step = 900 * 1000;
-                                    let datax = [[base, Math.random() * 3000]];
+                                    let datax = [[base, Math.random() * 300]];
                                     for (let i = 1; i < length*4; i++) {
-                                        let now = new Date((base -= step));
+                                        let now = new Date((base += step));
                                         datax.push([+now, Math.round((Math.random() - 0.5) * 20 + datax[i - 1][1])]);
-                                        datetimey.push(+now);
-                                        datay.push(Math.round((Math.random() - 0.5) * 20 + datax[i - 1][1]))
+                                        datetimey.push(datax[i][0]);
+                                        datay.push(datax[i][1])
                                         // console.log('原始数据date', datax[i][0])
                                     }
 
@@ -527,11 +523,11 @@
                                             let pre_yd15line = Object.entries(res.data)[2][1];
                                             let roundline = Object.entries(res.data)[3][1];
                                             let yd15line = Object.entries(res.data)[4][1];
-                                            DATETIME = Object.entries(res.data)[0][0];
-                                            PRE_ROUND = Object.entries(res.data)[1][0];
-                                            PRE_YD15 = Object.entries(res.data)[2][0];
-                                            ROUND = Object.entries(res.data)[3][0];
-                                            YD15 = Object.entries(res.data)[4][0];
+                                            // DATETIME = Object.entries(res.data)[0][0];
+                                            // PRE_ROUND = Object.entries(res.data)[1][0];
+                                            // PRE_YD15 = Object.entries(res.data)[2][0];
+                                            // ROUND = Object.entries(res.data)[3][0];
+                                            // YD15 = Object.entries(res.data)[4][0];
 
 
                                             console.log('测试datetimeline', datetimeline)
@@ -546,6 +542,10 @@
                                                 pre_yd15.push([+new Date(datetimeline[i]), Math.round(pre_yd15line[i])])
                                                 round.push([+new Date(datetimeline[i]), Math.round(roundline[i])])
                                                 yd15.push([+new Date(datetimeline[i]), Math.round(yd15line[i])])
+                                                // console.log('测试pre_round['+i+']', pre_round[i])
+                                                // console.log('测试pre_yd15['+i+']', pre_yd15[i])
+                                                // console.log('测试round['+i+']', round[i])
+                                                // console.log('测试yd15['+i+']', yd15[i])
                                                 // pre_round.push(pre_roundline[i])
                                                 // pre_yd15.push(pre_yd15line[i])
                                                 // round.push(roundline[i])
@@ -562,90 +562,90 @@
                                             console.error('axios请求错误'+err)
                                         })
 
-                                    let option = {
-                                        tooltip: {
-                                            trigger: 'axis',
-                                            position: function (pt) {
-                                                return [pt[0], '10%'];
-                                            }
-                                        },
-                                        title: {
-                                            left: 'center',
-                                            text: '供、发电量及其预测数据'
-                                        },
-                                        toolbox: {
-                                            feature: {
-                                                dataZoom: {
-                                                    // yAxisIndex: 'none'
-                                                },
-                                                restore: {},
-                                                saveAsImage: {}
-                                            }
-                                        },
-                                        xAxis: {
-                                            type: 'value',
-                                            boundaryGap: false,
-                                            // data: datetime
-                                        },
-                                        yAxis: {
-                                            type: 'value',
-                                            boundaryGap: [0, '100%']
-                                        },
-                                        dataZoom: [
-                                            {
-                                                type: 'inside',
-                                                start: 0,
-                                                end: 20
-                                            },
-                                            {
-                                                start: 0,
-                                                end: 20
-                                            }
-                                        ],
-                                        series: [
-                                            // {
-                                            //     name: '随机数据',
-                                            //     type: 'line',
-                                            //     smooth: true,
-                                            //     symbol: 'none',
-                                            //     areaStyle: {},
-                                            //     data: data
-                                            // },
-                                            {
-                                                name: '供电量',
-                                                type: 'line',
-                                                smooth: true,
-                                                symbol: 'none',
-                                                areaStyle: {},
-                                                data: yd15
-                                            },
-                                            // {
-                                            //     name: '发电量',
-                                            //     type: 'line',
-                                            //     smooth: true,
-                                            //     symbol: 'none',
-                                            //     areaStyle: {},
-                                            //     data: round
-                                            // },
-                                            // {
-                                            //     name: '供电量预测',
-                                            //     type: 'line',
-                                            //     smooth: true,
-                                            //     symbol: 'none',
-                                            //     areaStyle: {},
-                                            //     data: pre_yd15
-                                            // },
-                                            // {
-                                            //     name: '发电量预测',
-                                            //     type: 'line',
-                                            //     smooth: true,
-                                            //     symbol: 'none',
-                                            //     areaStyle: {},
-                                            //     data: pre_round
-                                            // },
-
-                                        ]
-                                    };
+                                    // let option = {
+                                    //     tooltip: {
+                                    //         trigger: 'axis',
+                                    //         position: function (pt) {
+                                    //             return [pt[0], '10%'];
+                                    //         }
+                                    //     },
+                                    //     title: {
+                                    //         left: 'center',
+                                    //         text: '供、发电量及其预测数据'
+                                    //     },
+                                    //     toolbox: {
+                                    //         feature: {
+                                    //             dataZoom: {
+                                    //                 // yAxisIndex: 'none'
+                                    //             },
+                                    //             restore: {},
+                                    //             saveAsImage: {}
+                                    //         }
+                                    //     },
+                                    //     xAxis: {
+                                    //         type: 'value',
+                                    //         boundaryGap: false,
+                                    //         // data: datetime
+                                    //     },
+                                    //     yAxis: {
+                                    //         type: 'value',
+                                    //         boundaryGap: [0, '100%']
+                                    //     },
+                                    //     dataZoom: [
+                                    //         {
+                                    //             type: 'inside',
+                                    //             start: 0,
+                                    //             end: 20
+                                    //         },
+                                    //         {
+                                    //             start: 0,
+                                    //             end: 20
+                                    //         }
+                                    //     ],
+                                    //     series: [
+                                    //         {
+                                    //             name: '随机数据',
+                                    //             type: 'line',
+                                    //             smooth: true,
+                                    //             symbol: 'none',
+                                    //             areaStyle: {},
+                                    //             data: datax
+                                    //         },
+                                    //         {
+                                    //             name: '供电量',
+                                    //             type: 'line',
+                                    //             smooth: true,
+                                    //             symbol: 'none',
+                                    //             areaStyle: {},
+                                    //             data: yd15
+                                    //         },
+                                    //         // {
+                                    //         //     name: '发电量',
+                                    //         //     type: 'line',
+                                    //         //     smooth: true,
+                                    //         //     symbol: 'none',
+                                    //         //     areaStyle: {},
+                                    //         //     data: round
+                                    //         // },
+                                    //         // {
+                                    //         //     name: '供电量预测',
+                                    //         //     type: 'line',
+                                    //         //     smooth: true,
+                                    //         //     symbol: 'none',
+                                    //         //     areaStyle: {},
+                                    //         //     data: pre_yd15
+                                    //         // },
+                                    //         // {
+                                    //         //     name: '发电量预测',
+                                    //         //     type: 'line',
+                                    //         //     smooth: true,
+                                    //         //     symbol: 'none',
+                                    //         //     areaStyle: {},
+                                    //         //     data: pre_round
+                                    //         // },
+                                    //
+                                    //     ]
+                                    // };
 
                                     // option1 = {
                                     //     tooltip: {
@@ -796,7 +796,7 @@
                                             //type: category显示类目
                                             type: 'time',
                                             //是否让线条与坐标轴之间有缝隙
-                                            boundaryGap: false,
+                                            // boundaryGap: false,
                                             //x轴显示的相关数据
                                             // data: datetimey
                                         },
@@ -836,13 +836,13 @@
                                                 //线条数据
                                                 data: datax
                                             },
-                                            {
-                                                name: PRE_ROUND,
-                                                type: 'line',
-                                                stack: '功率',
-                                                //因为数据堆叠 此处数组第一个的  真实数据值应该是120+220=340;
-                                                data: pre_round
-                                            },
+                                            // {
+                                            //     name: PRE_ROUND,
+                                            //     type: 'line',
+                                            //     stack: '功率',
+                                            //     //因为数据堆叠 此处数组第一个的  真实数据值应该是120+220=340;
+                                            //     data: pre_round
+                                            // },
                                             // {
                                             //     name: YD15,
                                             //     type: 'line',
