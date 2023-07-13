@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script>
+      window.addEventListener('resize', function() {
+          myChart.resize();
+        });
+    </script>
+    <script>
+      window.addEventListener('orientationchange', function() {
+          myChart.resize();
+        });
+    </script>
+    <script crossorigin="anonymous"
+            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
+            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -18,6 +30,16 @@
     <script src="static/js/modernizr-2.8.3.min.js"></script>
   </head>
   <body>
+    <script>
+      window.addEventListener('resize', function() {
+          myChart.resize();
+        });
+    </script>
+    <script>
+      window.addEventListener('orientationchange', function() {
+          myChart.resize();
+        });
+    </script>
     <i id="bannerClose"></i>
     <div class="container-scroller">
       <!-- partial:partials/_navbar.html -->
@@ -168,34 +190,176 @@
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
-                <div class="row">
+                <div class="row mt-2" >
                     <div class="col-lg-4 grid-margin stretch-card">
                       <div class="card">
                         <div class="card-body">
-                            <button style="width: 80%;height: 100px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 11%;margin-top: 10%;margin-left: 10%">
-                              <i class="my_typcn typcn-upload" ></i><br>上传数据
-                            </button>
-<!--                            上传、训练、下载按钮-->
-                             <button style="width: 80%;height: 100px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 11%;margin-left: 10%">
+                          <button id="uploadBtn" style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
+                            <i class="my_typcn typcn-upload" ></i><br>上传数据
+                          </button>
+                          <input type="file" id="fileInput" style="display: none;">
+                          <script>
+                          document.getElementById('uploadBtn').addEventListener('click', function() {
+                            document.getElementById('fileInput').click();
+                          });
+                        </script>
+                          <script>
+                            document.getElementById('fileInput').addEventListener('change', function(event) {
+                              var file = event.target.files[0];
+                              var formData = new FormData();
+                              formData.append('file', file);
+                              var xhr = new XMLHttpRequest();
+                              xhr.open('POST', '/upload_file', true);
+                              xhr.send(formData);
+                              var aitextarea = document.getElementById('aianswer');
+                              aitextarea.value = '上传成功~';
+                            });
+                          </script>
+                             <button id="predictionBtn" style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                               <i class="my_typcn typcn-chart-bar-outline" ></i><br>预测功率
                             </button>
-                            <button style="width: 80%;height: 100px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 11%;margin-left: 10%">
+                            <script>
+                            document.getElementById('predictionBtn').addEventListener('click', function() {
+                              var aitextarea = document.getElementById('aianswer');
+                              // 在这里发送请求到后端获取数据并绘图
+                              let json_data;
+                              fetch('/online_predict')
+                                .then(response => response.json())
+                                .then(data => {
+                                  json_data = data;
+                                  myChart.dispose();
+                                  myChart = echarts.init(document.getElementById('linechart'));
+                                  // 指定图表的配置项和数据
+                                  var datatime = json_data.DATATIME;
+                                  var yd15 = json_data.PRE_YD15;
+                                  var power = json_data.PRE_POWER;
+                                  var option = {
+                                              tooltip: {
+                                                trigger: 'axis'
+                                              },
+                                              legend: {
+                                                data: ['ROUND(A.POWER,0)', 'YD15']
+                                              },
+                                              grid: {
+                                                left: '3%',
+                                                right: '4%',
+                                                bottom: '3%',
+                                                containLabel: true
+                                              },
+                                              toolbox: {
+                                                feature: {
+                                                  saveAsImage: {}
+                                                }
+                                              },
+                                              xAxis: {
+                                                type: 'category',
+                                                boundaryGap: false,
+                                                data: datatime
+                                              },
+                                              yAxis: {
+                                                type: 'value'
+                                              },
+                                              series: [
+                                                {
+                                                  name: 'ROUND(A.POWER,0)',
+                                                  type: 'line',
+                                                  data: power,
+                                                  animation: true
+                                                },
+                                                {
+                                                  name: 'YD15',
+                                                  type: 'line',
+                                                  data: yd15,
+                                                  animation: true
+                                                },
+                                              ]
+                                            };
+                                    myChart.setOption(option)
+                                   aitextarea.value = '预测完成~';
+                                  })
+                                  .catch(error => {
+                                    console.error('获取数据时发生错误:', error);
+                                  });
+
+                            });
+
+                            </script>
+                            <button id="aiBtn" style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                               <i class="my_typcn typcn-zoom" ></i><br>AI分析
                             </button>
-                             <button style="width: 80%;height: 100px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 11%;margin-left: 10%">
-                              <i class="my_typcn typcn-download" ></i><br>下载结果
+                          <script>
+                            document.getElementById('aiBtn').addEventListener('click', function() {
+                              var aitextarea = document.getElementById('aianswer');
+                              aitextarea.value = '正在分析...';
+                              let json_data;
+                              fetch('/gptapi_analyze')
+                                .then(response => response.json())
+                                .then(data => {
+                                  json_data = data;
+                                  var ans = json_data.ans;
+                                  aitextarea.value = ans;
+                                })
+                            });
+                          </script>
+                             <button id = "downloadBtn" style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                               <a href="/download_resfile" style="text-decoration: none;color: black"><i class="my_typcn typcn-download" ></i><br>下载结果</a>
                             </button>
-
                         </div>
                       </div>
                     </div>
                     <div class="col-lg-8 grid-margin stretch-card">
-                      <div class="card">
-                        <div class="card-body">
-<!--                            画图-->
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="linechart" style="width: 100%;height: 500px">
+                                  <script>
+                                    var myChart = echarts.init(document.getElementById('linechart'));
+                                  // 指定图表的配置项和数据
+                                  var option = {
+                                              tooltip: {
+                                                trigger: 'axis'
+                                              },
+                                              legend: {
+                                                data: ['示例曲线1', '示例曲线2']
+                                              },
+                                              grid: {
+                                                left: '3%',
+                                                right: '4%',
+                                                bottom: '3%',
+                                                containLabel: true
+                                              },
+                                              toolbox: {
+                                                feature: {
+                                                  saveAsImage: {}
+                                                }
+                                              },
+                                              xAxis: {
+                                                type: 'category',
+                                                boundaryGap: false,
+                                                data: [1,2,3,4,5]
+                                              },
+                                              yAxis: {
+                                                type: 'value'
+                                              },
+                                              series: [
+                                                {
+                                                  name: '示例曲线1',
+                                                  type: 'line',
+                                                  data: [2,4,6,13,18]
+                                                },
+                                                {
+                                                  name: '示例曲线2',
+                                                  type: 'line',
+                                                  data: [1,2,3,4,5]
+                                                },
+                                              ]
+                                            };
+                                    myChart.setOption(option)
+                                  </script>
+                                </div>
+                        <textarea id="aianswer" readonly style="width: 100%;height:120px;">Hi，您好，欢迎使用风电功率预测与分析服务。
+                        </textarea>
+                            </div>
                         </div>
-                      </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -224,7 +388,7 @@
     <script src="static/js/dashboard.js"></script>
     <!-- End custom js for this page-->
     <!-- Include All JS -->
-   <script src="static/js/jquery-3.5.1.min.js"></script>
+<!--   <script src="static/js/jquery-3.5.1.min.js"></script>-->
    <script src="static/js/bootstrap.min.js"></script>
    <script src="static/js/isotope.pkgd.min.js"></script>
    <script src="static/js/owl.carousel.min.js"></script>

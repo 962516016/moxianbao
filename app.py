@@ -4,16 +4,32 @@ import openai
 import numpy as np
 import pandas as pd
 import pymysqlpool
+import joblib
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from sklearn.model_selection import train_test_split
 
-
 app = Flask(__name__)
 CORS(app)
 
+# 上传的文件df格式
+df_upload_file = pd.DataFrame({})
+# 预测结果
+res_datatime = []
+res_windspeed = []
+res_power = []
+
+def to_string(a, f):
+    res = ""
+    if f == 1:
+        for i in range(min(len(a),50)):
+            res = res + str(round(a[i], 2)) + ","
+    else:
+        for i in range(min(len(a),50)):
+            res = res + a[i] + ","
+    return res
 # 配置数据库连接信息和连接池参数
 DB_CONFIG = {
     'host': '140.143.125.244',
@@ -40,9 +56,8 @@ def count_files_in_folder(folder_path):
     return file_count
 
 
-
 # 在数据库中查询数据
-def query_data(turbid, year, month, day, hour, length):
+def query_pre_data(turbid, year, month, day, hour, length):
     connection = pool.get_connection()
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
     previous_date = current_date - timedelta(hours=int(length))
@@ -50,9 +65,8 @@ def query_data(turbid, year, month, day, hour, length):
     current_date = current_date.strftime("%y/%m/%d %H:%M")
     previous_date = previous_date.strftime("%y/%m/%d %H:%M")
 
-
-    print(previous_date)
-    print(current_date)
+    # print(previous_date)
+    # print(current_date)
 
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
@@ -67,44 +81,42 @@ def query_data(turbid, year, month, day, hour, length):
     cursor.close()
     return result
 
+def query_winddirection_data(turbid):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT * FROM winddirection WHERE TurbID=%s"
+    cursor.execute(sql, turbid)
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    return result
 
 # 对上传的文件进行预测并返回
 def upload_predict(data):
-    df = data
+    null_count = data['YD15'].isnull().sum()
+    model1 = joblib.load("usingmodels/model1.pkl")
+    model2 = joblib.load("usingmodels/model2.pkl")
+    df = data[-null_count:]
     data_new = df.copy()
-    data_new = data_new[-172:]
-    df = df.fillna(0)
     # 新建一列
     df['WINDSPEED2'] = df['WINDSPEED'] * np.cos(np.radians(df['WINDDIRECTION'].values))
-    # 预测YD15
-    X_train1 = df[["WINDSPEED", "WINDSPEED2"]][:-172]
-    y_train1 = df[["YD15"]][:-172]
-    X_test1 = df[["WINDSPEED", "WINDSPEED2"]][-172:]
-    # gbm
-    x_train, x_test, y_train, y_test = train_test_split(X_train1, y_train1, test_size=0.2)
-    gbm1 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
-    gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
-                    callbacks=[early_stopping(stopping_rounds=1000)])
-    y_pred15 = gbm1.predict(X_test1.values)
-    output1 = y_pred15
-    # 预测POWER
-    X_train2 = df[["WINDSPEED", "WINDSPEED2"]][:-172]
-    y_train2 = df[["ROUND(A.POWER,0)"]][:-172]
-    X_test2 = df[["WINDSPEED", "WINDSPEED2"]][-172:]
-    # gbm
-    x_train, x_test, y_train, y_test = train_test_split(X_train2, y_train2, test_size=0.2)
-    gbm2 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
-    gbm2 = gbm2.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
-                    callbacks=[early_stopping(stopping_rounds=1000)])
-    POWER = gbm2.predict(X_test2.values)
-    output2 = POWER
-    data_new['PREYD15'] = output1
-    data_new['PREACTUAL'] = output2
-    data_new = data_new[['DATATIME', 'PREACTUAL', 'PREYD15']]
+    train = df[["WINDSPEED", "WINDSPEED2"]]
+    output1 = model1.predict(train.values)
+    output2 = model2.predict(train.values)
+    data_new['YD15'] = output1
+    data_new['ROUND(A.POWER,0)'] = output2
+    global res_datatime
+    global res_windspeed
+    global res_power
+    global df_upload_file
+    res_datatime = data_new['DATATIME'].tolist()
+    res_power = data_new['YD15'].tolist()
+    res_windspeed = data_new['WINDSPEED'].tolist()
+    df_upload_file[-null_count:] = data_new[-null_count:]
     return jsonify({
         'DATATIME': data_new['DATATIME'].values.tolist(),
-        'PREACTUAL': data_new['PREACTUAL'].values.tolist(),
-        'PREYD15': data_new['PREYD15'].values.tolist()
+        'PRE_POWER': data_new['ROUND(A.POWER,0)'].values.tolist(),
+        'PRE_YD15': data_new['YD15'].values.tolist()
     })
 
 
@@ -119,9 +131,8 @@ def predict_value():
     hour = request.args.get('hour')
     length = request.args.get('length')
 
-
     # 查询数据库中满足条件的数据
-    data = query_data(turbid, year, month, day, hour, length)
+    data = query_pre_data(turbid, year, month, day, hour, length)
     # print(data)
     result_list_datatime = [item[0] for item in data]
     result_list_actualpower = [float(item[1]) for item in data]
@@ -132,25 +143,25 @@ def predict_value():
     # 将查询结果处理为 JSON 格式
     result = jsonify({
         "DATETIME": result_list_datatime,
-        "ROUND(A.POWER,0)":result_list_actualpower,
-        "PRE_ROUND(A.POWER,0)":result_list_actualpower,
-        "YD15":result_list_yd15,
+        "ROUND(A.POWER,0)": result_list_actualpower,
+        "PRE_ROUND(A.POWER,0)": result_list_preactual,
+        "YD15": result_list_yd15,
         "PRE_YD15": result_list_preyd15
     })
     return result
 
-
-# 前端获取文件，后端处理完，返回一段时间的预测值
-@app.route('/upload', methods=['POST'])
-def file_predict():
-    if 'file' not in request.files:
-        return '未选择文件', 400
-
-    file = request.files['file']
-    if file.filename == '':
-        return '未选择文件', 400
-    df = pd.read_csv(file)
-    return upload_predict(df)
+@app.route('/get_winddirection', methods=['GET'])
+def get_winddirection():
+    # 获取前端传递的查询参数
+    turbid = request.args.get('turbid')
+    data = query_winddirection_data(turbid)
+    res_list_direction = list(data[0])
+    # 将查询结果处理为 JSON 格式
+    result = jsonify({
+        "direction": res_list_direction
+    })
+    print(res_list_direction)
+    return result
 
 
 # 获取他人使用offline程序跑出来的模型
@@ -174,39 +185,32 @@ def download_offine_soft():
     return send_file(file_path, as_attachment=True)
 
 
-@app.route('/gptapi_analyze', methods=['POST'])
+@app.route('/gptapi_analyze')
 def analyze_wind_power():
-    # 从请求中获取上传的CSV文件
-    file = request.files['file']
-    # 读取数据集
-    dataset = pd.read_csv(file)
     # 编辑prompt
     openai.api_key = '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'
     openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
     # send a ChatCompletion request to GPT
     messages = [
         {"role": "system",
-         "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编"+
-                    "程语言来解析数据。你对风电数据非常熟悉，包括功率、风速与时间的关系。你的职责是分析这些数据，并提供关于可能原因和"+
-                    "潜在风险的解释。作为数据分析师，你会仔细研究风电数据中功率、风速和时间之间的关系。你会运用统计方法分析数据的趋势和"+
-                    "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在"+
-                    "分析风电数据时，你会注意到一些可能的原因和潜在的风险。例如，你可能会发现在某些时间段内，风速较低导致功率下降，这可能"+
-                    "是由于气候条件或设备故障所致。另外，你还可能观察到功率波动较大的情况，这可能是由于风速变化剧烈或设备运行问题引起的。作"+
-                    "为数据分析师，你的职责还包括编写详细的报告，向相关团队和管理层提供分析结果和建议。你会使用图表、图形和数据可视化工具"+
-                    "来有效传达你的分析结果，并解释可能的原因和潜在风险。请注意，作为一个角色扮演的AI，我会尽力扮演数据分析师的角色，但我"+
-                    "的回答仅基于模型训练时的数据，并不能保证分析的准确性。在实际情况中，建议您寻求专业的数据分析师进行详细的数据分析和解释。"},
+         "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
+                    "程语言来解析数据。你对风电数据非常熟悉，包括功率、风速与时间的关系。你的职责是分析这些数据，并提供关于可能原因和" +
+                    "潜在风险的解释。作为数据分析师，你会仔细研究风电数据中功率、风速和时间之间的关系。你会运用统计方法分析数据的趋势和" +
+                    "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在" +
+                    "分析风电数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"},
         {"role": "user",
-         "content": f"我已经上传了数据集，文件名为: {file.filename}。"
-                    f"我需要你结合风速(WINDSPEED)的变化，分析功率(YD15)的变化情况，给出分析结果，分析的透彻到底，一段话直接说明白，不用画图"},
+         "content": "这是一列时间序列，"+to_string(res_datatime,0)+"这是对应的风速列，"+to_string(res_windspeed,1)+"这是对应的功率列，"+to_string(res_power,1)+"请结合时间分析一下风速对于功率的影响。"
+                    "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
     ]
     response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo',
+        model='gpt-3.5-turbo-0301',
         messages=messages,
         temperature=0,
     )
+    print(messages)
     # 获取助手角色的回答
     assistant_response = response['choices'][0]['message']['content']
-    return jsonify(msg='执行成功', response=assistant_response), 200
+    return jsonify({'ans': assistant_response})
 
 
 # 设置API密钥
@@ -247,6 +251,7 @@ def predict1():
     else:
         return jsonify({'error': 'Invalid file format, only CSV files are allowed'})
 
+
 @app.route('/')
 def home():
     return render_template("login.html")
@@ -265,17 +270,21 @@ def login_verify():
         error = '用户名或密码错误'
         return render_template('login.html', error=error)
 
+
 @app.route('/offline')
 def offline():
     return render_template("offline.html")
+
 
 @app.route('/index')
 def to_index():
     return render_template('index.html')
 
+
 @app.route('/admin')
 def to_admin():
     return render_template('basic-table.html')
+
 
 @app.route('/api')
 def to_api():
@@ -286,6 +295,30 @@ def to_api():
 def to_predict():
     return render_template('predict.html')
 
+@app.route('/upload_file', methods=['POST'])
+def get_file():
+    if 'file' not in request.files:
+        return '未选择文件', 400
+    file = request.files['file']
+    if file.filename == '':
+        return '未选择文件', 400
+    df = pd.read_csv(file)
+    global df_upload_file
+    df_upload_file = df
+    return jsonify({})
+
+
+# 前端获取文件，后端处理完，返回一段时间的预测值
+@app.route('/online_predict')
+def file_predict():
+    tmp = upload_predict(df_upload_file)
+    return tmp
+@app.route('/download_resfile')
+def download_resfile():
+    cnt = count_files_in_folder("./res_file")
+    file_path = './res_file/res'+str(cnt+1)+'.csv'  # 文件在服务器上的路径
+    df_upload_file.to_csv(file_path, index=False)
+    return send_file(file_path, download_name="res.csv", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5446)
