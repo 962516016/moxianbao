@@ -96,9 +96,6 @@
             borderColor: [
                 'rgba(	255, 131, 0)'
             ],
-            backgroundColor: [
-              'rgba(	255, 131, 0,.1)',
-            ],
             borderWidth: 1,
             fill: true,
         },

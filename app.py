@@ -320,5 +320,18 @@ def download_resfile():
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name="res.csv", as_attachment=True)
 
+# 其他原始页面的路由
+@app.route('/buttons.html')
+def buttons():
+    return render_template('buttons.html')
+
+@app.route('/dropdowns.html')
+def dropdowns():
+    return render_template('dropdowns.html')
+
+@app.route('/typography.html')
+def typography():
+    return render_template('typography.html')
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5446)
