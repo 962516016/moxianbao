@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pymysqlpool
 import joblib
+import shutil
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
@@ -20,6 +21,7 @@ df_upload_file = pd.DataFrame({})
 res_datatime = []
 res_windspeed = []
 res_power = []
+
 
 def to_string(a, f):
     res = ""
@@ -55,6 +57,13 @@ def count_files_in_folder(folder_path):
 
     return file_count
 
+# 获取路径下的所有文件，返回一个路径列表
+def get_file_paths(directory):
+    file_paths = []
+    for root, directories, files in os.walk(directory):
+        for file in files:
+            file_paths.append(os.path.join(file))
+    return file_paths
 
 # 在数据库中查询数据
 def query_pre_data(turbid, year, month, day, hour, length):
@@ -160,7 +169,7 @@ def get_winddirection():
     result = jsonify({
         "direction": res_list_direction
     })
-    print(res_list_direction)
+    # print(res_list_direction)
     return result
 
 
@@ -262,6 +271,9 @@ def login_verify():
     username = request.form['username']
     password = request.form['password']
 
+    global Username
+    Username = username
+
     if username == 'user' and password == 'user':
         return render_template("index.html")
     elif username == 'admin' and password == 'admin':
@@ -283,7 +295,10 @@ def to_index():
 
 @app.route('/admin')
 def to_admin():
-    return render_template('basic-table.html')
+    if 1:
+        return render_template('admin.html')
+    else:
+        return jsonify({'Erro':'You are not administer!!!'})
 
 
 @app.route('/api')
@@ -332,6 +347,48 @@ def dropdowns():
 @app.route('/typography.html')
 def typography():
     return render_template('typography.html')
+
+@app.route('/get_modelname')
+def get_getmodels():
+    usingmodels_list = get_file_paths('usingmodels')
+    getmodels_list = get_file_paths('getmodels')
+    return jsonify({
+        'usingmodels':usingmodels_list,
+        'getmodels':getmodels_list
+    })
+# 把模型从左移到右
+@app.route('/add_models_to_pool',methods=['POST'])
+def addmodels():
+    filenames = request.get_json()
+    path_root = 'getmodels/'
+    path_pool = 'usingmodels/'
+    for i in range(len(filenames)):
+        print(path_root+filenames[i])
+        print(path_pool+filenames[i])
+        shutil.move(path_root+filenames[i], path_pool+filenames[i])
+    return 'ok'
+
+# 直接删除模型
+@app.route('/delete_models',methods=['POST'])
+def deletemodels():
+    filenames = request.get_json()
+    path_root = 'getmodels/'
+    for i in range(len(filenames)):
+        os.remove(path_root + filenames[i])
+    return 'ok'
+# 模型从右移到左
+@app.route('/remove_models_from_pool',methods=['POST'])
+def removemodels():
+    filenames = request.get_json()
+    path_root = 'getmodels/'
+    path_pool = 'usingmodels/'
+    for i in range(len(filenames)):
+        print(path_root + filenames[i])
+        print(path_pool + filenames[i])
+        shutil.move(path_pool + filenames[i], path_root + filenames[i])
+    return 'ok'
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5446)

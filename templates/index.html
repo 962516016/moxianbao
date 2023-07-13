@@ -138,12 +138,12 @@
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
               <i class="typcn typcn-th-small-outline menu-icon"></i>
-              <span class="menu-title">Tables</span>
+              <span class="menu-title">管理员</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="tables">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin">Basic table</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin">模型管理</a></li>
               </ul>
             </div>
           </li>
@@ -257,7 +257,7 @@
                                     let hour = 18;
                                     let length = 100;// 单位小时
 
-                                    const baseurl = 'http://localhost:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                    const baseurl = 'http://172.24.187.133:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
                                         '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
                                     console.log('测试ssy:', baseurl);
 
@@ -410,7 +410,7 @@
                                 <div id="rosechart" style="width: 100%;height: 200px">
                                   <script>
                                   var roseChart = echarts.init(document.getElementById('rosechart'));
-                                  const url = 'http://localhost:5446/get_winddirection?' + 'turbid=' + turbid
+                                  const url = 'http://172.24.187.133:5446/get_winddirection?' + 'turbid=' + turbid
 
                                   // GET请求
                                     axios.get(url)
