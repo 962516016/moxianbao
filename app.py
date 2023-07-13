@@ -6,6 +6,10 @@ import pandas as pd
 import pymysqlpool
 import joblib
 import shutil
+import matplotx
+import zipfile
+from matplotlib.ticker import MaxNLocator
+import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
@@ -190,7 +194,7 @@ def get_model():
 
 @app.route('/download_offine_soft')
 def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v0.0.3.exe'  # 文件在服务器上的路径
+    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v0.1.0.exe'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
 
@@ -226,8 +230,8 @@ def analyze_wind_power():
 API_KEY = 'your-api-key'
 
 
-@app.route('/test', methods=['POST'])
-def predict1():
+@app.route('/longyuanapi', methods=['POST'])
+def api_predict():
     # 检查是否有文件上传
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'})
@@ -235,30 +239,108 @@ def predict1():
     # 检查身份验证头部中是否包含正确的密钥
     if 'Authorization' not in request.headers or request.headers['Authorization'] != API_KEY:
         return jsonify({'error': 'Unauthorized'})
-
     file = request.files['file']
-
     # 检查文件类型是否为CSV
     if file.filename.endswith('.csv'):
+
+        show = request.headers['show']
+        train = request.headers['train']
+        output = request.headers['output']
+
         # 保存上传的文件
         file.save(file.filename)
-
         # 读取CSV文件
-        data = pd.read_csv(file.filename)
-
+        df = pd.read_csv(file.filename)
         # 在此处进行预测操作，可根据自己的需求使用适当的模型或算法
-
+        res_file = pd.DataFrame({})
+        if train == 'True':
+            null_count = df['YD15'].isnull().sum()
+            cnt = null_count
+            data_new = df.copy()
+            df = df.fillna(0)
+            # 新建一列
+            df['WINDSPEED2'] = df['WINDSPEED'] * np.cos(np.radians(df['WINDDIRECTION'].values))
+            # 预测YD15
+            X_train1 = df[["WINDSPEED", "WINDSPEED2"]][:-null_count]
+            y_train1 = df[["YD15"]][:-null_count]
+            X_test1 = df[["WINDSPEED", "WINDSPEED2"]][-null_count:]
+            # gbm
+            x_train, x_test, y_train, y_test = train_test_split(X_train1, y_train1, test_size=0.2)
+            gbm1 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
+            gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
+                            callbacks=[early_stopping(stopping_rounds=1000)])
+            y_pred15 = gbm1.predict(X_test1.values)
+            output1 = y_pred15
+            # 预测POWER
+            X_train2 = df[["WINDSPEED", "WINDSPEED2"]][:-null_count]
+            y_train2 = df[["ROUND(A.POWER,0)"]][:-null_count]
+            X_test2 = df[["WINDSPEED", "WINDSPEED2"]][-null_count:]
+            # gbm
+            x_train, x_test, y_train, y_test = train_test_split(X_train2, y_train2, test_size=0.2)
+            gbm2 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
+            gbm2 = gbm2.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
+                            callbacks=[early_stopping(stopping_rounds=1000)])
+            POWER = gbm2.predict(X_test2.values)
+            output2 = POWER
+            data_new['YD15'][-null_count:] = output1
+            data_new['ROUND(A.POWER,0)'][-null_count:] = output2
+            res_file = data_new
+        else:
+            model1 = joblib.load("usingmodels/model1.pkl")
+            model2 = joblib.load("usingmodels/model2.pkl")
+            null_count = df['YD15'].isnull().sum()
+            cnt = null_count
+            data_new = df.copy()
+            # 新建一列
+            df['WINDSPEED2'] = df['WINDSPEED'] * np.cos(np.radians(df['WINDDIRECTION'].values))
+            train = df[["WINDSPEED", "WINDSPEED2"]]
+            output1 = model1.predict(train.values)
+            output2 = model2.predict(train.values)
+            data_new['YD15'] = output1
+            data_new['ROUND(A.POWER,0)'] = output2
+            res_file = data_new
         # 假设预测结果为新的DataFrame对象
-        predictions = 预测(data)
+        predictions = res_file
+        if show == 'True':
+            plt.clf()
+            df = res_file
+            # 在图形上绘制示例图形
+            plt.rcParams['font.sans-serif'] = ['SimHei']  # 指定默认字体
+            plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像时负号'-'显示为方块的问题
+            x = df['DATATIME'][-cnt:].tolist()
+            y1 = df['YD15'][-cnt:].tolist()
+            y2 = df['ROUND(A.POWER,0)'][-cnt:].tolist()
+            # mpl_style(dark=False)
+            with plt.style.context(matplotx.styles.pitaya_smoothie['light']):
+                fig = plt.figure(figsize=(10, 4))
+                plt.plot(x, y1, label='YD15')
+                plt.plot(x, y2, label='ROUND(A.POWER,0)')
+                plt.xlabel('日期')
+                plt.ylabel('功率')
+                plt.title('预测结果')
+                plt.gca().xaxis.set_major_locator(MaxNLocator(nbins=5))
+                plt.legend()
+                fig.savefig('res_picture.png')
 
         # 生成预测后的CSV文件
-        output_filename = 'predictions.csv'
-        predictions.to_csv(output_filename, index=False)
+        if output == 'True':
+            output_filename = 'predictions.csv'
+            predictions.to_csv(output_filename, index=False)
 
-        return jsonify({'success': True, 'output_filename': output_filename})
-
-    else:
-        return jsonify({'error': 'Invalid file format, only CSV files are allowed'})
+        if output == 'True' and show == 'False':
+            return send_file('predictions.csv', as_attachment=True)
+        elif output == 'False' and show == 'True':
+            return send_file('res_picture.png', as_attachment=True)
+        else:
+            # 打包文件和图片
+            files_to_compress = ['predictions.csv', 'res_picture.png']
+            # 压缩后的ZIP文件路径
+            zip_file_path = 'res.zip'
+            # 创建一个ZIP文件并将文件添加到其中
+            with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+                for file in files_to_compress:
+                    zipf.write(file)
+            return send_file(zip_file_path, as_attachment=True)
 
 
 @app.route('/')

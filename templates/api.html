@@ -145,32 +145,6 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="typcn typcn-user-add-outline menu-icon"></i>
-              <span class="menu-title">User Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="register.html"> Register </a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
-              <i class="typcn typcn-globe-outline menu-icon"></i>
-              <span class="menu-title">Error pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="error">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="error-404.html"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="error-500.html"> 500 </a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="/predict">
               <i class="typcn typcn-chart-bar menu-icon"></i>
               <span class="menu-title">在线预测</span>
@@ -232,73 +206,20 @@
 
 
             <pre class="pre"><code class="code"
-            >{
-  "status":0,
-  "version":"ver_1_0_1",
-  "results":[
-    {
-      "retcode":0,
-      "text":"百度是一家高科技公司",
-      "items":[
-         {
-           "byte_length":4,
-           "byte_offset":0,
-           "formal":"",
-           "item":"百度",
-           "ne":"ORG",
-           "pos":"",
-           "uri":"",
-           "loc_details":[ ],
-           "basic_words":["百度"]
-         },
-         {
-           "byte_length":2,
-           "byte_offset":4,
-           "formal":"",
-           "item":"是",
-           "ne":"",
-           "pos":"v",
-           "uri":"",
-           "loc_details":[ ],
-           "basic_words":["是"]
-         },
-         {
-           "byte_length":4,
-           "byte_offset":6,
-           "formal":"",
-           "item":"一家",
-           "ne":"",
-           "pos":"m",
-           "uri":"",
-           "loc_details":[ ],
-           "basic_words":["一","家"]
-         },
-         {
-           "byte_length":6,
-           "byte_offset":10,
-           "formal":"",
-           "item":"高科技",
-           "ne":"",
-           "pos":"n",
-           "uri":"",
-           "loc_details":[ ],
-           "basic_words":["高","科技"]
-         },
-         {
-           "byte_length":4,
-           "byte_offset":16,
-           "formal":"",
-           "item":"公司",
-           "ne":"",
-           "pos":"n",
-           "uri":"",
-           "loc_details":[ ],
-           "basic_words":["公司"]
-         }
-      ]
-    }
-  ]
-}</code></pre>
+            >from longyuanapi import AiWind
+
+try:
+    api_url = 'http://172.24.187.133:5446/longyuanapi'
+    api_key = '你的 Api Key'
+    show = True
+    output = False
+    train = False
+    filepath = '你的文件路径'
+    AiWind(api_url, api_key, show, output, train).savepredictfile(filepath)
+
+except Exception as e:
+    print(f'Error: {str(e)}')
+</code></pre>
 
             <h3 class="title_3">在上面代码中，常量APP_ID在系统官网创建，常量SECRET_KEY是在创建完毕应用后，系统分配给用户的，均为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
           </div>
