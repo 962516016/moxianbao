@@ -648,7 +648,15 @@
                                     ]
 
                                     option = {
-                                      tooltip: {},
+                                      tooltip: {
+                                          formatter: function (params) {
+                                              // 获取 x 值和 y 值
+                                              var xValue = ym[params.data.value[0]];
+                                              var yValue = tid[params.data.value[1]];
+
+                                              return '月份：' + xValue + '\n' + ' 风场id：' + yValue + ' 该月发电量：' + params.data.value[2];
+                                            }
+                                      },
                                       visualMap: {
                                         max: 20,
                                         inRange: {
@@ -705,13 +713,7 @@
                                           shading: 'lambert',
                                           label: {
                                             fontSize: 16,
-                                            borderWidth: 1,
-                                              formatter: function (params) {
-                                              // 获取 x 值和 y 值
-                                              var xValue = ym[params.data.value[0]];
-                                              var yValue = tid[params.data.value[1]];
-                                              return xValue + ', ' + yValue + ',' + params.data.value[2];
-                                            }
+                                            borderWidth: 1
                                           },
                                           emphasis: {
                                             label: {

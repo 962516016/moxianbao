@@ -171,7 +171,7 @@
           <div id="api-doc-content">
             <h2 class="title_2">简介</h2>
             <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
-本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com、luodaobin2001@gmail.com联系我们。</h3>
+本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com联系我们，或进入API主页交流：<a href="https://github.com/962516016/longyuanpower">https://github.com/962516016/longyuanpower</a>。</h3>
             <h2 class="title_2">参数详情</h2>
             <table class="api_table">
             <tr style="background: lightgray">
@@ -184,7 +184,7 @@
               <td>show</td>
               <td>是</td>
               <td>bool</td>
-              <td>通过该参数选择是否显示可视化图片</td>
+              <td>通过该参数选择是否导出可视化图片</td>
             </tr>
             <tr>
               <td>output</td>
@@ -193,34 +193,43 @@
               <td>通过该参数选择是否导出预测后的表格文件</td>
             </tr>
             <tr>
-              <td>length</td>
+              <td>train</td>
               <td>否</td>
-              <td>int</td>
-              <td>默认整体导出/不导出，填写后导出最后length个</td>
+              <td>bool</td>
+              <td>通过该参数选择训练并预测/预训练模型直接预测</td>
             </tr>
           </table>
             <h2 class="title_2">快速入门</h2>
 
-            <h3 class="title_3">AiWind是风电功率预测与分析的Python SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的否交互方法。<br>
-参考如下代码新建一个AiWind：</h3>
+            <h3 class="title_2_5">风电功率预测与分析服务 Python SDK目录结构</h3>
 
 
             <pre class="pre"><code class="code"
-            >from longyuanapi import AiWind
-
-try:
-    api_url = 'http://172.24.187.133:5446/longyuanapi'
-    api_key = '你的 Api Key'
-    show = True
-    output = False
-    train = False
-    filepath = '你的文件路径'
-    AiWind(api_url, api_key, show, output, train).savepredictfile(filepath)
-
-except Exception as e:
-    print(f'Error: {str(e)}')
+            >├── README.md
+├── longyuanpower                   //SDK目录
+│   ├── __init__.py                       //导出类
+│   ├── longyuanpower.py        //lypower基类
+│   └── LICENSE                         //开源许可协议
+└── setup.py                               //setuptools安装
 </code></pre>
+            <h3 class="title_2_5">安装风电功率预测与分析服务 Python SDK</h3>
+            <h3 class="title_3">安装使用Python SDK有如下方式：<br>
+  ●如果已安装pip，执行pip install baidu-aip即可。<br>
+  ●如果已安装setuptools，执行python setup.py install即可。</h3>
+            <h3 class="title_2_5">使用方法简介</h3>
+            <h3 class="title_3">longyuanpower是风电功率预测与分析的Python SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的交互方法。
+参考如下代码<br>新建一个longyuanpower.py：
+            </h3>
+            <pre class="pre"><code class="code">from longyuanpower import longyuanapi
 
+API_URL = 'http://172.24.187.133:5446/longyuanapi'
+API_KEY = '你的 Api Key'
+SHOW = True
+OUTPUT = True
+TRAIN= True
+filepath = '你的 文档路径'
+longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
+</code></pre>
             <h3 class="title_3">在上面代码中，常量APP_ID在系统官网创建，常量SECRET_KEY是在创建完毕应用后，系统分配给用户的，均为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
           </div>
         </div>
