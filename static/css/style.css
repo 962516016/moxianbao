@@ -25341,6 +25341,8 @@ body.avgrund-active {
   margin: auto;
 }
 
-
+.input-line {
+  margin-bottom: 0.25rem !important
+}
 
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
