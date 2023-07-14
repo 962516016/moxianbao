@@ -430,6 +430,10 @@ def dropdowns():
 def typography():
     return render_template('typography.html')
 
+@app.route('/chartjs.html')
+def chartjs():
+    return render_template('chartjs.html')
+
 @app.route('/get_modelname')
 def get_getmodels():
     usingmodels_list = get_file_paths('usingmodels')

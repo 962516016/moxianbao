@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.addEventListener('resize', function () {
+            myChart.resize();
+        });
+    </script>
+    <script>
+        window.addEventListener('orientationchange', function () {
+            myChart.resize();
+        });
+    </script>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>-->
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>龙源风电功率预测系统油专特供版online</title>
+    <!-- base:css -->
+    <link href="../static/css/typicons.css" rel="stylesheet">
+    <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
+
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link href="../static/css/style.css" rel="stylesheet">
+    <!-- endinject -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
+            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
+    <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
+    <!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">-->
+</head>
+<body>
+<i id="bannerClose"></i>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="../static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="../static/picture/logo-mini.svg"></a>
+            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    <a class="nav-link" href="/">
+                        退出登录
+                    </a>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
+        </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+            <div class="settings-panel" id="theme-settings">
+                <i class="settings-close typcn typcn-delete-outline"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                    Light
+                </div>
+                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                    Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles primary"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default border"></div>
+                </div>
+            </div>
+        </div>
+        <!-- partial -->
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <p class="sidebar-menu-title">目录</p>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/index">
+                        <i class="typcn typcn-device-desktop menu-icon"></i>
+                        <span class="menu-title">主页 </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="ui-basic" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#ui-basic">
+                        <i class="typcn typcn-briefcase menu-icon"></i>
+                        <span class="menu-title">UI Elements</span>
+                        <i class="typcn typcn-chevron-right menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="ui-basic">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="buttons.html">Buttons</a></li>
+                            <li class="nav-item"><a class="nav-link" href="dropdowns.html">Dropdowns</a></li>
+                            <li class="nav-item"><a class="nav-link" href="typography.html">Typography</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="form-elements" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#form-elements">
+                        <i class="typcn typcn-film menu-icon"></i>
+                        <span class="menu-title">Form elements</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="form-elements">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="charts" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#charts">
+                        <i class="typcn typcn-chart-pie-outline menu-icon"></i>
+                        <span class="menu-title">Charts</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="charts">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="chartjs.html">ChartJs</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#tables">
+                        <i class="typcn typcn-th-small-outline menu-icon"></i>
+                        <span class="menu-title">管理员</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="tables">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="icons" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#icons">
+                        <i class="typcn typcn-compass menu-icon"></i>
+                        <span class="menu-title">Icons</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="icons">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="/icon">Mdi icons</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="auth" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#auth">
+                        <i class="typcn typcn-user-add-outline menu-icon"></i>
+                        <span class="menu-title">User Pages</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="auth">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="login.html"> Login </a></li>
+                            <li class="nav-item"><a class="nav-link" href="register.html"> Register </a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a aria-controls="error" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#error">
+                        <i class="typcn typcn-globe-outline menu-icon"></i>
+                        <span class="menu-title">Error pages</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="error">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="error-404.html"> 404 </a></li>
+                            <li class="nav-item"><a class="nav-link" href="error-500.html"> 500 </a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/predict">
+                        <i class="typcn typcn-chart-bar menu-icon"></i>
+                        <span class="menu-title">在线预测</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/offline">
+                        <i class="typcn typcn-download-outline menu-icon"></i>
+                        <span class="menu-title">离线应用</span>
+                    </a>
+                </li>
+                <!--          api使用文档-->
+                <li class="nav-item">
+                    <a class="nav-link" href="/api">
+                        <i class="typcn typcn-document-text menu-icon"></i>
+                        <span class="menu-title">api使用文档</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!--                选择器按钮部分-->
+                <div class="row">
+                    <!--                    正在设计功能-日期选择器-datepicker-->
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <div class="container ">
+                                <input class="form-control" id="inputDate" placeholder="请选择日期" type="text">
+                                <script>
+                                    $("#inputDate").datepicker({
+                                        language: 'zh-CN', //语言
+                                        autoclose: true, //选择后自动关闭
+                                        clearBtn: true,//清除按钮
+                                        format: "yyyy-mm-dd"//日期格式
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    未设计功能-只有UI区域-三按钮：最近天、导出、信息-->
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <div class="mb-3 mb-xl-0 pr-1">
+                                <div class="dropdown">
+                                    <button aria-expanded="false"
+                                            aria-haspopup="true"
+                                            class="btn bg-white btn-sm dropdown-toggle btn-icon-text border mr-2"
+                                            data-toggle="dropdown" id="dropdownMenu3"
+                                            type="button">
+                                        <i class="typcn typcn-calendar-outline mr-2"></i>Last 7 days
+                                    </button>
+                                    <div aria-labelledby="dropdownMenuSizeButton3" class="dropdown-menu"
+                                         data-x-placement="top-start">
+                                        <h6 class="dropdown-header">Last 14 days</h6>
+                                        <a class="dropdown-item" href="#">Last 21 days</a>
+                                        <a class="dropdown-item" href="#">Last 28 days</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pr-1 mb-3 mr-2 mb-xl-0">
+                                <button class="btn btn-sm bg-white btn-icon-text border" type="button"><i
+                                        class="typcn typcn-arrow-forward-outline mr-2"></i>Export
+                                </button>
+                            </div>
+                            <div class="pr-1 mb-3 mb-xl-0">
+                                <button class="btn btn-sm bg-white btn-icon-text border" type="button"><i
+                                        class="typcn typcn-info-large-outline mr-2"></i>info
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                主图表区域-->
+                <div class="row" style="margin-top: 10px">
+                    <div class="col-lg-12 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body" id="main-container">
+                                <div id="main" style="width: 100%;height:400px;"></div>
+                                <script type="text/javascript">
+                                    // 基于准备好的dom，初始化echarts实例
+                                    var myChart = echarts.init(document.getElementById('main'));
+
+                                    let turbid = 11;
+                                    let year = 2022;
+                                    let month = 5;
+                                    let day = 21;
+                                    let hour = 18;
+                                    let length = 100;// 单位小时
+
+                                    const baseurl = 'http://172.24.173.192:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                        '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
+                                    console.log('测试ssy:', baseurl);
+
+                                    // GET请求
+                                    axios.get(baseurl)
+                                        .then(res => {
+                                            console.log('测试resdata', res.data)
+                                            let datetimeline = Object.entries(res.data)[0][1];
+                                            let pre_roundline = Object.entries(res.data)[1][1];
+                                            let pre_yd15line = Object.entries(res.data)[2][1];
+                                            let roundline = Object.entries(res.data)[3][1];
+                                            let yd15line = Object.entries(res.data)[4][1];
+
+
+                                            console.log('测试datetimeline', datetimeline)
+                                            console.log('测试pre_roundline', pre_roundline)
+                                            console.log('测试pre_yd15line', pre_yd15line)
+                                            console.log('测试roundline', roundline)
+                                            console.log('测试yd15line', yd15line)
+
+                                            datetime = []
+                                            pre_yd15 = []
+                                            pre_round = []
+                                            round = []
+                                            yd15 = []
+
+                                            mn = 10000000000
+                                            mx = -10000000000
+                                            for (let i = 0; i < datetimeline.length; i++) {
+                                                datetime.push((datetimeline[i]))
+                                                pre_round.push(Math.round(pre_roundline[i]))
+                                                pre_yd15.push(Math.round(pre_yd15line[i]))
+                                                round.push(Math.round(roundline[i]))
+                                                yd15.push(Math.round(yd15line[i]))
+                                                mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                                                mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                                            }
+                                            console.log(mn)
+                                            console.log(mx)
+                                            var option = {
+                                                tooltip: {
+                                                    trigger: 'axis',
+                                                    position: function (pt) {
+                                                        return [pt[0], '10%'];
+                                                    }
+                                                },
+                                                title: {
+                                                    left: 'left',
+                                                    text: '供、发电量及其预测数据'
+                                                },
+                                                legend: {
+                                                    data: ['供电量', '供电量预测', '发电量', '发电量预测',]
+                                                },
+                                                toolbox: {
+                                                    feature: {
+                                                        dataZoom: {
+                                                            // yAxisIndex: 'none'
+                                                        },
+                                                        restore: {},
+                                                        saveAsImage: {}
+                                                    }
+                                                },
+                                                xAxis: {
+                                                    type: 'category',
+                                                    boundaryGap: false,
+                                                    data: datetime
+                                                },
+                                                yAxis: {
+                                                    min: -1500,
+                                                    max: mx,
+                                                    type: 'value',
+                                                    boundaryGap: [0, '100%']
+                                                },
+                                                dataZoom: [
+                                                    {
+                                                        type: 'inside',
+                                                        start: 0,
+                                                        end: 20
+                                                    },
+                                                    {
+                                                        start: 0,
+                                                        end: 20
+                                                    }
+                                                ],
+                                                series: [
+                                                    {
+                                                        name: '供电量',
+                                                        type: 'line',
+                                                        smooth: true,
+                                                        symbol: 'none',
+                                                        //areaStyle: {},
+                                                        data: round
+                                                    },
+                                                    {
+                                                        name: '供电量预测',
+                                                        type: 'line',
+                                                        smooth: true,
+                                                        symbol: 'none',
+                                                        //areaStyle: {},
+                                                        data: pre_round
+                                                    },
+                                                    {
+                                                        name: '发电量',
+                                                        type: 'line',
+                                                        smooth: true,
+                                                        symbol: 'none',
+                                                        //areaStyle: {},
+                                                        data: yd15
+                                                    },
+                                                    {
+                                                        name: '发电量预测',
+                                                        type: 'line',
+                                                        smooth: true,
+                                                        symbol: 'none',
+                                                        //areaStyle: {},
+                                                        data: pre_yd15
+                                                    }
+                                                ]
+                                            };
+                                            myChart.setOption(option);
+                                            // const container = document.getElementById()
+                                            $(window).on('resize', function () {
+                                                var width = $('#main-container').width() - 1;
+                                                var height = $('#main-container').height() - 1;
+                                                $('#main').css({
+                                                    width: width,
+                                                    height: height,
+                                                    padding: '10px'
+                                                });
+                                                myChart.resize()
+                                            });
+
+                                        })
+                                        .catch(err => {
+                                            console.error('axios请求错误' + err)
+                                        })
+
+                                    // 使用刚指定的配置项和数据显示图表。
+
+                                </script>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row  mt-3">
+                    <div class="col-xl-5 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="rosechart" style="width: 100%;height: 200px">
+                                    <script>
+                                        var roseChart = echarts.init(document.getElementById('rosechart'));
+                                        const url = 'http://172.24.173.192:5446/get_winddirection?' + 'turbid=' + turbid
+
+                                        // GET请求
+                                        axios.get(url)
+                                            .then(res => {
+                                                var tmp = res.data.direction;
+                                                let cnt = [parseInt(tmp[1])];
+                                                for (let i = 2; i <= 8; i++) {
+                                                    cnt.push(parseInt(tmp[i]));
+                                                }
+                                                console.log(cnt)
+                                                // 指定图表的配置项和数据
+                                                var option = {
+                                                    title: {
+                                                        text: '风向玫瑰图'
+                                                    },
+                                                    legend: {
+                                                        top: 'bottom',
+                                                        data: []
+                                                    },
+                                                    tooltip: {
+                                                        trigger: 'item',
+                                                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                                                    },
+                                                    toolbox: {
+                                                        show: true,
+                                                        feature: {
+                                                            mark: {show: true},
+                                                            dataView: {show: true, readOnly: false},
+                                                            restore: {show: true},
+                                                            saveAsImage: {show: true}
+                                                        }
+                                                    },
+                                                    series: [
+                                                        {
+                                                            name: '风向统计玫瑰图',
+                                                            type: 'pie',
+                                                            radius: [20, 100],
+                                                            center: ['50%', '60%'],
+                                                            roseType: 'area',
+                                                            itemStyle: {
+                                                                borderRadius: 8
+                                                            },
+                                                            data: [
+                                                                {value: cnt[0], name: '正北'},
+                                                                {value: cnt[1], name: '东北'},
+                                                                {value: cnt[2], name: '正东'},
+                                                                {value: cnt[3], name: '东南'},
+                                                                {value: cnt[4], name: '正南'},
+                                                                {value: cnt[5], name: '西南'},
+                                                                {value: cnt[6], name: '正西'},
+                                                                {value: cnt[7], name: '西北'}
+                                                            ]
+                                                        }
+                                                    ]
+                                                };
+                                                roseChart.setOption(option)
+                                            })
+                                            .catch(err => {
+                                                console.error('axios请求错误' + err)
+                                            })
+
+                                    </script>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    <div class="col-xl-3 d-flex grid-margin stretch-card">-->
+                    <!--                        <div class="card">-->
+                    <!--                            <div class="card-body">-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <div class="col-xl-6 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Device stats</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Uptime</div>
+                                                    <div class="text-muted">195 Days, 8 hours</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>First Seen</div>
+                                                    <div class="text-muted">23 Sep 2019, 2.04PM</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Collected time</div>
+                                                    <div class="text-muted">23 Sep 2019, 2.04PM</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div>Memory space</div>
+                                                    <div class="text-muted">168.3GB</div>
+                                                </div>
+                                                <div class="progress progress-md mt-4">
+                                                    <div aria-valuemax="100" aria-valuemin="0"
+                                                         aria-valuenow="50" class="progress-bar bg-success"
+                                                         role="progressbar"
+                                                         style="width: 50%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                3D图区域-->
+                <div class="row">
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sessions by Channel</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="font-weight-medium">Empolyee Name</div>
+                                                    <div class="font-weight-medium">This Month</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Connor Chandler</div>
+                                                    <div class="small">$ 4909</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Russell Floyd</div>
+                                                    <div class="small">$857</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Douglas White</div>
+                                                    <div class="small">$612</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Alta Fletcher</div>
+                                                    <div class="small">$233</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Marguerite Pearson
+                                                    </div>
+                                                    <div class="small">$233</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Leonard Gutierrez
+                                                    </div>
+                                                    <div class="small">$35</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <div class="text-secondary font-weight-medium">Helen Benson</div>
+                                                    <div class="small">$43</div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="text-secondary font-weight-medium">Helen Benson</div>
+                                                    <div class="small">$43</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex " id="3dchart" style="width: 100%;height: 100%">
+                                    <script>
+                                        var d3chart = echarts.init(document.getElementById('3dchart'));
+                                        // 指定图表的配置项和数据
+                                        // prettier-ignore
+                                        var ym = ['202104', '202105', '202106', '202107', '202108',
+                                            '202109', '202110', '202111', '202112', '202201',
+                                            '202202', '202203', '202204', '202205', '202206'];
+                                        // prettier-ignore
+                                        var tid = ['11', '12', '13', '14', '15'];
+                                        // prettier-ignore
+                                        var data = [
+                                            [0, 0, 0],
+                                            [1, 0, 0],
+                                            [2, 0, 0],
+                                            [3, 0, 0],
+                                            [4, 0, 0],
+                                            [5, 0, 0],
+                                            [6, 0, 0],
+                                            [7, 0, 22953424.39],
+                                            [8, 0, 40579172.42],
+                                            [9, 0, 20226622.5],
+                                            [10, 0, 29466348.37],
+                                            [11, 0, 41558719.77],
+                                            [12, 0, 38466526.41],
+                                            [13, 0, 43300519.14],
+                                            [14, 0, 46242779.94],
+                                            [0, 1, 0],
+                                            [1, 1, 0],
+                                            [2, 1, 0],
+                                            [3, 1, 0],
+                                            [4, 1, 0],
+                                            [5, 1, 0],
+                                            [6, 1, 0],
+                                            [7, 1, 18307827.14],
+                                            [8, 1, 27852952.96],
+                                            [9, 1, 37130020.05],
+                                            [10, 1, 28419647.51],
+                                            [11, 1, 35952370.22],
+                                            [12, 1, 21693959.8],
+                                            [13, 1, 20095533.09],
+                                            [14, 1, 17783965.91],
+                                            [0, 2, 27158670.67],
+                                            [1, 2, 27391812.1],
+                                            [2, 2, 16838468.07],
+                                            [3, 2, 36470740.65],
+                                            [4, 2, 24121429.14],
+                                            [5, 2, 41191927.95],
+                                            [6, 2, 40398478.76],
+                                            [7, 2, 57756616.61],
+                                            [8, 2, 47679726.07],
+                                            [9, 2, 41394940.86],
+                                            [10, 2, 32137055.98],
+                                            [11, 2, 52921428.13],
+                                            [12, 2, 42507128.21],
+                                            [13, 2, 0],
+                                            [14, 2, 0],
+                                            [0, 3, 13851205.14],
+                                            [1, 3, 11103855.39],
+                                            [2, 3, 22144885.12],
+                                            [3, 3, 30888264.07],
+                                            [4, 3, 31132187.07],
+                                            [5, 3, 13311616.68],
+                                            [6, 3, 25764675.7],
+                                            [7, 3, 34865265.26],
+                                            [8, 3, 31745179.18],
+                                            [9, 3, 23408727.06],
+                                            [10, 3, 20537821.67],
+                                            [11, 3, 29708041.57],
+                                            [12, 3, 24073546.75],
+                                            [13, 3, 0],
+                                            [14, 3, 0],
+                                            [0, 4, 46337151.89],
+                                            [1, 4, 47017892.5],
+                                            [2, 4, 45759110.95],
+                                            [3, 4, 60761476.25],
+                                            [4, 4, 66081154.2],
+                                            [5, 4, 74800369.0],
+                                            [6, 4, 108098519.7],
+                                            [7, 4, 108467814.4],
+                                            [8, 4, 121823348.4],
+                                            [9, 4, 154492518.3],
+                                            [10, 4, 129098410.5],
+                                            [11, 4, 209708794.5],
+                                            [12, 4, 66502388.46],
+                                            [13, 4, 41496852.2],
+                                            [14, 4, 53398301.14]
+                                        ]
+
+                                        option = {
+                                            tooltip: {
+                                                formatter: function (params) {
+                                                    // 获取 x 值和 y 值
+                                                    var xValue = ym[params.data.value[0]];
+                                                    var yValue = tid[params.data.value[1]];
+
+                                                    return '月份：' + xValue + '\n' + ' 风场id：' + yValue + ' 该月发电量：' + params.data.value[2];
+                                                }
+                                            },
+                                            visualMap: {
+                                                max: 20,
+                                                inRange: {
+                                                    color: [
+                                                        '#313695',
+                                                        '#4575b4',
+                                                        '#74add1',
+                                                        '#abd9e9',
+                                                        '#e0f3f8',
+                                                        '#ffffbf',
+                                                        '#fee090',
+                                                        '#fdae61',
+                                                        '#f46d43',
+                                                        '#d73027',
+                                                        '#a50026'
+                                                    ]
+                                                }
+                                            },
+                                            xAxis3D: {
+                                                type: 'category',
+                                                data: ym
+                                            },
+                                            yAxis3D: {
+                                                type: 'category',
+                                                data: tid
+                                            },
+                                            zAxis3D: {
+                                                type: 'value'
+                                            },
+                                            grid3D: {
+                                                boxWidth: 200,
+                                                boxDepth: 80,
+                                                viewControl: {
+                                                    // projection: 'orthographic'
+                                                },
+                                                light: {
+                                                    main: {
+                                                        intensity: 1.2,
+                                                        shadow: true
+                                                    },
+                                                    ambient: {
+                                                        intensity: 0.3
+                                                    }
+                                                }
+                                            },
+                                            series: [
+                                                {
+                                                    type: 'bar3D',
+                                                    data: data.map(function (item) {
+                                                        return {
+                                                            value: [item[0], item[1], item[2]]
+                                                        };
+                                                    }),
+                                                    shading: 'lambert',
+                                                    label: {
+                                                        fontSize: 16,
+                                                        borderWidth: 1
+                                                    },
+                                                    emphasis: {
+                                                        label: {
+                                                            fontSize: 20,
+                                                            color: '#900'
+                                                        },
+                                                        itemStyle: {
+                                                            color: '#900'
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        };
+                                        d3chart.setOption(option)
+
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Card Title</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-5">
+                                            <div class="mr-1">
+                                                <div class="text-info mb-1">
+                                                    Total Earning
+                                                </div>
+                                                <h2 class="mb-2 mt-2 font-weight-bold">287,493$</h2>
+                                                <div class="font-weight-bold">
+                                                    1.4% Since Last Month
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="mr-1">
+                                                <div class="text-info mb-1">
+                                                    Total Earning
+                                                </div>
+                                                <h2 class="mb-2 mt-2  font-weight-bold">87,493</h2>
+                                                <div class="font-weight-bold">
+                                                    5.43% Since Last Month
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <canvas id="barChartStacked"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                未开发-原：趋势显示区域-->
+                <div class="row">
+                    <div class="col-lg-4 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Sale Analysis Trend</h4>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Order Value</small>
+                                        <small>155.5%</small>
+                                    </div>
+                                    <div class="progress progress-md  mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-secondary" role="progressbar"
+                                             style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Total Products</small>
+                                        <small>238.2%</small>
+                                    </div>
+                                    <div class="progress progress-md  mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-success" role="progressbar"
+                                             style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 mb-5">
+                                    <div class="d-flex justify-content-between">
+                                        <small>Quantity</small>
+                                        <small>23.30%</small>
+                                    </div>
+                                    <div class="progress progress-md mt-2">
+                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="90"
+                                             class="progress-bar bg-warning" role="progressbar"
+                                             style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <canvas id="salesTopChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <h4 class="card-title mb-3">Project status</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2"
+                                                         src="static/picture/face30.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold mt-1">volkswagen</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$2322</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">88%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">07 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2"
+                                                         src="static/picture/face31.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Land Rover</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$12022</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">70%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">08 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2"
+                                                         src="static/picture/face32.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Bentley</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$8,725</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">87%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">11 Jun 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2"
+                                                         src="static/picture/face33.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">Morgan</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$5,220</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success  mt-1">65%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">26 Oct 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img alt="profile image"
+                                                         class="img-sm rounded-circle mb-md-0 mr-2"
+                                                         src="static/picture/face34.png">
+                                                    <div>
+                                                        <div> Company</div>
+                                                        <div class="font-weight-bold  mt-1">volkswagen</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                Budget
+                                                <div class="font-weight-bold  mt-1">$2322</div>
+                                            </td>
+                                            <td>
+                                                Status
+                                                <div class="font-weight-bold text-success mt-1">88%</div>
+                                            </td>
+                                            <td>
+                                                Deadline
+                                                <div class="font-weight-bold  mt-1">07 Nov 2019</div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary" type="button">edit actions
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+            <!-- partial:partials/_footer.html -->
+            <footer class="footer">
+                <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-center text-sm-left d-block d-sm-inline-block">
+                  Copyright &copy; 2023.
+                  <span style="font-weight: bold;font-style: italic">LongYuan</span>
+                  All rights reserved.
+                  <!--                  <a href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>-->
+              </span>
+
+                </div>
+            </footer>
+            <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<!-- base:js -->
+<script src="../static/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../static/js/off-canvas.js"></script>
+<script src="../static/js/hoverable-collapse.js"></script>
+<script src="../static/js/template.js"></script>
+<script src="../static/js/settings.js"></script>
+<script src="../static/js/todolist.js"></script>
+<!-- endinject -->
+<!-- plugin js for this page -->
+<script src="../static/js/progressbar.min.js"></script>
+<script src="../static/js/Chart.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="../static/js/dashboard.js"></script>
+<!-- End custom js for this page-->
+</body>
+</html>

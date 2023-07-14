@@ -1,246 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
     <!-- base:css -->
-    <link rel="stylesheet" href="static/css/typicons.css">
-    <link rel="stylesheet" href="static/css/vendor.bundle.base.css">
+    <link href="static/css/typicons.css" rel="stylesheet">
+    <link href="static/css/vendor.bundle.base.css" rel="stylesheet">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <link href="static/css/style.css" rel="stylesheet">
     <!-- endinject -->
     <script src="static/js/modernizr-2.8.3.min.js"></script>
-  </head>
-  <body>
-    <i id="bannerClose"></i>
-    <div class="container-scroller">
-      <!-- partial:partials/_navbar.html -->
-      <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+</head>
+<body>
+<i id="bannerClose"></i>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href=""><img src="static/picture/logo.svg" alt="logo"></a>
-          <a class="navbar-brand brand-logo-mini" href=""><img src="static/picture/logo-mini.svg" alt="logo"></a>
-          <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button" data-toggle="minimize">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="static/picture/logo-mini.svg"></a>
+            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-          <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item d-none d-lg-flex  mr-2">
-              <a class="nav-link" href="/">
-                退出登录
-              </a>
-          </ul>
-          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    <a class="nav-link" href="/">
+                        退出登录
+                    </a>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
-      </nav>
-      <!-- partial -->
-      <div class="container-fluid page-body-wrapper">
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-          <li class="nav-item">
-            <p class="sidebar-menu-title">目录</p>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/index">
-              <i class="typcn typcn-device-desktop menu-icon"></i>
-              <span class="menu-title">主页</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <i class="typcn typcn-briefcase menu-icon"></i>
-              <span class="menu-title">UI Elements</span>
-              <i class="typcn typcn-chevron-right menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="buttons.html">Buttons</a></li>
-                <li class="nav-item"> <a class="nav-link" href="dropdowns.html">Dropdowns</a></li>
-                <li class="nav-item"> <a class="nav-link" href="typography.html">Typography</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="typcn typcn-film menu-icon"></i>
-              <span class="menu-title">Form elements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-              <i class="typcn typcn-chart-pie-outline menu-icon"></i>
-              <span class="menu-title">Charts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="chartjs.html">ChartJs</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="typcn typcn-th-small-outline menu-icon"></i>
-              <span class="menu-title">管理员</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin">模型管理</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-              <i class="typcn typcn-compass menu-icon"></i>
-              <span class="menu-title">Icons</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="mdi.html">Mdi icons</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/predict">
-              <i class="typcn typcn-chart-bar menu-icon"></i>
-              <span class="menu-title">在线预测</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/offline">
-              <i class="typcn typcn-download-outline menu-icon"></i>
-              <span class="menu-title">离线应用</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/api">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">api使用文档</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+            <ul class="nav">
+                <li class="nav-item">
+                    <p class="sidebar-menu-title">目录</p>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/index">
+                        <i class="typcn typcn-device-desktop menu-icon"></i>
+                        <span class="menu-title">主页</span>
+                    </a>
+                </li>
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">-->
+                <!--              <i class="typcn typcn-briefcase menu-icon"></i>-->
+                <!--              <span class="menu-title">UI Elements</span>-->
+                <!--              <i class="typcn typcn-chevron-right menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="ui-basic">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="buttons.html">Buttons</a></li>-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="dropdowns.html">Dropdowns</a></li>-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="typography.html">Typography</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">-->
+                <!--              <i class="typcn typcn-film menu-icon"></i>-->
+                <!--              <span class="menu-title">Form elements</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="form-elements">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">-->
+                <!--              <i class="typcn typcn-chart-pie-outline menu-icon"></i>-->
+                <!--              <span class="menu-title">Charts</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="charts">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="chartjs.html">ChartJs</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <li class="nav-item">
+                    <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#tables">
+                        <i class="typcn typcn-th-small-outline menu-icon"></i>
+                        <span class="menu-title">管理员</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="tables">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">-->
+                <!--              <i class="typcn typcn-compass menu-icon"></i>-->
+                <!--              <span class="menu-title">Icons</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="icons">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="mdi.html">Mdi icons</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="/predict">
+                        <i class="typcn typcn-chart-bar menu-icon"></i>
+                        <span class="menu-title">在线预测</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/offline">
+                        <i class="typcn typcn-download-outline menu-icon"></i>
+                        <span class="menu-title">离线应用</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/api">
+                        <i class="typcn typcn-document-text menu-icon"></i>
+                        <span class="menu-title">api使用文档</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
                 <div>
                     <div class="about_area">
-            <div class="container">
-              <div class="row">
-                <div class="col-xl-6 grid-margin stretch-card">
-                   <div class="about_left">
-                      <div class="about_image">
-                         <img src="static/picture/exe.jpg" alt="About Image" height=100% width=95%>
-                      </div>
-                   </div>
-                </div>
-                <div class="col-xl-6 grid-margin stretch-card">
-                   <div class="about_cont">
-                      <div class="about_cont_inner">
-                         <div class="witr_section_title">
-                            <div >
-                               <h2 style="margin-top:20px;margin-bottom:20px;font-family: 方正粗黑宋简体;font-size: 50px">离线版本V3.0！</h2>
-                               <h3 style="margin-top:20px;margin-bottom:20px;font-size: 25px">您的风场隐私安全，我来守护！</h3>
-                               <p style="margin-top:20px;margin-bottom:20px;font-size: 18px">龙源电力功率预测系统油专特供offline作为一款主打风场数据隐私保护的软件，可以实现本地离线训练并预测功率或直接预测功率，且能够将预测后的数据集导出，整个流程中数据无需上传到服务器。不仅如此，我们还开发了预测结果可视化功能，方便您观测功率的变化趋势。</p>
-                            </div>
-                         </div>
-                         <div class="row">
-                            <div class="col-md-6">
-                               <div class="witr_counter_single">
-                                  <div class="witr_counter_img">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xl-6 grid-margin stretch-card">
+                                    <div class="about_left">
+                                        <div class="about_image">
+                                            <img alt="About Image" height=100% src="static/picture/exe.jpg" width=95%>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 grid-margin stretch-card">
+                                    <div class="about_cont">
+                                        <div class="about_cont_inner">
+                                            <div class="witr_section_title">
+                                                <div>
+                                                    <h2 style="margin-top:20px;margin-bottom:20px;font-family: 方正粗黑宋简体;font-size: 50px">
+                                                        离线版本V3.0！</h2>
+                                                    <h3 style="margin-top:20px;margin-bottom:20px;font-size: 25px">
+                                                        您的风场隐私安全，我来守护！</h3>
+                                                    <p style="margin-top:20px;margin-bottom:20px;font-size: 18px">
+                                                        龙源电力功率预测系统油专特供offline作为一款主打风场数据隐私保护的软件，可以实现本地离线训练并预测功率或直接预测功率，且能够将预测后的数据集导出，整个流程中数据无需上传到服务器。不仅如此，我们还开发了预测结果可视化功能，方便您观测功率的变化趋势。</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="witr_counter_single">
+                                                        <div class="witr_counter_img">
 
-                                     <img width=23% height=23%   src="static/picture/download.png" alt="Icon">
+                                                            <img alt="Icon" height=23% src="static/picture/download.png"
+                                                                 width=23%>
 
-                                  </div>
-                                  <div class="witr_counter_number_inn">
-                                     <h4 style="margin-top:10px;margin-bottom:10px;">累计</h4>
-                                     <h3 class="counter" style="margin-top:10px;margin-bottom:10px;">1000</h3>
-                                     <h4 style="margin-top:10px;margin-bottom:10px;">余次下载</h4>
-                                  </div>
-                               </div>
+                                                        </div>
+                                                        <div class="witr_counter_number_inn">
+                                                            <h4 style="margin-top:10px;margin-bottom:10px;">累计</h4>
+                                                            <h3 class="counter"
+                                                                style="margin-top:10px;margin-bottom:10px;">1000</h3>
+                                                            <h4 style="margin-top:10px;margin-bottom:10px;">
+                                                                余次下载</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="witr_counter_single">
+                                                        <div class="witr_counter_img">
+                                                            <img alt="Icon" height=25%
+                                                                 src="static/picture/cooperation.png" width=25%>
+                                                        </div>
+                                                        <div class="witr_counter_number_inn">
+                                                            <h4 style="margin-top:10px;margin-bottom:10px;">累计</h4>
+                                                            <h3 class="counter"
+                                                                style="margin-top:10px;margin-bottom:10px;">19</h3>
+                                                            <h4 style="margin-top:10px;margin-bottom:10px;">
+                                                                家合作企业</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="margin-top:50px;margin-bottom:50px;">
+                                                <a class="btn btn-secondary" href="/download_offine_soft">下载应用</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                               <div class="witr_counter_single">
-                                  <div class="witr_counter_img">
-                                     <img width=25% height=25% src="static/picture/cooperation.png" alt="Icon">
-                                  </div>
-                                  <div class="witr_counter_number_inn">
-                                     <h4 style="margin-top:10px;margin-bottom:10px;">累计</h4>
-                                     <h3 class="counter" style="margin-top:10px;margin-bottom:10px;">19</h3>
-                                     <h4 style="margin-top:10px;margin-bottom:10px;">家合作企业</h4>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                         <div style="margin-top:50px;margin-bottom:50px;">
-                            <a href="/download_offine_soft" class="btn btn-secondary">下载应用</a>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-              </div>
-          </div>
-        </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
         <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
-    <!-- base:js -->
-    <script src="static/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="static/js/off-canvas.js"></script>
-    <script src="static/js/hoverable-collapse.js"></script>
-    <script src="static/js/template.js"></script>
-    <script src="static/js/settings.js"></script>
-    <script src="static/js/todolist.js"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
-    <script src="static/js/progressbar.min.js"></script>
-    <script src="static/js/Chart.min.js"></script>
-    <!-- End plugin js for this page -->
-    <!-- Custom js for this page-->
-    <script src="static/js/dashboard.js"></script>
-    <!-- End custom js for this page-->
-    <!-- Include All JS -->
-   <script src="static/js/jquery-3.5.1.min.js"></script>
-   <script src="static/js/bootstrap.min.js"></script>
-   <script src="static/js/isotope.pkgd.min.js"></script>
-   <script src="static/js/owl.carousel.min.js"></script>
-   <script src="static/js/slick.min.js"></script>
-   <script src="static/js/imagesloaded.pkgd.min.js"></script>
-   <script src="static/js/venobox.min.js"></script>
-   <script src="static/js/jquery.appear.js"></script>
-   <script src="static/js/jquery.knob.js"></script>
-   <script src="static/js/theme-pluginjs.js"></script>
-   <script src="static/js/jquery.meanmenu.js"></script>
-   <script src="static/js/ajax-mail.js"></script>
-   <script src="static/js/theme.js"></script>
-  </body>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<!-- base:js -->
+<script src="static/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="static/js/off-canvas.js"></script>
+<script src="static/js/hoverable-collapse.js"></script>
+<script src="static/js/template.js"></script>
+<script src="static/js/settings.js"></script>
+<script src="static/js/todolist.js"></script>
+<!-- endinject -->
+<!-- plugin js for this page -->
+<script src="static/js/progressbar.min.js"></script>
+<script src="static/js/Chart.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="static/js/dashboard.js"></script>
+<!-- End custom js for this page-->
+<!-- Include All JS -->
+<script src="static/js/jquery-3.5.1.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/isotope.pkgd.min.js"></script>
+<script src="static/js/owl.carousel.min.js"></script>
+<script src="static/js/slick.min.js"></script>
+<script src="static/js/imagesloaded.pkgd.min.js"></script>
+<script src="static/js/venobox.min.js"></script>
+<script src="static/js/jquery.appear.js"></script>
+<script src="static/js/jquery.knob.js"></script>
+<script src="static/js/theme-pluginjs.js"></script>
+<script src="static/js/jquery.meanmenu.js"></script>
+<script src="static/js/ajax-mail.js"></script>
+<script src="static/js/theme.js"></script>
+</body>
 </html>

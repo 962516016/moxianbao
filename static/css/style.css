@@ -25329,6 +25329,17 @@ body.avgrund-active {
   flex: 1;
 }
 
+.timeinput {
+  border: none;
+}
+
+.input-box {
+  float: left;
+}
+
+.rosecahrt {
+  margin: auto;
+}
 
 
 

@@ -8,9 +8,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="echarts.common" level="application" />
     <orderEntry type="library" name="axios" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="echarts-gl" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="echarts.common" level="application" />
+    <orderEntry type="library" name="bootstrap-datepicker" level="application" />
+    <orderEntry type="library" name="bootstrap-datepicker.zh-CN" level="application" />
     <orderEntry type="library" name="axios" level="application" />
+    <orderEntry type="library" name="echarts-gl" level="application" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="renderExternalDocumentation" value="true" />

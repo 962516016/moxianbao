@@ -1,226 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
     <!-- base:css -->
-    <link rel="stylesheet" href="static/css/typicons.css">
-    <link rel="stylesheet" href="static/css/vendor.bundle.base.css">
+    <link href="static/css/typicons.css" rel="stylesheet">
+    <link href="static/css/vendor.bundle.base.css" rel="stylesheet">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <link href="static/css/style.css" rel="stylesheet">
     <!-- endinject -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  </head>
-  <body>
-    <i id="bannerClose"></i>
-    <div class="container-scroller">
-      <!-- partial:partials/_navbar.html -->
-      <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+</head>
+<body>
+<i id="bannerClose"></i>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href=""><img src="static/picture/logo.svg" alt="logo"></a>
-          <a class="navbar-brand brand-logo-mini" href=""><img src="static/picture/logo-mini.svg" alt="logo"></a>
-          <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button" data-toggle="minimize">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="static/picture/logo-mini.svg"></a>
+            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-          <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item d-none d-lg-flex  mr-2">
-              <a class="nav-link" href="/">
-                退出登录
-              </a>
-          </ul>
-          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="typcn typcn-th-menu"></span>
-          </button>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    <a class="nav-link" href="/">
+                        退出登录
+                    </a>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
         </div>
-      </nav>
-      <!-- partial -->
-      <div class="container-fluid page-body-wrapper">
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
         <div class="theme-setting-wrapper">
 
-          <div id="theme-settings" class="settings-panel">
-            <i class="settings-close typcn typcn-delete-outline"></i>
-            <p class="settings-heading">SIDEBAR SKINS</p>
-            <div class="sidebar-bg-options" id="sidebar-light-theme">
-              <div class="img-ss rounded-circle bg-light border mr-3"></div>
-              Light
+            <div class="settings-panel" id="theme-settings">
+                <i class="settings-close typcn typcn-delete-outline"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                    Light
+                </div>
+                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                    Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles primary"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default border"></div>
+                </div>
             </div>
-            <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-              <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-              Dark
-            </div>
-            <p class="settings-heading mt-2">HEADER SKINS</p>
-            <div class="color-tiles mx-0 px-4">
-              <div class="tiles success"></div>
-              <div class="tiles warning"></div>
-              <div class="tiles danger"></div>
-              <div class="tiles primary"></div>
-              <div class="tiles info"></div>
-              <div class="tiles dark"></div>
-              <div class="tiles default border"></div>
-            </div>
-          </div>
         </div>
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-          <li class="nav-item">
-            <p class="sidebar-menu-title">目录</p>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/index">
-              <i class="typcn typcn-device-desktop menu-icon"></i>
-              <span class="menu-title">主页 </span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <i class="typcn typcn-briefcase menu-icon"></i>
-              <span class="menu-title">UI Elements</span>
-              <i class="typcn typcn-chevron-right menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="buttons.html">Buttons</a></li>
-                <li class="nav-item"> <a class="nav-link" href="dropdowns.html">Dropdowns</a></li>
-                <li class="nav-item"> <a class="nav-link" href="typography.html">Typography</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="typcn typcn-film menu-icon"></i>
-              <span class="menu-title">Form elements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-              <i class="typcn typcn-chart-pie-outline menu-icon"></i>
-              <span class="menu-title">Charts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="chartjs.html">ChartJs</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="typcn typcn-th-small-outline menu-icon"></i>
-              <span class="menu-title">管理员</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin">模型管理</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-              <i class="typcn typcn-compass menu-icon"></i>
-              <span class="menu-title">Icons</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="mdi.html">Mdi icons</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/predict">
-              <i class="typcn typcn-chart-bar menu-icon"></i>
-              <span class="menu-title">在线预测</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/offline">
-              <i class="typcn typcn-download-outline menu-icon"></i>
-              <span class="menu-title">离线应用</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/api">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">开放式API使用文档</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    <div class="main-panel">
-      <div class="content-wrapper">
-        <div style="background: white;width: 100%;height: 100%">
-          <h1 class="title_1">Python SDK文档</h1>
-          <div id="api-doc-content">
-            <h2 class="title_2">简介</h2>
-            <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
-本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com联系我们，或进入API主页交流：<a href="https://github.com/962516016/longyuanpower">https://github.com/962516016/longyuanpower</a>。</h3>
-            <h2 class="title_2">参数详情</h2>
-            <table class="api_table">
-            <tr style="background: lightgray">
-              <td>参数名称</td>
-              <td>是否必选</td>
-              <td>类型</td>
-              <td>说明</td>
-            </tr>
-            <tr>
-              <td>show</td>
-              <td>是</td>
-              <td>bool</td>
-              <td>通过该参数选择是否导出可视化图片</td>
-            </tr>
-            <tr>
-              <td>output</td>
-              <td>是</td>
-              <td>bool</td>
-              <td>通过该参数选择是否导出预测后的表格文件</td>
-            </tr>
-            <tr>
-              <td>train</td>
-              <td>否</td>
-              <td>bool</td>
-              <td>通过该参数选择训练并预测/预训练模型直接预测</td>
-            </tr>
-          </table>
-            <h2 class="title_2">快速入门</h2>
+            <ul class="nav">
+                <li class="nav-item">
+                    <p class="sidebar-menu-title">目录</p>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/index">
+                        <i class="typcn typcn-device-desktop menu-icon"></i>
+                        <span class="menu-title">主页 </span>
+                    </a>
+                </li>
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">-->
+                <!--              <i class="typcn typcn-briefcase menu-icon"></i>-->
+                <!--              <span class="menu-title">UI Elements</span>-->
+                <!--              <i class="typcn typcn-chevron-right menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="ui-basic">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="buttons.html">Buttons</a></li>-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="dropdowns.html">Dropdowns</a></li>-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="typography.html">Typography</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">-->
+                <!--              <i class="typcn typcn-film menu-icon"></i>-->
+                <!--              <span class="menu-title">Form elements</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="form-elements">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">-->
+                <!--              <i class="typcn typcn-chart-pie-outline menu-icon"></i>-->
+                <!--              <span class="menu-title">Charts</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="charts">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="chartjs.html">ChartJs</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <li class="nav-item">
+                    <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
+                       href="#tables">
+                        <i class="typcn typcn-th-small-outline menu-icon"></i>
+                        <span class="menu-title">管理员</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="tables">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <!--          <li class="nav-item">-->
+                <!--            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">-->
+                <!--              <i class="typcn typcn-compass menu-icon"></i>-->
+                <!--              <span class="menu-title">Icons</span>-->
+                <!--              <i class="menu-arrow"></i>-->
+                <!--            </a>-->
+                <!--            <div class="collapse" id="icons">-->
+                <!--              <ul class="nav flex-column sub-menu">-->
+                <!--                <li class="nav-item"> <a class="nav-link" href="mdi.html">Mdi icons</a></li>-->
+                <!--              </ul>-->
+                <!--            </div>-->
+                <!--          </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="/predict">
+                        <i class="typcn typcn-chart-bar menu-icon"></i>
+                        <span class="menu-title">在线预测</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/offline">
+                        <i class="typcn typcn-download-outline menu-icon"></i>
+                        <span class="menu-title">离线应用</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/api">
+                        <i class="typcn typcn-document-text menu-icon"></i>
+                        <span class="menu-title">开放式API使用文档</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div style="background: white;width: 100%;height: 100%">
+                    <h1 class="title_1">Python SDK文档</h1>
+                    <div id="api-doc-content">
+                        <h2 class="title_2">简介</h2>
+                        <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
+                            本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com联系我们，或进入API主页交流：<a
+                                    href="https://github.com/962516016/longyuanpower">https://github.com/962516016/longyuanpower</a>。
+                        </h3>
+                        <h2 class="title_2">参数详情</h2>
+                        <table class="api_table">
+                            <tr style="background: lightgray">
+                                <td>参数名称</td>
+                                <td>是否必选</td>
+                                <td>类型</td>
+                                <td>说明</td>
+                            </tr>
+                            <tr>
+                                <td>show</td>
+                                <td>是</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否导出可视化图片</td>
+                            </tr>
+                            <tr>
+                                <td>output</td>
+                                <td>是</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否导出预测后的表格文件</td>
+                            </tr>
+                            <tr>
+                                <td>train</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择训练并预测/预训练模型直接预测</td>
+                            </tr>
+                        </table>
+                        <h2 class="title_2">快速入门</h2>
 
-            <h3 class="title_2_5">风电功率预测与分析服务 Python SDK目录结构</h3>
+                        <h3 class="title_2_5">风电功率预测与分析服务 Python SDK目录结构</h3>
 
 
-            <pre class="pre"><code class="code"
-            >├── README.md
+                        <pre class="pre"><code class="code"
+                        >├── README.md
 ├── longyuanpower                   //SDK目录
 │   ├── __init__.py                       //导出类
 │   ├── longyuanpower.py        //lypower基类
 │   └── LICENSE                         //开源许可协议
 └── setup.py                               //setuptools安装
 </code></pre>
-            <h3 class="title_2_5">安装风电功率预测与分析服务 Python SDK</h3>
-            <h3 class="title_3">安装使用Python SDK有如下方式：<br>
-  ●如果已安装pip，执行pip install baidu-aip即可。<br>
-  ●如果已安装setuptools，执行python setup.py install即可。</h3>
-            <h3 class="title_2_5">使用方法简介</h3>
-            <h3 class="title_3">longyuanpower是风电功率预测与分析的Python SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的交互方法。
-参考如下代码<br>新建一个longyuanpower.py：
-            </h3>
-            <pre class="pre"><code class="code">from longyuanpower import longyuanapi
+                        <h3 class="title_2_5">安装风电功率预测与分析服务 Python SDK</h3>
+                        <h3 class="title_3">安装使用Python SDK有如下方式：<br>
+                            ●如果已安装pip，执行pip install baidu-aip即可。<br>
+                            ●如果已安装setuptools，执行python setup.py install即可。</h3>
+                        <h3 class="title_2_5">使用方法简介</h3>
+                        <h3 class="title_3">longyuanpower是风电功率预测与分析的Python
+                            SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的交互方法。
+                            参考如下代码<br>新建一个longyuanpower.py：
+                        </h3>
+                        <pre class="pre"><code class="code">from longyuanpower import longyuanapi
 
 API_URL = 'http://172.24.187.133:5446/longyuanapi'
 API_KEY = '你的 Api Key'
@@ -230,35 +236,33 @@ TRAIN= True
 filepath = '你的 文档路径'
 longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
 </code></pre>
-            <h3 class="title_3">在上面代码中，常量APP_ID在系统官网创建，常量SECRET_KEY是在创建完毕应用后，系统分配给用户的，均为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
-          </div>
+                        <h3 class="title_3">
+                            在上面代码中，常量APP_ID在系统官网创建，常量SECRET_KEY是在创建完毕应用后，系统分配给用户的，均为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
 
-
-
-
-    <!-- container-scroller -->
-    <!-- base:js -->
-    <script src="static/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="static/js/off-canvas.js"></script>
-    <script src="static/js/hoverable-collapse.js"></script>
-    <script src="static/js/template.js"></script>
-    <script src="static/js/settings.js"></script>
-    <script src="static/js/todolist.js"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
-    <script src="static/js/progressbar.min.js"></script>
-    <script src="static/js/Chart.min.js"></script>
-    <!-- End plugin js for this page -->
-    <!-- Custom js for this page-->
-    <script src="static/js/dashboard.js"></script>
-    <!-- End custom js for this page-->
-  </body>
+        <!-- container-scroller -->
+        <!-- base:js -->
+        <script src="static/js/vendor.bundle.base.js"></script>
+        <!-- endinject -->
+        <!-- Plugin js for this page-->
+        <!-- End plugin js for this page-->
+        <!-- inject:js -->
+        <script src="static/js/off-canvas.js"></script>
+        <script src="static/js/hoverable-collapse.js"></script>
+        <script src="static/js/template.js"></script>
+        <script src="static/js/settings.js"></script>
+        <script src="static/js/todolist.js"></script>
+        <!-- endinject -->
+        <!-- plugin js for this page -->
+        <script src="static/js/progressbar.min.js"></script>
+        <script src="static/js/Chart.min.js"></script>
+        <!-- End plugin js for this page -->
+        <!-- Custom js for this page-->
+        <script src="static/js/dashboard.js"></script>
+        <!-- End custom js for this page-->
+</body>
 </html>
