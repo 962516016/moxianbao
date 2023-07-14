@@ -8,6 +8,7 @@ import joblib
 import shutil
 import matplotx
 import zipfile
+import json
 from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
@@ -103,6 +104,39 @@ def query_winddirection_data(turbid):
     connection.close()
     cursor.close()
     return result
+
+def addUser(username, password):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "INSERT INTO usertable (username, password) VALUES (%s, %s);"
+    cursor.execute(sql, (username,password))
+    flg = cursor.rowcount
+    connection.close()
+    cursor.close()
+    if flg == 1:
+        return True
+    return False
+
+
+def verify_user(username, password):
+    connection = pool.get_connection()
+    # 创建游标对象
+    cursor = connection.cursor()
+    # 执行查询语句
+    sql = "SELECT * FROM usertable WHERE username = %s AND password = %s"
+    cursor.execute(sql, (username, password))
+    # 获取查询结果
+    result = cursor.fetchone()
+
+    # 关闭游标和连接
+    cursor.close()
+    connection.close()
+
+    # 根据查询结果返回验证结果
+    if result:
+        return True
+    else:
+        return False
 
 # 对上传的文件进行预测并返回
 def upload_predict(data):
@@ -353,16 +387,14 @@ def login_verify():
     username = request.form['username']
     password = request.form['password']
 
-    global Username
-    Username = username
 
-    if username == 'user' and password == 'user':
-        return render_template("index.html")
-    elif username == 'admin' and password == 'admin':
+    flg = verify_user(username,password)
+    if flg:
         return render_template("index.html")
     else:
         error = '用户名或密码错误'
         return render_template('login.html', error=error)
+
 
 
 @app.route('/offline')
@@ -454,6 +486,7 @@ def addmodels():
         shutil.move(path_root+filenames[i], path_pool+filenames[i])
     return 'ok'
 
+
 # 直接删除模型
 @app.route('/delete_models',methods=['POST'])
 def deletemodels():
@@ -473,6 +506,32 @@ def removemodels():
         print(path_pool + filenames[i])
         shutil.move(path_pool + filenames[i], path_root + filenames[i])
     return 'ok'
+# 注册界面
+@app.route('/register')
+def to_register():
+    return render_template('register.html')
+
+@app.route('/register_submit',methods=['POST'])
+def register_submit():
+    data = request.get_json()
+    data = json.dumps(data)
+    print(data)
+    json_data = json.loads(data)
+
+    username = json_data['username']
+    password = json_data['password']
+    repassword = json_data['repassword']
+
+    if repassword!=password:
+        return '两次密码不一致！'
+    else:
+        if addUser(username,password):
+            return '注册成功,请登录'
+        else:
+            return '注册失败,请重试！'
+
+
+
 
 
 
