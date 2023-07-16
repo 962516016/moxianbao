@@ -1,17 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="">
 <head>
-    <script>
-        window.addEventListener('resize', function () {
-            myChart.resize();
-        });
-    </script>
-    <script>
-        window.addEventListener('orientationchange', function () {
-            myChart.resize();
-        });
-    </script>
-    <!--    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>-->
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
@@ -33,10 +22,10 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
-    <!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
+    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-    <!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">-->
+    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -54,7 +43,7 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    <a class="nav-link" href="/">
+                    <a class="nav-link" href="/static">
                         退出登录
                     </a>
             </ul>
@@ -93,133 +82,14 @@
         </div>
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <li class="nav-item">
-                    <p class="sidebar-menu-title">目录</p>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/index">
-                        <i class="typcn typcn-device-desktop menu-icon"></i>
-                        <span class="menu-title">主页 </span>
-                    </a>
-                </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="ui-basic" aria-expanded="false" class="nav-link" data-toggle="collapse"-->
-                <!--                       href="#ui-basic">-->
-                <!--                        <i class="typcn typcn-briefcase menu-icon"></i>-->
-                <!--                        <span class="menu-title">UI Elements</span>-->
-                <!--                        <i class="typcn typcn-chevron-right menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="ui-basic">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="buttons.html">Buttons</a></li>-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="dropdowns.html">Dropdowns</a></li>-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="typography.html">Typography</a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="form-elements" aria-expanded="false" class="nav-link" data-toggle="collapse"-->
-                <!--                       href="#form-elements">-->
-                <!--                        <i class="typcn typcn-film menu-icon"></i>-->
-                <!--                        <span class="menu-title">Form elements</span>-->
-                <!--                        <i class="menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="form-elements">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="charts" aria-expanded="false" class="nav-link" data-toggle="collapse"-->
-                <!--                       href="#charts">-->
-                <!--                        <i class="typcn typcn-chart-pie-outline menu-icon"></i>-->
-                <!--                        <span class="menu-title">Charts</span>-->
-                <!--                        <i class="menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="charts">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="chartjs.html">ChartJs</a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <li class="nav-item">
-                    <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
-                       href="#tables">
-                        <i class="typcn typcn-th-small-outline menu-icon"></i>
-                        <span class="menu-title">管理员</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="collapse" id="tables">
-                        <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="icons" aria-expanded="false" class="nav-link" data-toggle="collapse"-->
-                <!--                       href="#icons">-->
-                <!--                        <i class="typcn typcn-compass menu-icon"></i>-->
-                <!--                        <span class="menu-title">Icons</span>-->
-                <!--                        <i class="menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="icons">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="/icon">Mdi icons</a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="auth" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#auth">-->
-                <!--                        <i class="typcn typcn-user-add-outline menu-icon"></i>-->
-                <!--                        <span class="menu-title">User Pages</span>-->
-                <!--                        <i class="menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="auth">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="login.html"> Login </a></li>-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="register.html"> Register </a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a aria-controls="error" aria-expanded="false" class="nav-link" data-toggle="collapse"-->
-                <!--                       href="#error">-->
-                <!--                        <i class="typcn typcn-globe-outline menu-icon"></i>-->
-                <!--                        <span class="menu-title">Error pages</span>-->
-                <!--                        <i class="menu-arrow"></i>-->
-                <!--                    </a>-->
-                <!--                    <div class="collapse" id="error">-->
-                <!--                        <ul class="nav flex-column sub-menu">-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="error-404.html"> 404 </a></li>-->
-                <!--                            <li class="nav-item"><a class="nav-link" href="error-500.html"> 500 </a></li>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </li>-->
-                <li class="nav-item">
-                    <a class="nav-link" href="/predict">
-                        <i class="typcn typcn-chart-bar menu-icon"></i>
-                        <span class="menu-title">在线预测</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/offline">
-                        <i class="typcn typcn-download-outline menu-icon"></i>
-                        <span class="menu-title">离线应用</span>
-                    </a>
-                </li>
-                <!--          API使用文档-->
-                <li class="nav-item">
-                    <a class="nav-link" href="/api">
-                        <i class="typcn typcn-document-text menu-icon"></i>
-                        <span class="menu-title">API使用文档</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- partial -->
+        <div id="nav-placeholder">
+            <script>
+                $(function () {
+                    $("#nav-placeholder").load("/navigation.html");
+                });
+            </script>
+        </div>
+
         <div class="main-panel">
             <div class="content-wrapper">
                 <!--                选择器按钮部分-->
@@ -228,85 +98,62 @@
                     <div class="col-sm-6">
                         <div class="d-flex align-items-center justify-content-md-end">
                             <div class="container ">
-                                <div class="input-container">
-                                    <label class="form-control input-box" for="meeting-time" style="width: 100%">
-                                        <div class="input-line">
-                                            <span>请选择时间： </span>
-                                            <input class="timeinput"
-                                                   id="meeting-time"
-                                                   max="2024-06-14T00:00"
-                                                   min="2018-06-07T00:00"
-                                                   name="meeting-time"
-                                                   oninput="getValue();"
-                                                   onporpertychange="getValue();"
-                                                   style="margin-right: 2rem"
-                                                   type="datetime-local"
-                                                   value="2021-11-26T06:00"
-                                            >
-                                        </div>
-                                        <div class="input-line">
-                                            <span>请选择风场： </span>
-<!--                                            <input class="timeinput"-->
-<!--                                                   id="turb-input"-->
-<!--                                                   max="20"-->
-<!--                                                   min="1"-->
-<!--                                                   name="turb-input"-->
-<!--                                                   oninput="getValue();"-->
-<!--                                                   onporpertychange="getValue();"-->
-<!--                                                   type="number"-->
-<!--                                                   value="12"-->
-<!--                                            >-->
-                                            <select class="timeinput" id="turb-input" onchange="getValue()">-->
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                                <option>6</option>
-                                                <option>7</option>
-                                                <option>8</option>
-                                                <option>9</option>
-                                                <option>10</option>
-                                                <option>11</option>
-                                                <option selected>12</option>
-                                                <option>13</option>
-                                                <option>14</option>
-                                                <option>15</option>
-                                                <option>16</option>
-                                                <option>17</option>
-                                                <option>18</option>
-                                                <option>19</option>
-                                                <option>20</option>
-                                            </select>
-                                        </div>
-                                        <div class="input-line">
-                                            <span>请选择预测数据时长： </span>
-<!--                                        <select class="timeinput" id="length-input" onchange="getValue()">-->
-<!--                                            <option>4</option>-->
-<!--                                            <option>6</option>-->
-<!--                                            <option>8</option>-->
-<!--                                            <option>10</option>-->
-<!--                                            <option selected>12</option>-->
-<!--                                            <option>14</option>-->
-<!--                                            <option>16</option>-->
-<!--                                            <option>18</option>-->
-<!--                                            <option>20</option>-->
-<!--                                        </select>-->
-                                            <input class="lengthinput"
-                                                   id="length-input"
-                                                   max="20"
-                                                   min="4"
-                                                   name="length-input"
-                                                   oninput="getValue();"
-                                                   onporpertychange="getValue();"
-                                                   type="range"
-                                                   value="12"
-                                            >
-                                            <span>
-                                                小时
-                                            </span>
-                                        </div>
+                                <div class="input-container form-control input-box" id="input-group">
+                                    <label for="time-input" style="width: 100%">
+                                        <span style="font-weight: bold">请选择时间： </span>
+                                        <input class="input timeinput"
+                                               id="time-input"
+                                               max="2024-06-14T00:00"
+                                               min="2018-06-07T00:00"
+                                               name="meeting-time"
+                                               oninput="getValue();"
+                                               onporpertychange="getValue();"
+                                               style="margin-right: 2rem"
+                                               type="datetime-local"
+                                               value="2021-11-26T06:00"
+                                        >
                                     </label>
+                                    <label for="turb-input" style="width: 100%">
+                                        <span style="font-weight: bold">请选择风场： </span>
+                                        <select class="input timeinput" id="turb-input" onchange="getValue()">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                            <option>6</option>
+                                            <option>7</option>
+                                            <option>8</option>
+                                            <option>9</option>
+                                            <option>10</option>
+                                            <option>11</option>
+                                            <option selected>12</option>
+                                            <option>13</option>
+                                            <option>14</option>
+                                            <option>15</option>
+                                            <option>16</option>
+                                            <option>17</option>
+                                            <option>18</option>
+                                            <option>19</option>
+                                            <option>20</option>
+                                        </select>
+                                    </label>
+                                    <label for="length-input" style="width: 100%">
+                                        <span style="font-weight: bold">请选择时长： </span>
+                                        <input class="input lengthinput"
+                                               id="length-input"
+                                               max="20"
+                                               min="4"
+                                               name="length-input"
+                                               oninput="getValue();"
+                                               onporpertychange="getValue();"
+                                               type="range"
+                                               value="12"
+                                        >
+                                        <span>小时</span>
+                                    </label>
+
+
                                 </div>
                                 <script>
                                     function getValue() {
@@ -328,9 +175,9 @@
                                 <script type="text/javascript">
                                     function main() {
                                         // 基于准备好的dom，初始化echarts实例
-                                        var myChart = echarts.init(document.getElementById('main'));
+                                        var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
 
-                                        var input = document.getElementById('meeting-time');
+                                        var input = document.getElementById('time-input');
                                         var dateinput = input.value.split('T')[0].split('-')
                                         var timeinput = input.value.split('T')[1].split(':')
 
@@ -344,7 +191,7 @@
                                         let hour = timeinput[0];
                                         let length = lengthinput;// 单位小时
 
-                                        const baseurl = 'http://172.24.187.133:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                        const baseurl = 'http://172.24.66.172:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
                                             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
                                         console.log('测试ssy:', baseurl);
 
@@ -357,7 +204,6 @@
                                                 let pre_yd15line = Object.entries(res.data)[2][1];
                                                 let roundline = Object.entries(res.data)[3][1];
                                                 let yd15line = Object.entries(res.data)[4][1];
-
 
                                                 console.log('测试datetimeline', datetimeline)
                                                 console.log('测试pre_roundline', pre_roundline)
@@ -396,7 +242,9 @@
                                                         text: '供、发电功率及其预测数据'
                                                     },
                                                     legend: {
-                                                        data: ['供电功率', '供电功率预测', '发电功率', '发电功率预测',]
+                                                        data: ['供电功率', '供电功率预测', '发电功率', '发电功率预测',],
+                                                        show: true,
+                                                        top: '6%'
                                                     },
                                                     toolbox: {
                                                         feature: {
@@ -466,22 +314,14 @@
                                                 };
                                                 myChart.setOption(option);
                                                 // const container = document.getElementById()
-                                                $(window).on('resize', function () {
-                                                    var width = $('#main-container').width() - 1;
-                                                    var height = $('#main-container').height() - 1;
-                                                    $('#main').css({
-                                                        width: width,
-                                                        height: height,
-                                                        padding: '10px'
-                                                    });
-                                                    myChart.resize()
-                                                });
+                                                window.onresize = function () {
+                                                    myChart.resize();
+                                                }
 
                                             })
                                             .catch(err => {
                                                 console.error('axios请求错误' + err)
                                             })
-
                                         // 使用刚指定的配置项和数据显示图表。
                                     }
 
@@ -499,14 +339,14 @@
                     <div class="col-xl-5 d-flex grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <div class="rosechart" id="rosechart" style="width: 100%;height: 400px">
+                                <div class="rosechart" id="rosechart">
                                     <script>
                                         function rose() {
-                                            var roseChart = echarts.init(document.getElementById('rosechart'));
+                                            var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
                                             var turbinput = document.getElementById('turb-input').value;
                                             var turbid = turbinput
 
-                                            const url = 'http://172.24.187.133:5446/get_winddirection?' + 'turbid=' + turbid
+                                            const url = 'http://172.24.66.172:5446/get_winddirection?' + 'turbid=' + turbid
 
                                             // GET请求
                                             axios.get(url)
@@ -543,8 +383,8 @@
                                                             {
                                                                 name: '风向统计玫瑰图',
                                                                 type: 'pie',
-                                                                radius: [20, 100],
-                                                                center: ['50%', '60%'],
+                                                                radius: [40, 100],
+                                                                center: ['50%', '50%'],
                                                                 roseType: 'area',
                                                                 itemStyle: {
                                                                     borderRadius: 8
@@ -563,6 +403,9 @@
                                                         ]
                                                     };
                                                     roseChart.setOption(option)
+                                                    window.onresize = function () {
+                                                        roseChart.resize();
+                                                    }
                                                 })
                                                 .catch(err => {
                                                     console.error('axios请求错误' + err)
@@ -584,7 +427,7 @@
                                 <div>
 
                                 </div>
-                                <div class="d-flex " id="3dchart" style="width: 100%;height: 400px">
+                                <div class="d-flex d3chart" id="3dchart" style="width: 100%;height: 400px">
                                     <script>
                                         var d3chart = echarts.init(document.getElementById('3dchart'));
                                         // 指定图表的配置项和数据
@@ -706,20 +549,57 @@
                                             },
                                             xAxis3D: {
                                                 type: 'category',
-                                                data: ym
+                                                data: ym,
+                                                top: '6%',
+                                                name: '年月'
                                             },
                                             yAxis3D: {
                                                 type: 'category',
-                                                data: tid
+                                                data: tid,
+                                                top: '6%'
                                             },
                                             zAxis3D: {
-                                                type: 'value'
+                                                type: 'value',
+                                                top: '6%'
                                             },
                                             grid3D: {
-                                                boxWidth: 200,
-                                                boxDepth: 80,
-                                                viewControl: {
-                                                    // projection: 'orthographic'
+                                                boxWidth: 120,
+                                                boxHeight: 96,
+                                                boxDepth: 64,
+                                                axisLine: {
+                                                    show: true,
+                                                },
+                                                splitLine: {//平面上的分隔线。
+                                                    show: true,//立体网格线
+                                                    // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
+                                                    splitArea: {
+                                                        show: true,
+                                                        // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
+                                                        areaStyle: {
+                                                            color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)', 'rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)']
+                                                        }
+                                                    },
+                                                },
+                                                axisPointer: {//坐标轴指示线。
+                                                    show: true,//鼠标在chart上的显示线
+                                                    // lineStyle:{
+                                                    //     color:'#000',//颜色
+                                                    //     opacity:1,
+                                                    //     width:5//厚度（虽然为宽表现为高度），对应length*(宽)
+                                                    // }
+                                                },
+                                                viewControl: {//viewControl用于鼠标的旋转，缩放等视角控制。(以下适合用于地球自转等)
+                                                    // projection: 'orthographic'//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'。
+                                                    autoRotate:true,//会有自动旋转查看动画出现,可查看每个维度信息
+                                                    // autoRotateDirection:'ccw',//物体自传的方向。默认是 'cw' 也就是从上往下看是顺时针方向，也可以取 'ccw'，既从上往下看为逆时针方向。
+                                                    // autoRotateSpeed:12,//物体自传的速度
+                                                    // autoRotateAfterStill:2,//在鼠标静止操作后恢复自动旋转的时间间隔。在开启 autoRotate 后有效。
+                                                    distance: 200,//默认视角距离主体的距离(常用)
+                                                    // alpha:1,//视角绕 x 轴，即上下旋转的角度(与beta一起控制视野成像效果)
+                                                    beta: 15,//视角绕 y 轴，即左右旋转的角度。
+                                                    // center:[]//视角中心点，旋转也会围绕这个中心点旋转，默认为[0,0,0]。
+                                                    // zlevel://组件所在的层。
+                                                    animation: true
                                                 },
                                                 light: {
                                                     main: {
@@ -727,7 +607,7 @@
                                                         shadow: true
                                                     },
                                                     ambient: {
-                                                        intensity: 0.3
+                                                        intensity: 0.5
                                                     }
                                                 }
                                             },
@@ -757,6 +637,9 @@
                                             ]
                                         };
                                         d3chart.setOption(option)
+                                        window.onresize = function () {
+                                            d3chart.resize();
+                                        }
 
                                     </script>
                                 </div>
@@ -767,21 +650,18 @@
             </div>
             <!-- content-wrapper ends -->
             <!-- partial:partials/_footer.html -->
-            <footer class="footer">
-                <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-center text-sm-left d-block d-sm-inline-block">
-                  Copyright &copy; 2023.
-                  <span style="font-weight: bold;font-style: italic">LongYuan</span>
-                  All rights reserved.
-                  <!--                  <a href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>-->
-              </span>
-
-                </div>
-            </footer>
+            <div id="footer-placeholder">
+                <script>
+                    $(function () {
+                        $("#footer-placeholder").load("/footer.html");
+                    });
+                </script>
+            </div>
             <!-- partial -->
         </div>
         <!-- main-panel ends -->
     </div>
+
     <!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->

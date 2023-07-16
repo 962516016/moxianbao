@@ -23,160 +23,13 @@
 <body>
 <div class="container-scroller">
     <!-- partial:../../partials/_navbar.html -->
-    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo" href="index.html"><img alt="logo" src="static/picture/logo.svg"></a>
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img alt="logo"
-                                                                           src="static/picture/logo-mini.svg"></a>
-            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
-                    type="button">
-                <span class="typcn typcn-th-menu"></span>
-            </button>
+    <div id="nav-placeholder">
+            <script>
+                $(function () {
+                    $("#nav-placeholder").load("/navigation.html");
+                });
+            </script>
         </div>
-        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-            <ul class="navbar-nav mr-lg-2">
-                <li class="nav-item  d-none d-lg-flex">
-                    <a class="nav-link" href="#">
-                        Calendar
-                    </a>
-                </li>
-                <li class="nav-item  d-none d-lg-flex">
-                    <a class="nav-link active" href="#">
-                        Statistic
-                    </a>
-                </li>
-                <li class="nav-item  d-none d-lg-flex">
-                    <a class="nav-link" href="#">
-                        Employee
-                    </a>
-                </li>
-            </ul>
-            <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item d-none d-lg-flex  mr-2">
-                    <a class="nav-link" href="#">
-                        Help
-                    </a>
-                </li>
-                <li class="nav-item dropdown d-flex">
-                    <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center"
-                       data-toggle="dropdown" href="#" id="messageDropdown">
-                        <i class="typcn typcn-message-typing"></i>
-                        <span class="count bg-success">2</span>
-                    </a>
-                    <div aria-labelledby="messageDropdown"
-                         class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
-                        <p class="mb-0 font-weight-normal float-left dropdown-header">Messages</p>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img alt="image" class="profile-pic" src="static/picture/face4.jpg">
-                            </div>
-                            <div class="preview-item-content flex-grow">
-                                <h6 class="preview-subject ellipsis font-weight-normal">David Grey
-                                </h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    The meeting is cancelled
-                                </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img alt="image" class="profile-pic" src="static/picture/face2.jpg">
-                            </div>
-                            <div class="preview-item-content flex-grow">
-                                <h6 class="preview-subject ellipsis font-weight-normal">Tim Cook
-                                </h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    New product launch
-                                </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <img alt="image" class="profile-pic" src="static/picture/face3.jpg">
-                            </div>
-                            <div class="preview-item-content flex-grow">
-                                <h6 class="preview-subject ellipsis font-weight-normal"> Johnson
-                                </h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    Upcoming board meeting
-                                </p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown  d-flex">
-                    <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                       data-toggle="dropdown" href="#" id="notificationDropdown">
-                        <i class="typcn typcn-bell mr-0"></i>
-                        <span class="count bg-danger">2</span>
-                    </a>
-                    <div aria-labelledby="notificationDropdown"
-                         class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
-                        <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-success">
-                                    <i class="typcn typcn-info-large mx-0"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    Just now
-                                </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-warning">
-                                    <i class="typcn typcn-cog mx-0"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject font-weight-normal">Settings</h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    Private message
-                                </p>
-                            </div>
-                        </a>
-                        <a class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-info">
-                                    <i class="typcn typcn-user-outline mx-0"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                                <p class="font-weight-light small-text mb-0">
-                                    2 days ago
-                                </p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item nav-profile dropdown">
-                    <a class="nav-link dropdown-toggle  pl-0 pr-0" data-toggle="dropdown" href="#" id="profileDropdown">
-                        <i class="typcn typcn-user-outline mr-0"></i>
-                        <span class="nav-profile-name">Evan Morales</span>
-                    </a>
-                    <div aria-labelledby="profileDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown">
-                        <a class="dropdown-item">
-                            <i class="typcn typcn-cog text-primary"></i>
-                            Settings
-                        </a>
-                        <a class="dropdown-item">
-                            <i class="typcn typcn-power text-primary"></i>
-                            Logout
-                        </a>
-                    </div>
-                </li>
-            </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
-                    type="button">
-                <span class="typcn typcn-th-menu"></span>
-            </button>
-        </div>
-    </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- partial:../../partials/_settings-panel.html -->
@@ -239,7 +92,7 @@
                     <p class="sidebar-menu-title">Dash menu</p>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="../index.html">
                         <i class="typcn typcn-device-desktop menu-icon"></i>
                         <span class="menu-title">Dashboard <span class="badge badge-primary ml-3">New</span></span>
                     </a>
@@ -319,8 +172,8 @@
                     </a>
                     <div class="collapse" id="auth">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="login.html"> Login </a></li>
-                            <li class="nav-item"><a class="nav-link" href="register.html"> Register </a></li>
+                            <li class="nav-item"><a class="nav-link" href="../login.html"> Login </a></li>
+                            <li class="nav-item"><a class="nav-link" href="../register.html"> Register </a></li>
                         </ul>
                     </div>
                 </li>
@@ -333,8 +186,8 @@
                     </a>
                     <div class="collapse" id="error">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="error-404.html"> 404 </a></li>
-                            <li class="nav-item"><a class="nav-link" href="error-500.html"> 500 </a></li>
+                            <li class="nav-item"><a class="nav-link" href="../error-404.html"> 404 </a></li>
+                            <li class="nav-item"><a class="nav-link" href="../error-500.html"> 500 </a></li>
                         </ul>
                     </div>
                 </li>

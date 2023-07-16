@@ -33,7 +33,7 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    <a class="nav-link" href="/">
+                    <a class="nav-link" href="/static">
                         退出登录
                     </a>
             </ul>
@@ -46,102 +46,39 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+            <div class="settings-panel" id="theme-settings">
+                <i class="settings-close typcn typcn-delete-outline"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                    Light
+                </div>
+                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                    Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles primary"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default border"></div>
+                </div>
+            </div>
+        </div>
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <li class="nav-item">
-                    <p class="sidebar-menu-title">目录</p>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/index">
-                        <i class="typcn typcn-device-desktop menu-icon"></i>
-                        <span class="menu-title">主页</span>
-                    </a>
-                </li>
-                <!--          <li class="nav-item">-->
-                <!--            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">-->
-                <!--              <i class="typcn typcn-briefcase menu-icon"></i>-->
-                <!--              <span class="menu-title">UI Elements</span>-->
-                <!--              <i class="typcn typcn-chevron-right menu-arrow"></i>-->
-                <!--            </a>-->
-                <!--            <div class="collapse" id="ui-basic">-->
-                <!--              <ul class="nav flex-column sub-menu">-->
-                <!--                <li class="nav-item"> <a class="nav-link" href="buttons.html">Buttons</a></li>-->
-                <!--                <li class="nav-item"> <a class="nav-link" href="dropdowns.html">Dropdowns</a></li>-->
-                <!--                <li class="nav-item"> <a class="nav-link" href="typography.html">Typography</a></li>-->
-                <!--              </ul>-->
-                <!--            </div>-->
-                <!--          </li>-->
-                <!--          <li class="nav-item">-->
-                <!--            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">-->
-                <!--              <i class="typcn typcn-film menu-icon"></i>-->
-                <!--              <span class="menu-title">Form elements</span>-->
-                <!--              <i class="menu-arrow"></i>-->
-                <!--            </a>-->
-                <!--            <div class="collapse" id="form-elements">-->
-                <!--              <ul class="nav flex-column sub-menu">-->
-                <!--                <li class="nav-item"><a class="nav-link" href="basic_elements.html">Basic Elements</a></li>-->
-                <!--              </ul>-->
-                <!--            </div>-->
-                <!--          </li>-->
-                <!--          <li class="nav-item">-->
-                <!--            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">-->
-                <!--              <i class="typcn typcn-chart-pie-outline menu-icon"></i>-->
-                <!--              <span class="menu-title">Charts</span>-->
-                <!--              <i class="menu-arrow"></i>-->
-                <!--            </a>-->
-                <!--            <div class="collapse" id="charts">-->
-                <!--              <ul class="nav flex-column sub-menu">-->
-                <!--                <li class="nav-item"> <a class="nav-link" href="chartjs.html">ChartJs</a></li>-->
-                <!--              </ul>-->
-                <!--            </div>-->
-                <!--          </li>-->
-                <li class="nav-item">
-                    <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
-                       href="#tables">
-                        <i class="typcn typcn-th-small-outline menu-icon"></i>
-                        <span class="menu-title">管理员</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="collapse" id="tables">
-                        <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <!--          <li class="nav-item">-->
-                <!--            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">-->
-                <!--              <i class="typcn typcn-compass menu-icon"></i>-->
-                <!--              <span class="menu-title">Icons</span>-->
-                <!--              <i class="menu-arrow"></i>-->
-                <!--            </a>-->
-                <!--            <div class="collapse" id="icons">-->
-                <!--              <ul class="nav flex-column sub-menu">-->
-                <!--                <li class="nav-item"> <a class="nav-link" href="mdi.html">Mdi icons</a></li>-->
-                <!--              </ul>-->
-                <!--            </div>-->
-                <!--          </li>-->
-                <li class="nav-item">
-                    <a class="nav-link" href="/predict">
-                        <i class="typcn typcn-chart-bar menu-icon"></i>
-                        <span class="menu-title">在线预测</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/offline">
-                        <i class="typcn typcn-download-outline menu-icon"></i>
-                        <span class="menu-title">离线应用</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/api">
-                        <i class="typcn typcn-document-text menu-icon"></i>
-                        <span class="menu-title">API使用文档</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <div id="nav-placeholder">
+            <script>
+                $(function () {
+                    $("#nav-placeholder").load("/navigation.html");
+                });
+            </script>
+        </div>
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
@@ -215,6 +152,13 @@
                 </div>
 
             </div>
+            <div id="footer-placeholder">
+                <script>
+                    $(function () {
+                        $("#footer-placeholder").load("/footer.html");
+                    });
+                </script>
+            </div>
         </div>
         <!-- main-panel ends -->
     </div>
@@ -222,37 +166,37 @@
 </div>
 <!-- container-scroller -->
 <!-- base:js -->
-<script src="static/js/vendor.bundle.base.js"></script>
+<script src="../static/js/vendor.bundle.base.js"></script>
 <!-- endinject -->
 <!-- Plugin js for this page-->
 <!-- End plugin js for this page-->
 <!-- inject:js -->
-<script src="static/js/off-canvas.js"></script>
-<script src="static/js/hoverable-collapse.js"></script>
-<script src="static/js/template.js"></script>
-<script src="static/js/settings.js"></script>
-<script src="static/js/todolist.js"></script>
+<script src="../static/js/off-canvas.js"></script>
+<script src="../static/js/hoverable-collapse.js"></script>
+<script src="../static/js/template.js"></script>
+<script src="../static/js/settings.js"></script>
+<script src="../static/js/todolist.js"></script>
 <!-- endinject -->
 <!-- plugin js for this page -->
-<script src="static/js/progressbar.min.js"></script>
-<script src="static/js/Chart.min.js"></script>
+<script src="../static/js/progressbar.min.js"></script>
+<script src="../static/js/Chart.min.js"></script>
 <!-- End plugin js for this page -->
 <!-- Custom js for this page-->
-<script src="static/js/dashboard.js"></script>
+<script src="../static/js/dashboard.js"></script>
 <!-- End custom js for this page-->
 <!-- Include All JS -->
-<script src="static/js/jquery-3.5.1.min.js"></script>
-<script src="static/js/bootstrap.min.js"></script>
-<script src="static/js/isotope.pkgd.min.js"></script>
-<script src="static/js/owl.carousel.min.js"></script>
-<script src="static/js/slick.min.js"></script>
-<script src="static/js/imagesloaded.pkgd.min.js"></script>
-<script src="static/js/venobox.min.js"></script>
-<script src="static/js/jquery.appear.js"></script>
-<script src="static/js/jquery.knob.js"></script>
-<script src="static/js/theme-pluginjs.js"></script>
-<script src="static/js/jquery.meanmenu.js"></script>
-<script src="static/js/ajax-mail.js"></script>
-<script src="static/js/theme.js"></script>
+<script src="../static/js/jquery-3.5.1.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/isotope.pkgd.min.js"></script>
+<script src="../static/js/owl.carousel.min.js"></script>
+<script src="../static/js/slick.min.js"></script>
+<script src="../static/js/imagesloaded.pkgd.min.js"></script>
+<script src="../static/js/venobox.min.js"></script>
+<script src="../static/js/jquery.appear.js"></script>
+<script src="../static/js/jquery.knob.js"></script>
+<script src="../static/js/theme-pluginjs.js"></script>
+<script src="../static/js/jquery.meanmenu.js"></script>
+<script src="../static/js/ajax-mail.js"></script>
+<script src="../static/js/theme.js"></script>
 </body>
 </html>

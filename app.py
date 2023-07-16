@@ -32,12 +32,14 @@ res_power = []
 def to_string(a, f):
     res = ""
     if f == 1:
-        for i in range(min(len(a),50)):
+        for i in range(min(len(a), 50)):
             res = res + str(round(a[i], 2)) + ","
     else:
-        for i in range(min(len(a),50)):
+        for i in range(min(len(a), 50)):
             res = res + a[i] + ","
     return res
+
+
 # 配置数据库连接信息和连接池参数
 DB_CONFIG = {
     'host': '140.143.125.244',
@@ -63,6 +65,7 @@ def count_files_in_folder(folder_path):
 
     return file_count
 
+
 # 获取路径下的所有文件，返回一个路径列表
 def get_file_paths(directory):
     file_paths = []
@@ -70,6 +73,7 @@ def get_file_paths(directory):
         for file in files:
             file_paths.append(os.path.join(file))
     return file_paths
+
 
 # 在数据库中查询数据
 def query_pre_data(turbid, year, month, day, hour, length):
@@ -95,6 +99,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
     connection.close()
     cursor.close()
     return result
+
 
 def query_winddirection_data(turbid):
     connection = pool.get_connection()
@@ -145,6 +150,7 @@ def verify_user(username, password):
         return True
     else:
         return False
+
 
 # 对上传的文件进行预测并返回
 def upload_predict(data):
@@ -205,6 +211,7 @@ def predict_value():
     })
     return result
 
+
 @app.route('/get_winddirection', methods=['GET'])
 def get_winddirection():
     # 获取前端传递的查询参数
@@ -254,8 +261,10 @@ def analyze_wind_power():
                     "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在" +
                     "分析风电数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"},
         {"role": "user",
-         "content": "这是一列时间序列，"+to_string(res_datatime,0)+"这是对应的风速列，"+to_string(res_windspeed,1)+"这是对应的功率列，"+to_string(res_power,1)+"请结合时间分析一下风速对于功率的影响。"
-                    "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
+         "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的风速列，" + to_string(res_windspeed,
+                                                                                                       1) + "这是对应的功率列，" + to_string(
+             res_power, 1) + "请结合时间分析一下风速对于功率的影响。"
+                             "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
     ]
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo-0301',
@@ -395,15 +404,13 @@ def login_verify():
     username = request.form['username']
     password = request.form['password']
 
-
-    flg = verify_user(username,password)
+    flg = verify_user(username, password)
     if flg:
         session['username'] = username
         return render_template("index.html")
     else:
         error = '用户名或密码错误'
         return render_template('login.html', error=error)
-
 
 
 @app.route('/offline')
@@ -433,6 +440,7 @@ def to_api():
 def to_predict():
     return render_template('predict.html')
 
+
 @app.route('/upload_file', methods=['POST'])
 def get_file():
     if 'file' not in request.files:
@@ -451,61 +459,72 @@ def get_file():
 def file_predict():
     tmp = upload_predict(df_upload_file)
     return tmp
+
+
 @app.route('/download_resfile')
 def download_resfile():
     cnt = count_files_in_folder("./res_file")
-    file_path = './res_file/res'+str(cnt+1)+'.csv'  # 文件在服务器上的路径
+    file_path = './res_file/res' + str(cnt + 1) + '.csv'  # 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name="res.csv", as_attachment=True)
+
 
 # 其他原始页面的路由
 @app.route('/buttons.html')
 def buttons():
     return render_template('buttons.html')
 
+
 @app.route('/dropdowns.html')
 def dropdowns():
     return render_template('dropdowns.html')
+
 
 @app.route('/typography.html')
 def typography():
     return render_template('typography.html')
 
+
 @app.route('/chartjs.html')
 def chartjs():
     return render_template('chartjs.html')
+
 
 @app.route('/get_modelname')
 def get_getmodels():
     usingmodels_list = get_file_paths('usingmodels')
     getmodels_list = get_file_paths('getmodels')
     return jsonify({
-        'usingmodels':usingmodels_list,
-        'getmodels':getmodels_list
+        'usingmodels': usingmodels_list,
+        'getmodels': getmodels_list
     })
+
+
 # 把模型从左移到右
-@app.route('/add_models_to_pool',methods=['POST'])
+@app.route('/add_models_to_pool', methods=['POST'])
 def addmodels():
     filenames = request.get_json()
     path_root = 'getmodels/'
     path_pool = 'usingmodels/'
     for i in range(len(filenames)):
-        print(path_root+filenames[i])
-        print(path_pool+filenames[i])
-        shutil.move(path_root+filenames[i], path_pool+filenames[i])
+        print(path_root + filenames[i])
+        print(path_pool + filenames[i])
+        shutil.move(path_root + filenames[i], path_pool + filenames[i])
     return 'ok'
 
 
 # 直接删除模型
-@app.route('/delete_models',methods=['POST'])
+@app.route('/delete_models', methods=['POST'])
 def deletemodels():
     filenames = request.get_json()
     path_root = 'getmodels/'
     for i in range(len(filenames)):
         os.remove(path_root + filenames[i])
     return 'ok'
+
+
 # 模型从右移到左
-@app.route('/remove_models_from_pool',methods=['POST'])
+@app.route('/remove_models_from_pool', methods=['POST'])
 def removemodels():
     filenames = request.get_json()
     path_root = 'getmodels/'
@@ -515,12 +534,15 @@ def removemodels():
         print(path_pool + filenames[i])
         shutil.move(path_pool + filenames[i], path_root + filenames[i])
     return 'ok'
+
+
 # 注册界面
 @app.route('/register')
 def to_register():
     return render_template('register.html')
 
-@app.route('/register_submit',methods=['POST'])
+
+@app.route('/register_submit', methods=['POST'])
 def register_submit():
     data = request.get_json()
     data = json.dumps(data)
@@ -531,7 +553,7 @@ def register_submit():
     password = json_data['password']
     repassword = json_data['repassword']
 
-    if repassword!=password:
+    if repassword != password:
         return '两次密码不一致！'
     else:
         if addUser(username,password):
@@ -539,9 +561,13 @@ def register_submit():
         else:
             return '注册失败,请重试！'
 
+@app.route('/navigation.html')
+def navigation():
+    return render_template('navigation.html')
 
-
-
+@app.route('/footer.html')
+def footer():
+    return render_template('footer.html')
 
 
 if __name__ == '__main__':
