@@ -12,10 +12,13 @@ import json
 from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from flask import Flask, jsonify, request, send_file, render_template,session
+from flask import Flask, jsonify, request, send_file, render_template,session,redirect,url_for
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from sklearn.model_selection import train_test_split
+from pandas_profiling import ProfileReport
+import dtale
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -453,6 +456,12 @@ def get_file():
     df_upload_file = df
     return jsonify({})
 
+@app.route('/data_analyze')
+def data_analysis():
+    #profile = ProfileReport(df_upload_file)
+    #profile.to_file("templates/report.html")
+    return render_template('report.html')
+
 
 # 前端获取文件，后端处理完，返回一段时间的预测值
 @app.route('/online_predict')
@@ -540,6 +549,10 @@ def removemodels():
 @app.route('/register')
 def to_register():
     return render_template('register.html')
+
+df = df_upload_file
+dtale.show(df, host="localhost", port=40000)
+
 
 
 @app.route('/register_submit', methods=['POST'])

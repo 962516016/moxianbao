@@ -88,8 +88,8 @@
                     <div id="api-doc-content">
                         <h2 class="title_2">简介</h2>
                         <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
-                            本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com或luodaobin2001@gmail.com联系我们，或进入API主页交流：<a
-                                    href="https://github.com/962516016/longyuanpower">https://github.com/962516016/longyuanpower</a>。
+                            本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com或luodaobin2001@gmail.com联系我们，或进入<a
+                                    href="https://github.com/962516016/longyuanpower">API主页</a>交流。
                         </h3>
                         <h2 class="title_2">参数详情</h2>
                         <table class="api_table">
@@ -120,18 +120,18 @@
                         </table>
                         <h2 class="title_2">快速入门</h2>
 
-                        <h3 class="title_2_5">风电功率预测与分析服务 Python SDK目录结构</h3>
-
+                        <h3 class="title_2_5">风电功率预测与分析服务</h3>
+                        <h3 class="title_2_5">Python SDK目录结构</h3>
 
                         <pre class="pre"><code class="code"
                         >├── README.md
-                            ├── longyuanpower                   //SDK目录
-                            │   ├── __init__.py                       //导出类
-                            │   ├── longyuanpower.py        //lypower基类
-                            │   └── LICENSE                         //开源许可协议
-                            └── setup.py                               //setuptools安装
-                            </code></pre>
-                        <h3 class="title_2_5">安装风电功率预测与分析服务 Python SDK</h3>
+├── longyuanpower                   //SDK目录
+│   ├── __init__.py                       //导出类
+│   ├── longyuanpower.py        //lypower基类
+│   └── LICENSE                         //开源许可协议
+└── setup.py                               //setuptools安装
+</code></pre>
+                        <h3 class="title_2_5">安装 Python SDK</h3>
                         <h3 class="title_3">安装使用Python SDK有如下方式：<br>
                             ●如果已安装pip，执行pip install longyuanpower即可。<br>
                             ●如果已安装setuptools，执行python setup.py install即可。</h3>
@@ -141,14 +141,15 @@
                             参考如下代码<br>新建一个longyuanpower.py：
                         </h3>
                         <pre class="pre"><code class="code">from longyuanpower import longyuanapi
-                            API_URL = 'http://172.24.187.133:5446/longyuanapi'
-                            API_KEY = '你的 Api Key'
-                            SHOW = True
-                            OUTPUT = True
-                            TRAIN= True
-                            filepath = '你的 文档路径'
-                            longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
-                            </code></pre>
+
+API_URL = 'http://172.24.187.133:5446/longyuanapi'
+API_KEY = '你的 Api Key'
+SHOW = True
+OUTPUT = True
+TRAIN= True
+filepath = '你的 文档路径'
+longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
+</code></pre>
                         <h3 class="title_3">
                             在上面代码中，API_KEY是系统分配给用户的，为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
                     </div>

@@ -42,7 +42,7 @@
     });
 </script>
 <i id="bannerClose"></i>
-<div class="container-scroller">
+<div class="container-scroller" id="root">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
@@ -56,7 +56,7 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    <a class="nav-link" href="/static">
+                    <a class="nav-link" href="/">
                         退出登录
                     </a>
             </ul>
@@ -131,9 +131,32 @@
                                         aitextarea.value = '上传成功~';
                                     });
                                 </script>
+
+                                <button onclick="openReport()"
+                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                                    <i class="my_typcn typcn-chart-bar-outline"></i><br>数据分析
+                                </button>
+                                <script>
+                                    function openReport() {
+                                        // window.open('/data_analyze', '_blank');
+                                        // document.getElementById('chart').style.display = 'none'
+                                        // // document.getElementById('chart').style.display = 'block'
+                                        // $('#report').load('/data_analyze')
+                                        let iframe = document.createElement('iframe');
+                                        iframe.frameBorder = 0;
+                                        iframe.width = "100%";
+                                        iframe.height = "500px";
+                                        iframe.id = "d-tale-iframe";
+                                        iframe.src = "http://localhost:40000";
+
+                                        document.getElementById('d-tale-container').appendChild(iframe);
+                                    }
+                                </script>
+
+
                                 <button id="predictionBtn"
                                         style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
-                                    <i class="my_typcn typcn-chart-bar-outline"></i><br>预测功率
+                                    <i class="my_typcn typcn-device-laptop"></i><br>预测功率
                                 </button>
                                 <script>
                                     document.getElementById('predictionBtn').addEventListener('click', function () {
@@ -229,7 +252,7 @@
                     </div>
                     <div class="col-lg-8 grid-margin stretch-card">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body" id="chart">
                                 <div id="linechart" style="width: 100%;height: 500px">
                                     <script>
                                         var myChart = echarts.init(document.getElementById('linechart'));
@@ -277,7 +300,15 @@
                                     </script>
                                 </div>
                                 <textarea id="aianswer" readonly style="width: 100%;height:120px;">Hi，您好，欢迎使用风电功率预测与分析服务。
-                        </textarea>
+                                </textarea>
+                            </div>
+                            <div class="card-body report-parent-component">
+                                <div class="report-parent-content">
+                                    <div class="report-component" id="d-tale-container">
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
