@@ -20,10 +20,42 @@
 
 <body>
 <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center auth px-0">
+    <div class="d-flex align-items-center auth px-0">
             <div class="row w-100 mx-0">
-                <div class="col-lg-4 mx-auto">
+                <div class="col-lg-5 mx-auto mb-auto">
+                    <img src="{{ url_for('static', filename='/picture/gif/glyc1.png') }}" style="width: 100%;height: 100%;" id="animation">
+<!--                    <div style="width: 100%;height: 100%;" ></div>-->
+                    <script>
+                      var animationDiv = document.getElementById("animation");
+                      var frameIndex = 0;
+                      var totalFrames = 30;
+                      var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
+                      var images = []; // 存储图片对象的数组
+
+                      // 预加载所有图片
+                      for (var i = 1; i <= totalFrames; i++) {
+                        var img = new Image();
+                        img.src = "static/picture/gif/glyc" + i + ".png";
+                        images.push(img);
+                      }
+
+                      // 播放动画
+                      function playAnimation() {
+                        animationDiv.src = images[frameIndex].src ;
+                        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
+                        frameIndex++;
+                        if (frameIndex >= totalFrames) {
+                          frameIndex = 0;
+                        }
+
+                        setTimeout(playAnimation, animationSpeed);
+                      }
+
+                      // 开始播放动画
+                      playAnimation();
+                    </script>
+                </div>
+                <div class="col-lg-auto mx-auto mt-5">
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                         <div class="brand-logo">
                             <img alt="logo" src="static/picture/logo.svg">
@@ -71,7 +103,7 @@
                                                 res = response.data
                                                 var tmp = document.getElementById('response');
                                                 tmp.innerText = '';
-                                                if( res == '注册成功,请登录'){
+                                                if( res == '注册成功,点此登录'){
                                                     var link = document.createElement('a');
                                                     link.href = '/'; // 设置超链接的URL
                                                     link.textContent = res; // 设置超链接的显示文本
@@ -97,8 +129,6 @@
                 </div>
             </div>
         </div>
-        <!-- content-wrapper ends -->
-    </div>
     <!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->

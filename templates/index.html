@@ -210,11 +210,11 @@
                         <span class="menu-title">离线应用</span>
                     </a>
                 </li>
-                <!--          api使用文档-->
+                <!--          API使用文档-->
                 <li class="nav-item">
                     <a class="nav-link" href="/api">
                         <i class="typcn typcn-document-text menu-icon"></i>
-                        <span class="menu-title">api使用文档</span>
+                        <span class="menu-title">API使用文档</span>
                     </a>
                 </li>
             </ul>
@@ -344,7 +344,7 @@
                                         let hour = timeinput[0];
                                         let length = lengthinput;// 单位小时
 
-                                        const baseurl = 'http://172.25.158.107:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                        const baseurl = 'http://172.24.187.133:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
                                             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
                                         console.log('测试ssy:', baseurl);
 
@@ -393,10 +393,10 @@
                                                     },
                                                     title: {
                                                         left: 'left',
-                                                        text: '供、发电量及其预测数据'
+                                                        text: '供、发电功率及其预测数据'
                                                     },
                                                     legend: {
-                                                        data: ['供电量', '供电量预测', '发电量', '发电量预测',]
+                                                        data: ['供电功率', '供电功率预测', '发电功率', '发电功率预测',]
                                                     },
                                                     toolbox: {
                                                         feature: {
@@ -431,7 +431,7 @@
                                                     ],
                                                     series: [
                                                         {
-                                                            name: '供电量',
+                                                            name: '供电功率',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -439,7 +439,7 @@
                                                             data: round
                                                         },
                                                         {
-                                                            name: '供电量预测',
+                                                            name: '供电功率预测',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -447,7 +447,7 @@
                                                             data: pre_round
                                                         },
                                                         {
-                                                            name: '发电量',
+                                                            name: '发电功率',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -455,7 +455,7 @@
                                                             data: yd15
                                                         },
                                                         {
-                                                            name: '发电量预测',
+                                                            name: '发电功率预测',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -506,7 +506,7 @@
                                             var turbinput = document.getElementById('turb-input').value;
                                             var turbid = turbinput
 
-                                            const url = 'http://172.25.158.107:5446/get_winddirection?' + 'turbid=' + turbid
+                                            const url = 'http://172.24.187.133:5446/get_winddirection?' + 'turbid=' + turbid
 
                                             // GET请求
                                             axios.get(url)
@@ -675,7 +675,7 @@
 
                                         option = {
                                             title: {
-                                                text: "数据可视化"
+                                                text: "发电量数据可视化"
                                             },
                                             tooltip: {
                                                 formatter: function (params) {

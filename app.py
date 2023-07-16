@@ -12,12 +12,13 @@ import json
 from matplotlib.ticker import MaxNLocator
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from flask import Flask, jsonify, request, send_file, render_template
+from flask import Flask, jsonify, request, send_file, render_template,session
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from sklearn.model_selection import train_test_split
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 CORS(app)
 
 # 上传的文件df格式
@@ -108,9 +109,14 @@ def query_winddirection_data(turbid):
 def addUser(username, password):
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "INSERT INTO usertable (username, password) VALUES (%s, %s);"
-    cursor.execute(sql, (username,password))
+    sql = "INSERT INTO usertable (username, password) VALUES ('congqianyougemoxianbao', 'yougenvwangbudeliao');"
+    tmp = sql.replace('congqianyougemoxianbao', username)
+    tmp = tmp.replace('yougenvwangbudeliao', password)
+    sql = tmp
+    print(sql)
+    cursor.execute(sql)
     flg = cursor.rowcount
+    print(flg)
     connection.close()
     cursor.close()
     if flg == 1:
@@ -119,6 +125,8 @@ def addUser(username, password):
 
 
 def verify_user(username, password):
+    if username=='':
+        return False
     connection = pool.get_connection()
     # 创建游标对象
     cursor = connection.cursor()
@@ -228,7 +236,7 @@ def get_model():
 
 @app.route('/download_offine_soft')
 def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v0.1.0.exe'  # 文件在服务器上的路径
+    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v3.0.exe'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
 
@@ -390,6 +398,7 @@ def login_verify():
 
     flg = verify_user(username,password)
     if flg:
+        session['username'] = username
         return render_template("index.html")
     else:
         error = '用户名或密码错误'
@@ -409,10 +418,10 @@ def to_index():
 
 @app.route('/admin')
 def to_admin():
-    if 1:
+    if session.get('username') == 'admin':
         return render_template('admin.html')
     else:
-        return jsonify({'Erro':'You are not administer!!!'})
+        return render_template('iderror.html')
 
 
 @app.route('/api')
@@ -526,7 +535,7 @@ def register_submit():
         return '两次密码不一致！'
     else:
         if addUser(username,password):
-            return '注册成功,请登录'
+            return '注册成功,点此登录'
         else:
             return '注册失败,请重试！'
 

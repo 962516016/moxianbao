@@ -8716,7 +8716,7 @@ body {
   line-height: 1.5;
   color: #001737;
   text-align: left;
-  background-color: #fff;
+  background-color: #e8eff9;
 }
 
 [tabindex="-1"]:focus {
@@ -14950,7 +14950,7 @@ button.bg-success:focus,
 }
 
 .bg-info, .settings-panel .color-tiles .tiles.info {
-  background-color: #2b80ff !important;
+  background-color: #2940e6 !important;
 }
 
 a.bg-info:hover, .settings-panel .color-tiles a.tiles.info:hover, a.bg-info:focus, .settings-panel .color-tiles a.tiles.info:focus,
@@ -16266,6 +16266,10 @@ button.bg-dark:focus,
   margin-left: 1rem !important;
 }
 
+.mx-30{
+  margin-left: 60rem !important;
+}
+
 .m-4 {
   margin: 1.5rem !important;
 }
@@ -16299,6 +16303,11 @@ button.bg-dark:focus,
   margin-top: 3rem !important;
 }
 
+.mt-8,
+.my-8 {
+  margin-top: 9rem !important;
+}
+
 .mr-5,
 .mx-5 {
   margin-right: 3rem !important;
@@ -16309,10 +16318,17 @@ button.bg-dark:focus,
   margin-bottom: 3rem !important;
 }
 
+.mb-8,
+.my-8 {
+  margin-bottom: 9rem !important;
+}
+
 .ml-5,
 .mx-5 {
   margin-left: 3rem !important;
 }
+
+
 
 .p-0 {
   padding: 0 !important;
@@ -16588,6 +16604,8 @@ button.bg-dark:focus,
 .my-auto {
   margin-top: auto !important;
 }
+
+
 
 .mr-auto, .rtl .list-wrapper .remove,
 .mx-auto {
@@ -18808,7 +18826,7 @@ address p {
 }
 
 .text-twitter {
-  color: #2caae1;
+  color: #2940e6;
 }
 
 .text-facebook {
@@ -23113,7 +23131,7 @@ body.avgrund-active {
 }
 
 .content-wrapper {
-  background: #e8eff9;
+  #background: #e8eff9;
   padding: 1.875rem 1.875rem 0 1.875rem;
   width: 100%;
   -webkit-flex-grow: 1;
@@ -25344,5 +25362,23 @@ body.avgrund-active {
 .input-line {
   margin-bottom: 0.25rem !important
 }
-
+.bg-image {
+        background-image: 'http://172.24.187.133:5446/static/picture/bgi.jpg';
+        background-size: cover; /* 根据需要调整图片的适应方式 */
+        background-position: center; /* 根据需要调整图片的位置 */
+}
+.to_right{
+  margin-right: 60rem !important;
+}
+.to_center{
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.gif{
+  width: 100%;
+  height: 100%;
+}
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
+
