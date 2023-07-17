@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import secrets
 import shutil
 import zipfile
 from datetime import datetime, timedelta
@@ -277,7 +278,7 @@ def get_model():
 
 @app.route('/download_offine_soft')
 def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v3.0.exe'  # 文件在服务器上的路径
+    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v4.0.exe'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
 
