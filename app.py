@@ -236,8 +236,14 @@ def get_winddirection():
 # 获取他人使用offline程序跑出来的模型
 @app.route('/getmodel', methods=['POST'])
 def get_model():
+    sdk = request.values.get('sdk')#这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
+    currenttime = request.values.get('currenttime')
     file = request.files['file']
     cnt = count_files_in_folder('./getmodels')
+    # 添加日志记录
+
+
+
     if cnt % 2 == 0:
         tmp = int(cnt / 2)
         file_name = "yd15_" + str(tmp + 1) + ".pkl"
@@ -429,8 +435,6 @@ def home():
 
 @app.route('/index', methods=['POST'])
 def login_verify():
-    # print('测试url:'+request.url)
-
     username = request.form['username']
     password = request.form['password']
 
@@ -448,13 +452,13 @@ def login_verify():
         return render_template('login.html', error=error, username=username)
 
 
-@app.route('/offline', methods=['GET'])
+@app.route('/offline')
 def offline():
     username = session.get('username')
     return render_template("offline.html", username=username)
 
 
-@app.route('/index', methods=['GET'])
+@app.route('/index')
 def to_index():
     username = session.get('username')
     if username == None:
@@ -573,6 +577,7 @@ def to_register():
     return render_template('register.html')
 
 
+
 @app.route('/register_submit', methods=['POST'])
 def register_submit():
     data = request.get_json()
@@ -601,6 +606,16 @@ def navigation():
 @app.route('/footer.html')
 def footer():
     return render_template('footer.html')
+
+@app.route('/getsdk')
+def getsdk():
+    sdk = secrets.token_hex(16)
+    username = session.get('username')
+    # 将sdk和username对应起来加到数据库中
+
+    return jsonify({
+        'sdk':sdk
+    })
 
 
 if __name__ == '__main__':
