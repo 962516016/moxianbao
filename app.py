@@ -36,13 +36,14 @@ myport = 5446
 report_port = 40000
 
 api_list = {
-    'upload_file':'0',
-    'data_analyze':'1',
-    'online_predict':'2',
-    'gptapi_analyze':'3',
-    'download_resfile':'4',
-    'getmodel':'5',
+    'upload_file': '0',
+    'data_analyze': '1',
+    'online_predict': '2',
+    'gptapi_analyze': '3',
+    'download_resfile': '4',
+    'getmodel': '5',
 }
+
 
 def to_string(a, f):
     res = ""
@@ -133,7 +134,7 @@ def addUser(username, password):
     print(username)
     print(password)
     sql = 'INSERT IGNORE INTO usertable (username,password) VALUES (%s,%s)'
-    cursor.execute(sql, (username,password))
+    cursor.execute(sql, (username, password))
     connection.commit()
     flg = cursor.rowcount
     print(flg)
@@ -157,8 +158,8 @@ def verify_user(username, password):
     result = cursor.fetchone()
     print(result)
     # 关闭游标和连接
-    cursor.close()
     connection.close()
+    cursor.close()
 
     # 根据查询结果返回验证结果
     if result:
@@ -166,12 +167,13 @@ def verify_user(username, password):
     else:
         return False
 
+
 # 添加日志
 def addlog(username, operate_time, api, note=''):
     connection = pool.get_connection()
     cursor = connection.cursor()
     sql = "INSERT INTO log (username, operate_time, api, note) VALUES (%s,%s,%s,%s);"
-    cursor.execute(sql,(username,operate_time,api,note))
+    cursor.execute(sql, (username, operate_time, api, note))
     connection.commit()
     flg = cursor.rowcount
     print(flg)
@@ -180,6 +182,7 @@ def addlog(username, operate_time, api, note=''):
     if flg == 1:
         return True
     return False
+
 
 # 对上传的文件进行预测并返回
 def upload_predict(data):
@@ -258,13 +261,11 @@ def get_winddirection():
 # 获取他人使用offline程序跑出来的模型
 @app.route('/getmodel', methods=['POST'])
 def get_model():
-    sdk = request.values.get('sdk')#这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
+    sdk = request.values.get('sdk')  # 这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
     currenttime = request.values.get('currenttime')
     file = request.files['file']
     cnt = count_files_in_folder('./getmodels')
     # 添加日志记录
-
-
 
     if cnt % 2 == 0:
         tmp = int(cnt / 2)
@@ -456,7 +457,16 @@ static_list = [
 
 @app.route('/')
 def home():
+    username = session.get('username')
+    print(username)
+    if not username is None:
+        return redirect('/index')
     return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    del session['username']
+
 
 
 @app.route('/index', methods=['POST'])
@@ -549,8 +559,8 @@ def data_analysis():
 def file_predict():
     now = datetime.now()
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    #添加日志
-    addlog(username=session['username'],operate_time=operate_time,api=api_list['online_predict'],note="数据训练预测")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['online_predict'], note="数据训练预测")
     tmp = upload_predict(df_upload_file)
     return tmp
 
@@ -560,7 +570,8 @@ def download_resfile():
     now = datetime.now()
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
     # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'], note="下载预测结果")
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'],
+           note="下载预测结果")
     cnt = count_files_in_folder("./res_file")
     file_path = './res_file/res' + str(cnt + 1) + '.csv'  # 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
@@ -619,7 +630,6 @@ def to_register():
     return render_template('register.html')
 
 
-
 @app.route('/register_submit', methods=['POST'])
 def register_submit():
     data = request.get_json()
@@ -649,6 +659,7 @@ def navigation():
 def footer():
     return render_template('footer.html')
 
+
 @app.route('/getsdk')
 def getsdk():
     sdk = secrets.token_hex(16)
@@ -656,7 +667,7 @@ def getsdk():
     # 将sdk和username对应起来加到数据库中
 
     return jsonify({
-        'sdk':sdk
+        'sdk': sdk
     })
 
 

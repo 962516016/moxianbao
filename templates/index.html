@@ -8,10 +8,7 @@
     <!-- base:css -->
     <link href="../static/css/typicons.css" rel="stylesheet">
     <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
-
     <!-- endinject -->
-    <!-- plugin css for this page -->
-    <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
@@ -22,11 +19,11 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
-    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">
+<!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"
-          rel="stylesheet">
+<!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"-->
+<!--          rel="stylesheet">-->
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -34,8 +31,8 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="../static/picture/logo.svg"></a>
-            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="../static/picture/logo-mini.svg"></a>
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="static/picture/logo-mini.svg"></a>
             <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
                     type="button">
                 <span class="typcn typcn-th-menu"></span>
@@ -46,7 +43,7 @@
                 <li class="nav-item d-none d-lg-flex  mr-2">
                     {% if username %}
                     <span style="font-weight: bold">欢迎您, {{ username }}</span>
-                    <a class="nav-link" href="/">
+                    <a class="nav-link" href="/logout">
                         退出登录
                     </a>
                     {% else %}
@@ -55,11 +52,6 @@
                         点此登录
                     </a>
                     {% endif %}
-
-                </li>
-                <script>
-
-                </script>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
                     type="button">
@@ -83,23 +75,23 @@
                     Dark
                 </div>
                 <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles primary"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default border"></div>
+                <div class="color-tiles mx-1 px-4">
+                    <div class="tiles success">1</div>
+                    <div class="tiles warning">2</div>
+                    <div class="tiles danger">3</div>
+                    <div class="tiles primary">4</div>
+                    <div class="tiles info">5</div>
+                    <div class="tiles dark">6</div>
+                    <div class="tiles default border">7</div>
                 </div>
             </div>
         </div>
-        <!-- partial -->
-        <!-- partial:partials/_sidebar.html -->
         <div id="nav-placeholder">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
             <script>
                 $(function () {
-                    $("#nav-placeholder").load("/navigation.html");
+                    $("#sidebar").load("/navigation.html");
                 });
             </script>
         </div>

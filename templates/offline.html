@@ -46,7 +46,7 @@
                     </a>
                     {% endif %}
             </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="canvas"
                     type="button">
                 <span class="typcn typcn-th-menu"></span>
             </button>
@@ -82,9 +82,11 @@
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
         <div id="nav-placeholder">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
             <script>
                 $(function () {
-                    $("#nav-placeholder").load("/navigation.html");
+                    $("#sidebar").load("/navigation.html");
                 });
             </script>
         </div>

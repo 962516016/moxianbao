@@ -31,16 +31,6 @@
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
 </head>
 <body>
-<script>
-    window.addEventListener('resize', function () {
-        myChart.resize();
-    });
-</script>
-<script>
-    window.addEventListener('orientationchange', function () {
-        myChart.resize();
-    });
-</script>
 <i id="bannerClose"></i>
 <div class="container-scroller" id="root">
     <!-- partial:partials/_navbar.html -->
@@ -104,9 +94,11 @@
         <!-- partial -->
         <!-- partial:partials/_sidebar.html -->
         <div id="nav-placeholder">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
             <script>
                 $(function () {
-                    $("#nav-placeholder").load("/navigation.html?username={{username}}");
+                    $("#sidebar").load("/navigation.html");
                 });
             </script>
         </div>
@@ -163,73 +155,83 @@
 
 
                                 <button id="predictionBtn"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%"
+                                        onclick="initmychart()"
+                                >
                                     <i class="my_typcn typcn-device-laptop"></i><br>预测功率
                                 </button>
                                 <script>
-                                    document.getElementById('predictionBtn').addEventListener('click', function () {
-                                        var aitextarea = document.getElementById('aianswer');
-                                        // 在这里发送请求到后端获取数据并绘图
-                                        let json_data;
-                                        fetch('/online_predict')
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                json_data = data;
-                                                myChart.dispose();
-                                                myChart = echarts.init(document.getElementById('linechart'));
-                                                // 指定图表的配置项和数据
-                                                var datatime = json_data.DATATIME;
-                                                var yd15 = json_data.PRE_YD15;
-                                                var power = json_data.PRE_POWER;
-                                                var option = {
-                                                    tooltip: {
-                                                        trigger: 'axis'
-                                                    },
-                                                    legend: {
-                                                        data: ['ROUND(A.POWER,0)', 'YD15']
-                                                    },
-                                                    grid: {
-                                                        left: '3%',
-                                                        right: '4%',
-                                                        bottom: '3%',
-                                                        containLabel: true
-                                                    },
-                                                    toolbox: {
-                                                        feature: {
-                                                            saveAsImage: {}
-                                                        }
-                                                    },
-                                                    xAxis: {
-                                                        type: 'category',
-                                                        boundaryGap: false,
-                                                        data: datatime
-                                                    },
-                                                    yAxis: {
-                                                        type: 'value'
-                                                    },
-                                                    series: [
-                                                        {
-                                                            name: 'ROUND(A.POWER,0)',
-                                                            type: 'line',
-                                                            data: power,
-                                                            animation: true
+                                    function initmychart() {
+                                        document.getElementById('predictionBtn').addEventListener('click', function () {
+                                            var aitextarea = document.getElementById('aianswer');
+                                            // 在这里发送请求到后端获取数据并绘图
+                                            let json_data;
+                                            fetch('/online_predict')
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    json_data = data;
+                                                    myChart.dispose();
+                                                    myChart.clear();
+                                                    myChart = null
+                                                    myChart = echarts.init(document.getElementById('linechart'));
+                                                    // 指定图表的配置项和数据
+                                                    var datatime = json_data.DATATIME;
+                                                    var yd15 = json_data.PRE_YD15;
+                                                    var power = json_data.PRE_POWER;
+                                                    var option = {
+                                                        tooltip: {
+                                                            trigger: 'axis'
                                                         },
-                                                        {
-                                                            name: 'YD15',
-                                                            type: 'line',
-                                                            data: yd15,
-                                                            animation: true
+                                                        legend: {
+                                                            data: ['ROUND(A.POWER,0)', 'YD15']
                                                         },
-                                                    ]
-                                                };
-                                                myChart.setOption(option)
-                                                aitextarea.value = '预测完成~';
-                                            })
-                                            .catch(error => {
-                                                console.error('获取数据时发生错误:', error);
-                                            });
+                                                        grid: {
+                                                            left: '3%',
+                                                            right: '4%',
+                                                            bottom: '3%',
+                                                            containLabel: true
+                                                        },
+                                                        toolbox: {
+                                                            feature: {
+                                                                saveAsImage: {}
+                                                            }
+                                                        },
+                                                        xAxis: {
+                                                            type: 'category',
+                                                            boundaryGap: false,
+                                                            data: datatime
+                                                        },
+                                                        yAxis: {
+                                                            type: 'value'
+                                                        },
+                                                        series: [
+                                                            {
+                                                                name: 'ROUND(A.POWER,0)',
+                                                                type: 'line',
+                                                                data: power,
+                                                                animation: true
+                                                            },
+                                                            {
+                                                                name: 'YD15',
+                                                                type: 'line',
+                                                                data: yd15,
+                                                                animation: true
+                                                            },
+                                                        ]
+                                                    };
+                                                    myChart.setOption(option)
+                                                    aitextarea.value = '预测完成~';
+                                                })
+                                                .catch(error => {
+                                                    console.error('获取数据时发生错误:', error);
+                                                });
 
-                                    });
+                                        });
+                                    }
+                                    initmychart()
+                                    function updatedata(){
+
+                                    }
 
                                 </script>
                                 <button id="aiBtn"
