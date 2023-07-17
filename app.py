@@ -1,24 +1,23 @@
 import glob
+import json
 import os
-import openai
+import shutil
+import zipfile
+from datetime import datetime, timedelta
+
+import dtale
+import joblib
+import matplotlib.pyplot as plt
+import matplotx
 import numpy as np
+import openai
 import pandas as pd
 import pymysqlpool
-import joblib
-import shutil
-import matplotx
-import zipfile
-import json
-from matplotlib.ticker import MaxNLocator
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-from flask import Flask, jsonify, request, send_file, render_template,session,redirect,url_for
+from flask import Flask, jsonify, request, send_file, render_template, session, redirect
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
+from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
-from pandas_profiling import ProfileReport
-import dtale
-
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -30,6 +29,10 @@ df_upload_file = pd.DataFrame({})
 res_datatime = []
 res_windspeed = []
 res_power = []
+
+myhost = '0.0.0.0'
+myport = 5446
+report_port = 40000
 
 
 def to_string(a, f):
@@ -114,6 +117,7 @@ def query_winddirection_data(turbid):
     cursor.close()
     return result
 
+
 def addUser(username, password):
     connection = pool.get_connection()
     cursor = connection.cursor()
@@ -133,7 +137,7 @@ def addUser(username, password):
 
 
 def verify_user(username, password):
-    if username=='':
+    if username == '':
         return False
     connection = pool.get_connection()
     # 创建游标对象
@@ -397,6 +401,27 @@ def api_predict():
             return send_file(zip_file_path, as_attachment=True)
 
 
+router_list = [
+    '/',
+    '/index',
+    ''
+]
+static_list = [
+    '/staic',
+
+]
+
+
+# @app.before_request
+# def myredirect():
+#     if not request.path in router_list+static_list:
+#         username = request.args.get('username')
+#         if not username:
+#             print('测试username')
+#             return redirect('/?error=请登录', code=302, )
+#         else:
+#             print('success')
+
 @app.route('/')
 def home():
     return render_template("login.html")
@@ -404,44 +429,58 @@ def home():
 
 @app.route('/index', methods=['POST'])
 def login_verify():
+    # print('测试url:'+request.url)
+
     username = request.form['username']
     password = request.form['password']
 
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
-        return render_template("index.html")
+        return render_template("index.html", username=username)
+    elif password == '':
+        error = '密码不能为空'
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
     else:
         error = '用户名或密码错误'
-        return render_template('login.html', error=error)
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
 
 
-@app.route('/offline')
+@app.route('/offline', methods=['GET'])
 def offline():
-    return render_template("offline.html")
+    username = session.get('username')
+    return render_template("offline.html", username=username)
 
 
-@app.route('/index')
+@app.route('/index', methods=['GET'])
 def to_index():
-    return render_template('index.html')
+    username = session.get('username')
+    if username == None:
+        return redirect('/')
+    return render_template('index.html', username=username)
 
 
 @app.route('/admin')
 def to_admin():
-    if session.get('username') == 'admin':
-        return render_template('admin.html')
+    username = session.get('username')
+    if username == 'admin':
+        return render_template('admin.html', username=username)
     else:
         return render_template('iderror.html')
 
 
 @app.route('/api')
 def to_api():
-    return render_template('api.html')
+    username = session.get('username')
+    return render_template('api.html', username=username)
 
 
 @app.route('/predict')
 def to_predict():
-    return render_template('predict.html')
+    username = session.get('username')
+    return render_template('predict.html', username=username)
 
 
 @app.route('/upload_file', methods=['POST'])
@@ -456,10 +495,14 @@ def get_file():
     df_upload_file = df
     return jsonify({})
 
+
 @app.route('/data_analyze')
 def data_analysis():
-    #profile = ProfileReport(df_upload_file)
-    #profile.to_file("templates/report.html")
+    # profile = ProfileReport(df_upload_file)
+    # profile.to_file("templates/report.html")
+    name = '0001in.csv'
+    df = pd.read_csv(name)
+    dtale.show(df, host=myhost, port=report_port)
     return render_template('report.html')
 
 
@@ -476,27 +519,6 @@ def download_resfile():
     file_path = './res_file/res' + str(cnt + 1) + '.csv'  # 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name="res.csv", as_attachment=True)
-
-
-# 其他原始页面的路由
-@app.route('/buttons.html')
-def buttons():
-    return render_template('buttons.html')
-
-
-@app.route('/dropdowns.html')
-def dropdowns():
-    return render_template('dropdowns.html')
-
-
-@app.route('/typography.html')
-def typography():
-    return render_template('typography.html')
-
-
-@app.route('/chartjs.html')
-def chartjs():
-    return render_template('chartjs.html')
 
 
 @app.route('/get_modelname')
@@ -550,10 +572,6 @@ def removemodels():
 def to_register():
     return render_template('register.html')
 
-df = df_upload_file
-dtale.show(df, host="localhost", port=40000)
-
-
 
 @app.route('/register_submit', methods=['POST'])
 def register_submit():
@@ -569,14 +587,16 @@ def register_submit():
     if repassword != password:
         return '两次密码不一致！'
     else:
-        if addUser(username,password):
+        if addUser(username, password):
             return '注册成功,点此登录'
         else:
             return '注册失败,请重试！'
 
+
 @app.route('/navigation.html')
 def navigation():
     return render_template('navigation.html')
+
 
 @app.route('/footer.html')
 def footer():
@@ -584,4 +604,4 @@ def footer():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5446)
+    app.run(debug=True, host=myhost, port=myport)

@@ -34,9 +34,17 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    <a class="nav-link" href="/static">
+                    {% if username %}
+                    <span style="font-weight: bold">欢迎您, {{ username }}</span>
+                    <a class="nav-link" href="/">
                         退出登录
                     </a>
+                    {% else %}
+                    <span style="font-weight: bold;--xr-font-color0: true">您好, 请</span>
+                    <a class="nav-link" href="/">
+                        点此登录
+                    </a>
+                    {% endif %}
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
                     type="button">
@@ -77,7 +85,7 @@
         <div id="nav-placeholder">
             <script>
                 $(function () {
-                    $("#nav-placeholder").load("/navigation.html");
+                    $("#nav-placeholder").load("/navigation.html?username={{username}}");
                 });
             </script>
         </div>

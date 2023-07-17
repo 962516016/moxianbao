@@ -9052,7 +9052,7 @@ h6, .h6 {
 .display-1 {
   font-size: 6rem;
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.5;
 }
 
 .display-2 {
@@ -25423,6 +25423,13 @@ body.avgrund-active {
 .report-component {
   height: 100%;
   overflow-y: auto;
+}
+
+.login-box{
+  align-items: center;
+  width: 30em;
+  min-width: 30em!important;
+  min-height: 30em!important;
 }
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
 
