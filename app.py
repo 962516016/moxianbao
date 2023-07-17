@@ -34,6 +34,14 @@ myhost = '0.0.0.0'
 myport = 5446
 report_port = 40000
 
+api_list = {
+    'upload_file':'0',
+    'data_analyze':'1',
+    'online_predict':'2',
+    'gptapi_analyze':'3',
+    'download_resfile':'4',
+    'getmodel':'5',
+}
 
 def to_string(a, f):
     res = ""
@@ -121,12 +129,11 @@ def query_winddirection_data(turbid):
 def addUser(username, password):
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "INSERT INTO usertable (username, password) VALUES ('congqianyougemoxianbao', 'yougenvwangbudeliao');"
-    tmp = sql.replace('congqianyougemoxianbao', username)
-    tmp = tmp.replace('yougenvwangbudeliao', password)
-    sql = tmp
-    print(sql)
-    cursor.execute(sql)
+    print(username)
+    print(password)
+    sql = 'INSERT IGNORE INTO usertable (username,password) VALUES (%s,%s)'
+    cursor.execute(sql, (username,password))
+    connection.commit()
     flg = cursor.rowcount
     print(flg)
     connection.close()
@@ -147,7 +154,7 @@ def verify_user(username, password):
     cursor.execute(sql, (username, password))
     # 获取查询结果
     result = cursor.fetchone()
-
+    print(result)
     # 关闭游标和连接
     cursor.close()
     connection.close()
@@ -158,6 +165,20 @@ def verify_user(username, password):
     else:
         return False
 
+# 添加日志
+def addlog(username, operate_time, api, note=''):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "INSERT INTO log (username, operate_time, api, note) VALUES (%s,%s,%s,%s);"
+    cursor.execute(sql,(username,operate_time,api,note))
+    connection.commit()
+    flg = cursor.rowcount
+    print(flg)
+    connection.close()
+    cursor.close()
+    if flg == 1:
+        return True
+    return False
 
 # 对上传的文件进行预测并返回
 def upload_predict(data):
@@ -262,6 +283,10 @@ def download_offine_soft():
 
 @app.route('/gptapi_analyze')
 def analyze_wind_power():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['gptapi_analyze'], note="AI分析")
     # 编辑prompt
     openai.api_key = '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'
     openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
@@ -494,6 +519,10 @@ def get_file():
     file = request.files['file']
     if file.filename == '':
         return '未选择文件', 400
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
     df = pd.read_csv(file)
     global df_upload_file
     df_upload_file = df
@@ -504,6 +533,10 @@ def get_file():
 def data_analysis():
     # profile = ProfileReport(df_upload_file)
     # profile.to_file("templates/report.html")
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
     name = '0001in.csv'
     df = pd.read_csv(name)
     dtale.show(df, host=myhost, port=report_port)
@@ -513,12 +546,20 @@ def data_analysis():
 # 前端获取文件，后端处理完，返回一段时间的预测值
 @app.route('/online_predict')
 def file_predict():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    #添加日志
+    addlog(username=session['username'],operate_time=operate_time,api=api_list['online_predict'],note="数据训练预测")
     tmp = upload_predict(df_upload_file)
     return tmp
 
 
 @app.route('/download_resfile')
 def download_resfile():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'], note="下载预测结果")
     cnt = count_files_in_folder("./res_file")
     file_path = './res_file/res' + str(cnt + 1) + '.csv'  # 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
