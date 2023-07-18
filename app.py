@@ -522,7 +522,7 @@ def getsdk():
         del session['sdk']
     connection.close()
     cursor.close()
-    return session['sdk']
+    return session.get('sdk')
 
 @app.route('/index', methods=['POST'])
 def login_verify():
@@ -571,7 +571,10 @@ def to_api():
 def to_predict():
     username = session.get('username')
     return render_template('predict.html', username=username)
-
+@app.route('/personalcenter')
+def to_personalcenter():
+    username = session.get('username')
+    return render_template('personalcenter.html', username=username)
 
 @app.route('/upload_file', methods=['POST'])
 def get_file():
@@ -637,6 +640,18 @@ def get_getmodels():
         'getmodels': getmodels_list
     })
 
+@app.route('/get_userfile')
+def get_userfile():
+    path1 = "userdata/%s/上传数据集" % session.get('username')
+    path2 = "userdata/%s/下载结果文件" % session.get('username')
+    uploadcsv_list = get_file_paths(path1)
+    downloadcsv_list = get_file_paths(path2)
+    print(path1)
+    print(path2)
+    return jsonify({
+        'uploadcsv': uploadcsv_list,
+        'downloadcsv': downloadcsv_list
+    })
 
 # 把模型从左移到右
 @app.route('/add_models_to_pool', methods=['POST'])

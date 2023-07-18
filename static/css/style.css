@@ -14284,7 +14284,7 @@ a.close.disabled {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1040;
+  z-index: 940;
   width: 100vw;
   height: 100vh;
   background-color: #000;
@@ -25438,3 +25438,22 @@ body.avgrund-active {
 }
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
 
+.personal-info {
+  padding: 10px;
+}
+
+.info-item {
+  margin-bottom: 10px;
+  width: 40%;
+  display: inline-block;
+  margin-left: 50px;
+}
+
+.hidden-value {
+  font-family: "Courier New", monospace;
+  color: black;
+}
+
+.modal-body input {
+  margin-bottom: 10px;
+}
