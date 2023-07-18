@@ -279,7 +279,7 @@ def get_model():
 
 @app.route('/download_offine_soft')
 def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统油专特供offline_v4.0.exe'  # 文件在服务器上的路径
+    file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
 
@@ -466,7 +466,7 @@ def home():
 @app.route('/logout')
 def logout():
     del session['username']
-
+    return redirect('/')
 
 
 @app.route('/index', methods=['POST'])
