@@ -475,28 +475,11 @@ def logout():
     return redirect('/')
 
 
-@app.route('/index', methods=['POST'])
-def login_verify():
-    username = request.form['username']
-    password = request.form['password']
-
-    flg = verify_user(username, password)
-    if flg:
-        session['username'] = username
-        return render_template("index.html", username=username)
-    elif password == '':
-        error = '密码不能为空'
-        # redirect('/login')
-        return render_template('login.html', error=error, username=username)
-    else:
-        error = '用户名或密码错误'
-        # redirect('/login')
-        return render_template('login.html', error=error, username=username)
-
 
 @app.route('/offline')
 def offline():
     username = session.get('username')
+    # session.get('sdk')
     sdk = session.get('sdk')
     print('sdk是多少:', sdk)
     return render_template("offline.html", username=username, sdk=sdk)
@@ -517,11 +500,14 @@ def newsdk():
     cursor.close()
     if flg == 0:
         sdk = None
-    return jsonify({'sdk': sdk})
+    print('申请sdk测试', sdk)
+    session['sdk'] = sdk
+    # jsonify({'sdk': sdk})
+    return redirect('/offline')
     # 将sdk和username对应起来加到数据库中
 
 
-@app.route('/getsdk')
+# @app.route('/getsdk')
 def getsdk():
     username = session.get('username')
     connection = pool.get_connection()
@@ -536,9 +522,27 @@ def getsdk():
         del session['sdk']
     connection.close()
     cursor.close()
-    return redirect('/offline')
+    return session['sdk']
 
+@app.route('/index', methods=['POST'])
+def login_verify():
+    username = request.form['username']
+    password = request.form['password']
 
+    flg = verify_user(username, password)
+    if flg:
+        session['username'] = username
+        session['sdk'] = getsdk()
+        sdk = session.get('sdk')
+        return render_template("index.html", username=username, sdk=sdk)
+    elif password == '':
+        error = '密码不能为空'
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
+    else:
+        error = '用户名或密码错误'
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
 
 @app.route('/index')
 def to_index():

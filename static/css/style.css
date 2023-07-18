@@ -11532,6 +11532,7 @@ input[type="button"].btn-block {
 
 .fade {
   transition: opacity 0.15s linear;
+  z-index: 200;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -14190,7 +14191,7 @@ a.close.disabled {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1050;
+  z-index: 850;
   display: none;
   width: 100%;
   height: 100%;
@@ -14276,6 +14277,7 @@ a.close.disabled {
   border: 1px solid #e8eff9;
   border-radius: 0.3rem;
   outline: 0;
+  z-index: 1000;
 }
 
 .modal-backdrop {
@@ -14304,6 +14306,7 @@ a.close.disabled {
   border-bottom: 1px solid #e8eff9;
   border-top-left-radius: 0.3rem;
   border-top-right-radius: 0.3rem;
+  z-index: 1000;
 }
 
 .modal-header .close {
@@ -14320,6 +14323,7 @@ a.close.disabled {
   position: relative;
   flex: 1 1 auto;
   padding: 0.9375rem;
+  z-index: 1000;
 }
 
 .modal-footer {
@@ -14330,6 +14334,7 @@ a.close.disabled {
   border-top: 1px solid #e8eff9;
   border-bottom-right-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
+  z-index: 1000;
 }
 
 .modal-footer > :not(:first-child) {
