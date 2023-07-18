@@ -15,6 +15,7 @@
     <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../static/js/modernizr-2.8.3.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
 </head>
@@ -34,6 +35,16 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
+                    {% if sdk %}
+                    <span >您已经拥有sdk,
+                        <a href="#">点此查看</a>
+                    </span>
+                    {% else %}
+                    <span >您尚未获取sdk,
+                        <a href="/getsdk">点此获取</a>
+                    </span>
+                    {% endif %}
+
                     {% if username %}
                     <span style="font-weight: bold">欢迎您, {{ username }}</span>
                     <a class="nav-link" href="/">
@@ -45,6 +56,19 @@
                         点此登录
                     </a>
                     {% endif %}
+                    <script>
+                        function sdk() {
+                            var sdkinfo = echarts.init(document.getElementById('sdk'));
+                            const baseurl = '/getsdk'
+                            axios.get(baseurl)
+                                .then(res => {
+                                        console.log('获取sdk+', res.data, '???')
+                                    }
+                                )
+                        }
+
+                        sdk()
+                    </script>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="canvas"
                     type="button">

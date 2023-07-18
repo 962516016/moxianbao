@@ -198,7 +198,7 @@
                                         let hour = timeinput[0];
                                         let length = lengthinput;// 单位小时
 
-                                        const baseurl = 'http://issy-blog.store:5446/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+                                        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
                                             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
                                         console.log('测试ssy:', baseurl);
 
@@ -353,7 +353,7 @@
                                             var turbinput = document.getElementById('turb-input').value;
                                             var turbid = turbinput
 
-                                            const url = 'http://issy-blog.store:5446/get_winddirection?' + 'turbid=' + turbid
+                                            const url = '/get_winddirection?' + 'turbid=' + turbid
 
                                             // GET请求
                                             axios.get(url)

@@ -5,6 +5,7 @@ import secrets
 import shutil
 import zipfile
 from datetime import datetime, timedelta
+
 import dtale
 import joblib
 import matplotlib.pyplot as plt
@@ -460,7 +461,13 @@ def home():
     print(username)
     if not username is None:
         return redirect('/index')
+    return redirect('/login')
+
+
+@app.route('/login')
+def login():
     return render_template("login.html")
+
 
 @app.route('/logout')
 def logout():
@@ -490,7 +497,47 @@ def login_verify():
 @app.route('/offline')
 def offline():
     username = session.get('username')
-    return render_template("offline.html", username=username)
+    sdk = session.get('sdk')
+    print('sdk是多少:', sdk)
+    return render_template("offline.html", username=username, sdk=sdk)
+
+
+@app.route('/newsdk')
+def newsdk():
+    sdk = secrets.token_hex(16).__str__()
+    username = session.get('username')
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
+    cursor.execute(sql)
+    flg = cursor.rowcount
+    print(flg)
+    connection.commit()
+    connection.close()
+    cursor.close()
+    if flg == 0:
+        sdk = None
+    return jsonify({'sdk': sdk})
+    # 将sdk和username对应起来加到数据库中
+
+
+@app.route('/getsdk')
+def getsdk():
+    username = session.get('username')
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    print('获取sdk测试', result)
+    if result is not None:
+        session['sdk'] = result[0]
+    else:
+        del session['sdk']
+    connection.close()
+    cursor.close()
+    return redirect('/offline')
+
 
 
 @app.route('/index')
@@ -657,17 +704,6 @@ def navigation():
 @app.route('/footer.html')
 def footer():
     return render_template('footer.html')
-
-
-@app.route('/getsdk')
-def getsdk():
-    sdk = secrets.token_hex(16)
-    username = session.get('username')
-    # 将sdk和username对应起来加到数据库中
-
-    return jsonify({
-        'sdk': sdk
-    })
 
 
 if __name__ == '__main__':
