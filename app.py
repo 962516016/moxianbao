@@ -166,6 +166,26 @@ def query_winddirection_data(turbid):
     cursor.close()
     return result
 
+def query_apicount_data(username, api):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s'" % (username, api)
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    return result
+
+def query_apilist_data(username):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s'" % username
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    return result
+
 
 def addUser(username, password):
     connection = pool.get_connection()
@@ -722,6 +742,18 @@ def download_resfile():
     file_path = path + file_name# 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name=file_name, as_attachment=True)
+
+@app.route('/get_log')
+def get_loglist():
+    username = session.get('username')
+    reslog = query_apilist_data(username)
+    res = []
+    for item in reslog:
+        res.append(list(item))
+    return jsonify({
+        'cnt': len(res),
+        'log': res
+    })
 
 
 @app.route('/get_modelname')

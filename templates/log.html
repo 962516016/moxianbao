@@ -125,12 +125,10 @@
                                 </div>
                                 <script>
                                     function updatetable() {
-                                        axios.get('/get_apilog')
+                                        axios.get('/get_log')
                                             .then(res => {
                                                 let cnt = res.data.cnt;
-                                                var list = res.data.log;
-
-                                                console.log(cnt, 'list', list)
+                                                let list = res.data.log;
 
                                                 // 获取表格的tbody元素
                                                 var tableBody = document.querySelector('#log_table tbody');
