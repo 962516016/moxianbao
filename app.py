@@ -85,10 +85,17 @@ def count_files_in_folder(folder_path):
 # 获取路径下的所有文件，返回一个路径列表
 def get_file_paths(directory):
     file_paths = []
+    time_list = []
     for root, directories, files in os.walk(directory):
         for file in files:
             file_paths.append(os.path.join(file))
-    return file_paths
+            t = os.path.getmtime(directory+'/'+file)
+            # 将时间戳转换为datetime对象
+            modified_datetime = datetime.fromtimestamp(t)
+            # 格式化为年月日时分秒的格式
+            formatted_time = modified_datetime.strftime("%Y-%m-%d %H:%M:%S")
+            time_list.append(formatted_time)
+    return file_paths, time_list
 
 
 # 在数据库中查询数据
@@ -115,6 +122,38 @@ def query_pre_data(turbid, year, month, day, hour, length):
     connection.close()
     cursor.close()
     return result
+
+
+def sqlverifypassword(password):
+    username = session['username']
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
+    cursor.execute(sql, (username, password))
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    if result:
+        return True
+    else:
+        return False
+
+def sqlchangepassword(password):
+    username = session['username']
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "UPDATE usertable SET password='%s' WHERE username='%s';" % (password, username)
+    cursor.execute(sql)
+    flg = cursor.rowcount
+    print(flg)
+    connection.commit()
+    connection.close()
+    cursor.close()
+    if flg==1:
+        return True
+    else:
+        return False
+
 
 
 def query_winddirection_data(turbid):
@@ -156,13 +195,14 @@ def verify_user(username, password):
     cursor.execute(sql, (username, password))
     # 获取查询结果
     result = cursor.fetchone()
-    print(result)
     # 关闭游标和连接
     connection.close()
     cursor.close()
 
     # 根据查询结果返回验证结果
     if result:
+        if result[4] == '1':
+            session[username + '_create'] = '1'
         return True
     else:
         return False
@@ -281,6 +321,12 @@ def get_model():
 def download_offine_soft():
     file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
+
+@app.route('/download_history_csv')
+def download_history_csv():
+    file_path = request.args.get('path')
+    return send_file(file_path, as_attachment=True)
+
 
 
 @app.route('/gptapi_analyze')
@@ -524,17 +570,42 @@ def getsdk():
     cursor.close()
     return session.get('sdk')
 
+def createfolder(username):
+    print(username)
+    flg = session.get(username+'_create')
+    print(flg)
+    if flg == None:
+        path1 = 'userdata/%s/上传数据集' % username
+        path2 = 'userdata/%s/下载结果文件' % username
+        path3 = 'static/usertouxiang/%s' % username
+        print('__________________________________')
+        os.makedirs(path1)
+        os.makedirs(path2)
+        os.makedirs(path3)
+        source_file = 'static/picture/touxiang.png'
+        destination_file = path3 + '/touxiang.png'
+        shutil.copy2(source_file, destination_file)
+        session[username+'_create'] = '1'
+
+
 @app.route('/index', methods=['POST'])
 def login_verify():
     username = request.form['username']
     password = request.form['password']
-
+    print(username)
+    print(password)
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
         session['sdk'] = getsdk()
         sdk = session.get('sdk')
+        # 为该用户建立需要的文件夹
+        createfolder(username)
         return render_template("index.html", username=username, sdk=sdk)
+
+
+
+
     elif password == '':
         error = '密码不能为空'
         # redirect('/login')
@@ -588,6 +659,10 @@ def get_file():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
     df = pd.read_csv(file)
+    path = "userdata/%s/上传数据集" % session.get('username')
+    cnt = count_files_in_folder(path)
+    filename = '/in' + str(cnt+1) + '.csv'
+    df.to_csv(path + filename, index=False)
     global df_upload_file
     df_upload_file = df
     return jsonify({})
@@ -625,16 +700,18 @@ def download_resfile():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'],
            note="下载预测结果")
-    cnt = count_files_in_folder("./res_file")
-    file_path = './res_file/res' + str(cnt + 1) + '.csv'  # 文件在服务器上的路径
+    path = "userdata/%s/下载结果文件" % session.get('username')
+    cnt = count_files_in_folder(path)
+    file_name = '/res' + str(cnt + 1) + '.csv'
+    file_path = path + file_name# 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
-    return send_file(file_path, download_name="res.csv", as_attachment=True)
+    return send_file(file_path, download_name=file_name, as_attachment=True)
 
 
 @app.route('/get_modelname')
 def get_getmodels():
-    usingmodels_list = get_file_paths('usingmodels')
-    getmodels_list = get_file_paths('getmodels')
+    usingmodels_list,tmp = get_file_paths('usingmodels')
+    getmodels_list,tmp = get_file_paths('getmodels')
     return jsonify({
         'usingmodels': usingmodels_list,
         'getmodels': getmodels_list
@@ -644,13 +721,15 @@ def get_getmodels():
 def get_userfile():
     path1 = "userdata/%s/上传数据集" % session.get('username')
     path2 = "userdata/%s/下载结果文件" % session.get('username')
-    uploadcsv_list = get_file_paths(path1)
-    downloadcsv_list = get_file_paths(path2)
-    print(path1)
-    print(path2)
+    uploadcsv_list,time1 = get_file_paths(path1)
+    downloadcsv_list,time2 = get_file_paths(path2)
+    print(time1)
+    print(time2)
     return jsonify({
         'uploadcsv': uploadcsv_list,
-        'downloadcsv': downloadcsv_list
+        'uploadcsv_time': time1,
+        'downloadcsv': downloadcsv_list,
+        'downloadcsv_time': time2
     })
 
 # 把模型从左移到右
@@ -723,6 +802,28 @@ def navigation():
 @app.route('/footer.html')
 def footer():
     return render_template('footer.html')
+
+
+
+@app.route('/verifypassword', methods=['POST'])
+def verifypassword():
+    password = request.form.get('password')
+    if sqlverifypassword(password):#验证密码成功
+        sdk = getsdk()
+        if sdk == None:
+            return '您还未申请sdk'
+        else:
+            return sdk
+    else:
+        return '密码错误'
+
+@app.route('/changepassword', methods=['POST'])
+def changepassword():
+    password = request.form.get('password')
+    if sqlchangepassword(password):
+        return '修改成功'
+    else:
+        return '修改失败，请重试'
 
 
 if __name__ == '__main__':
