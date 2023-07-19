@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>龙源风电功率预测系统油专特供版online</title>
+    <!-- base:css -->
+    <link href="../static/css/typicons.css" rel="stylesheet">
+    <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link href="../static/css/style.css" rel="stylesheet">
+    <!-- endinject -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
+            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
+    <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
+    <!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"-->
+    <!--          rel="stylesheet">-->
+</head>
+<body>
+<i id="bannerClose"></i>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="static/picture/logo.svg"></a>
+            <a class="navbar-brand brand-logo-mini" href=""><img alt="logo" src="static/picture/logo-mini.svg"></a>
+            <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" data-toggle="minimize"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    {% if username %}
+                    <span style="font-weight: bold">欢迎您, {{ username }}</span>
+                    <a class="nav-link" href="/logout">
+                        退出登录
+                    </a>
+                    {% else %}
+                    <span style="font-weight: bold;--xr-font-color0: true">您好, 请</span>
+                    <a class="nav-link" href="/">
+                        点此登录
+                    </a>
+                    {% endif %}
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
+                    type="button">
+                <span class="typcn typcn-th-menu"></span>
+            </button>
+        </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+            <div class="settings-panel" id="theme-settings">
+                <i class="settings-close typcn typcn-delete-outline"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                    Light
+                </div>
+                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                    Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-1 px-4">
+                    <div class="tiles success">1</div>
+                    <div class="tiles warning">2</div>
+                    <div class="tiles danger">3</div>
+                    <div class="tiles primary">4</div>
+                    <div class="tiles info">5</div>
+                    <div class="tiles dark">6</div>
+                    <div class="tiles default border">7</div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-placeholder">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
+            <script>
+                $(function () {
+                    $("#sidebar").load("/navigation.html");
+                });
+            </script>
+        </div>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!--                个人信息区域-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body" id="main-container2">
+                                <div class="row" style="margin-top: 10px">
+                                    <div class="col-lg-9 d-flex grid-margin stretch-card">
+                                        <div style="width: 100%;">
+                                            <h3>基本信息</h3>
+                                            <div>
+                                                <span class="info-item">
+                                                    <span style="font-weight: bold">用户名：</span>
+                                                    <span>{{ username }}</span>
+                                                </span>
+                                                <span class="info-item">
+                                                    <span style="font-weight: bold">密码：</span>
+                                                    <span class="hidden-value" id="pwdspan">••••••••••••</span>
+                                                    <button id="changepwdBtn">修改</button>
+                                                </span>
+                                                <script>
+                                                    function verifypassword() {
+                                                        document.getElementById("changepwdBtn").addEventListener("click", function () {
+                                                            var password = prompt("请验证旧密码:");
+                                                            if (password !== null) {
+                                                                var xhr = new XMLHttpRequest();
+                                                                xhr.open("POST", "/verifypassword", true);
+                                                                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                                                xhr.onreadystatechange = function () {
+                                                                    if (xhr.readyState === 4 && xhr.status === 200) {
+                                                                        var res = xhr.responseText
+                                                                        if (res == '密码错误') {
+                                                                            document.getElementById("pwdspan").style.color = "red";
+                                                                            document.getElementById("pwdspan").innerText = '密码错误，请重试！'
+                                                                        } else {
+                                                                            changepassword()
+                                                                        }
+                                                                    }
+                                                                };
+                                                                xhr.send("password=" + encodeURIComponent(password));
+                                                            }
+                                                        });
+                                                    }
+
+                                                    function changepassword() {
+                                                        var password = prompt("验证成功，请输入新密码:");
+                                                        if (password !== null) {
+                                                            var xhr = new XMLHttpRequest();
+                                                            xhr.open("POST", "/changepassword", true);
+                                                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                                            xhr.onreadystatechange = function () {
+                                                                if (xhr.readyState === 4 && xhr.status === 200) {
+                                                                    document.getElementById("pwdspan").innerText = xhr.responseText;
+                                                                }
+                                                            };
+                                                            xhr.send("password=" + encodeURIComponent(password));
+                                                        }
+                                                    }
+
+                                                    verifypassword()
+                                                </script>
+                                            </div>
+                                            <div>
+                                                <span class="info-item" style="display: inline-block">
+                                                    <span style="font-weight: bold">SDK：</span>
+                                                    <span class="hidden-value"
+                                                          id="sdkspan">••••••••••••••••••••••••</span>
+                                                    <button id="verifyBtn">查看</button>
+                                                    <script>
+                                                        function checksdk() {
+                                                            document.getElementById("verifyBtn").addEventListener("click", function () {
+                                                                var password = prompt("请输入密码:");
+                                                                if (password !== null) {
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open("POST", "/verifypassword", true);
+                                                                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                                                    xhr.onreadystatechange = function () {
+                                                                        if (xhr.readyState === 4 && xhr.status === 200) {
+                                                                            document.getElementById("sdkspan").innerText = xhr.responseText;
+                                                                        }
+                                                                    };
+                                                                    xhr.send("password=" + encodeURIComponent(password));
+                                                                }
+                                                            });
+                                                        }
+
+                                                        checksdk()
+                                                    </script>
+                                                </span>
+                                                <span class="info-item">
+                                                    <span style="font-weight: bold">联系方式：</span>
+                                                    <span>1234567890</span>
+                                                </span>
+                                            </div>
+                                            <div>
+                                            <span class="info-item">
+                                                <span style="font-weight: bold">SDK剩余次数：</span>
+                                                <span class="hidden-value">=======---- 10/200</span>
+                                            </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <img style="width: 50%;" id="avatar-img" src="/static/usertouxiang/{{username}}/touxiang.png" alt="Avatar">
+                                        <button id="change-avatar-btn" class="btn btn-outline-secondary" style="display: block; margin-top: 10px; margin-left: 2rem;border: none">
+                                            更换头像
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                两个列表-->
+                <div class="row  mt-3">
+                    <!--                    上传数据集-->
+                    <div class="col-xl-6 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table1">
+                                        <thead>
+                                        <tr>
+                                            <th>已上传的数据集</th>
+                                            <th>上传时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <script>
+                                        function updatetable() {
+                                            axios.get('/get_uploadcsv')
+                                                .then(res => {
+                                                    let name1 = Object.entries(res.data)[0][1];
+                                                    // 假设通过后端获取到的文件名列表为fileNames
+                                                    var fileNames1 = name1;
+                                                    // 获取表格的tbody元素
+                                                    var tableBody1 = document.querySelector('#table1 tbody');
+                                                    tableBody1.innerHTML = '';
+                                                    // 遍历文件名列表，生成表格行并添加到表格中
+                                                    for (var i = 0; i < fileNames1.length; i++) {
+                                                        var fileName = fileNames1[i];
+                                                        var row = document.createElement('tr');
+                                                        var cell1 = document.createElement('td');
+                                                        cell1.textContent = fileName;
+                                                        var cell2 = document.createElement('td');
+                                                        cell2.textContent = '下载'
+                                                        row.appendChild(cell1);
+                                                        row.appendChild(cell2);
+                                                        tableBody1.appendChild(row);
+                                                    }
+                                                })
+                                                .catch(err => {
+                                                    console.error('axios请求错误' + err)
+                                                })
+                                        }
+
+                                        updatetable();
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    下载预测结果-->
+                    <div class="col-xl-6 d-flex grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table2">
+                                        <thead>
+                                        <tr>
+                                            <th>已下载的结果文件</th>
+                                            <th>下载时间</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <script>
+                                        function updatetable() {
+                                            axios.get('/get_userfile')
+                                                .then(res => {
+                                                    let tmp = res.data
+                                                    let name1 = tmp.uploadcsv;
+                                                    let name2 = tmp.downloadcsv;
+                                                    let time1 = tmp.uploadcsv_time
+                                                    let time2 = tmp.downloadcsv_time
+                                                    console.log(time1)
+                                                    console.log(time2)
+                                                    // 假设通过后端获取到的文件名列表为fileNames
+                                                    var fileNames1 = name1;
+                                                    var fileNames2 = name2;
+                                                    // 获取表格的tbody元素
+                                                    var tableBody1 = document.querySelector('#table1 tbody');
+                                                    var tableBody2 = document.querySelector('#table2 tbody');
+                                                    tableBody1.innerHTML = '';
+                                                    tableBody2.innerHTML = '';
+                                                    // 遍历文件名列表，生成表格行并添加到表格中
+                                                    for (var i = 0; i < fileNames1.length; i++) {
+                                                        var fileName = fileNames1[i];
+                                                        var time = time1[i]
+                                                        var row = document.createElement('tr');
+                                                        var cell1 = document.createElement('td');
+                                                        cell1.textContent = fileName;
+                                                        var cell1_5 = document.createElement('td');
+                                                        cell1_5.textContent = time;
+                                                        var cell2 = document.createElement('td');
+                                                        var href = document.createElement('a');
+                                                        href.href = '/download_history_csv?path=userdata/{{ username }}/上传数据集/in' + (i + 1) + '.csv';
+                                                        href.text = '下载';
+                                                        cell2.appendChild(href);
+                                                        row.appendChild(cell1);
+                                                        row.appendChild(cell1_5);
+                                                        row.appendChild(cell2);
+                                                        tableBody1.appendChild(row);
+                                                    }
+                                                    for (var i = 0; i < fileNames2.length; i++) {
+                                                        var fileName = fileNames2[i];
+                                                        var time = time2[i]
+                                                        var row = document.createElement('tr');
+                                                        var cell1 = document.createElement('td');
+                                                        cell1.textContent = fileName;
+                                                        var cell1_5 = document.createElement('td');
+                                                        cell1_5.textContent = time;
+                                                        var cell2 = document.createElement('td');
+                                                        var href = document.createElement('a');
+                                                        href.href = '/download_history_csv?path=userdata/{{ username }}/下载结果文件/res' + (i + 1) + '.csv';
+                                                        href.text = '下载';
+                                                        cell2.appendChild(href);
+                                                        row.appendChild(cell1);
+                                                        row.appendChild(cell1_5);
+                                                        row.appendChild(cell2);
+                                                        tableBody2.appendChild(row);
+                                                    }
+                                                })
+                                                .catch(err => {
+                                                    console.error('axios请求错误' + err)
+                                                })
+                                        }
+
+                                        updatetable();
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="footer-placeholder">
+                <script>
+                    $(function () {
+                        $("#footer-placeholder").load("/footer.html");
+                    });
+                </script>
+            </div>
+        </div>
+
+    </div>
+    <!-- content-wrapper ends -->
+    <!-- partial:partials/_footer.html -->
+
+    <!-- partial -->
+</div>
+<!-- main-panel ends -->
+</div>
+
+<!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<!-- base:js -->
+<script src="../static/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../static/js/off-canvas.js"></script>
+<script src="../static/js/hoverable-collapse.js"></script>
+<script src="../static/js/template.js"></script>
+<script src="../static/js/settings.js"></script>
+<script src="../static/js/todolist.js"></script>
+<!-- endinject -->
+<!-- plugin js for this page -->
+<script src="../static/js/progressbar.min.js"></script>
+<script src="../static/js/Chart.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="../static/js/dashboard.js"></script>
+<!-- End custom js for this page-->
+</body>
+</html>
