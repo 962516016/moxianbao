@@ -15,6 +15,9 @@
     <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
+            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
 </head>
 
 <body>
@@ -53,9 +56,7 @@
     </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-        <!-- partial:../../partials/_settings-panel.html -->
-        <!-- partial -->
-        <!-- partial:../../partials/_sidebar.html -->
+        <!--        导航栏，主题-->
         <div class="theme-setting-wrapper">
             <div class="settings-panel" id="theme-settings">
                 <i class="settings-close typcn typcn-delete-outline"></i>
@@ -89,207 +90,187 @@
                 });
             </script>
         </div>
-
-        <!-- partial -->
+        <!--        主界面区域-->
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="row">
-                    <div class="col-lg-6 grid-margin stretch-card">
+                    <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">模型文件</h4>
-                                <button class="btn btn-outline-success" id="add_models_to_pool">
-                                    添加
-                                </button>
-                                <button class="btn btn-outline-danger" id="delete_modes">
-                                    删除
-                                </button>
+                                <div>
+                                    <h4 class="card-title">日志操作记录
+                                        {% if username %}
+                                        <span class="font-weight-bold"> - {{username}}</span>
+                                        {% endif %}
+                                    </h4>
+                                </div>
+                                <!--                                <button class="btn btn-outline-success" id="add_models_to_pool">-->
+                                <!--                                    添加-->
+                                <!--                                </button>-->
+                                <!--                                <button class="btn btn-outline-danger" id="delete_modes">-->
+                                <!--                                    删除-->
+                                <!--                                </button>-->
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="model_table1">
+                                    <table class="table table-hover" id="log_table">
                                         <thead>
                                         <tr>
-                                            <th>模型名称</th>
-                                            <th>选择</th>
+                                            <th class="text-lg-center">序号</th>
+                                            <th class="text-lg-center">操作时间</th>
+                                            <th class="text-lg-center">调用API</th>
+                                            <th class="text-lg-center">备注</th>
                                         </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                 </div>
+                                <script>
+                                    function updatetable() {
+                                        axios.get('/get_apilog')
+                                            .then(res => {
+                                                let cnt = res.data.cnt;
+                                                var list = res.data.log;
+
+                                                console.log(cnt, 'list', list)
+
+                                                // 获取表格的tbody元素
+                                                var tableBody = document.querySelector('#log_table tbody');
+                                                tableBody.innerHTML = '';
+                                                // 遍历文件名列表，生成表格行并添加到表格中
+                                                for (let i = 0; i < cnt; i++) {
+                                                    const row = document.createElement('tr');
+
+                                                    const cell0 = document.createElement('td');
+                                                    cell0.textContent = i;
+                                                    cell0.align = 'center'
+                                                    row.appendChild(cell0);
+
+
+                                                    const operate_time = list[i][1];
+                                                    const cell1 = document.createElement('td');
+                                                    cell1.textContent = operate_time;
+                                                    cell1.align = 'center'
+                                                    row.appendChild(cell1);
+
+                                                    const api = list[i][2];
+                                                    const cell2 = document.createElement('td');
+                                                    cell2.textContent = api;
+                                                    cell2.align = 'center'
+                                                    row.appendChild(cell2);
+
+                                                    const note = list[i][3];
+                                                    const cell3 = document.createElement('td');
+                                                    cell3.textContent = note;
+                                                    cell3.align = 'center'
+                                                    row.appendChild(cell3);
+
+                                                    tableBody.appendChild(row);
+                                                }
+                                            })
+                                            .catch(err => {
+                                                console.error('axios请求错误' + err)
+                                            })
+                                    }
+
+                                    updatetable()
+                                </script>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 grid-margin stretch-card">
+                    <div class="col-sm-6">
                         <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">已融合模型</h4>
-                                <button class="btn btn-outline-danger" id="remove_models_from_pool">
-                                    移除
-                                </button>
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="model_table2">
-                                        <thead>
-                                        <tr>
-                                            <th>模型名称</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                    <script>
-                                        function updatetable() {
-                                            axios.get('/get_modelname')
-                                                .then(res => {
-                                                    let name1 = Object.entries(res.data)[0][1];
-                                                    let name2 = Object.entries(res.data)[1][1];
+                            <div class="card-body" style="min-height: 500px">
+                                <h4 class="card-title">用户操作使用分析</h4>
+                                <div class="row-lg-6 stretch-card h-auto">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">API调用次数分布</h4>
+                                            <div class="api-count" id="api-count-chart">
+                                                <script>
+                                                    function api_count() {
+                                                        var apiCountDom = document.getElementById('api-count-chart')
+                                                        var apiCountChart = echarts.init(apiCountDom, null, {renderer: 'svg'});
 
-                                                    // 假设通过后端获取到的文件名列表为fileNames
-                                                    var fileNames1 = name1;
-                                                    var fileNames2 = name2;
-                                                    // 获取表格的tbody元素
-                                                    var tableBody1 = document.querySelector('#model_table1 tbody');
-                                                    var tableBody2 = document.querySelector('#model_table2 tbody');
-                                                    tableBody1.innerHTML = '';
-                                                    tableBody2.innerHTML = '';
-                                                    // 遍历文件名列表，生成表格行并添加到表格中
-                                                    for (var i = 0; i < fileNames1.length; i++) {
-                                                        var fileName = fileNames1[i];
-                                                        var row = document.createElement('tr');
-                                                        var cell1 = document.createElement('td');
-                                                        cell1.textContent = fileName;
-                                                        var cell2 = document.createElement('td');
-                                                        var checkbox = document.createElement('input');
-                                                        checkbox.type = 'checkbox';
-                                                        cell2.appendChild(checkbox);
-                                                        row.appendChild(cell1);
-                                                        row.appendChild(cell2);
-                                                        tableBody1.appendChild(row);
+                                                        const url = '/get_apicount?' + 'username={{username}}'
+
+                                                        // GET请求
+                                                        axios.get(url)
+                                                            .then(res => {
+                                                                const apicount = res.data.apicount;
+                                                                const cnt = res.data.cnt;
+                                                                const apilist = res.data.apilist;
+
+                                                                let apicnt = [];
+                                                                let data = [];
+                                                                for (let i = 1; i <= cnt; i++) {
+                                                                    apicnt.push(parseInt(apicount[i]));
+                                                                    let item = {}
+                                                                    item['value'] = apicount[i]
+                                                                    item['name'] = apilist[i]
+                                                                    data.push(item)
+                                                                }
+                                                                console.log(data)
+                                                                // 指定图表的配置项和数据
+                                                                var option = {
+                                                                    title: {
+                                                                        text: 'API调用次数分布'
+                                                                    },
+                                                                    legend: {
+                                                                        top: 'bottom',
+                                                                        left: 'center'
+                                                                    },
+                                                                    tooltip: {
+                                                                        trigger: 'item',
+                                                                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                                                                    },
+                                                                    toolbox: {
+                                                                        show: true,
+                                                                        feature: {
+                                                                            mark: {show: true},
+                                                                            dataView: {
+                                                                                show: true,
+                                                                                readOnly: false
+                                                                            },
+                                                                            restore: {show: true},
+                                                                            saveAsImage: {show: true}
+                                                                        }
+                                                                    },
+                                                                    series: [
+                                                                        {
+                                                                            name: 'API调用次数分布',
+                                                                            type: 'pie',
+                                                                            radius: [40, 100],
+                                                                            center: ['50%', '50%'],
+                                                                            roseType: 'area',
+                                                                            itemStyle: {
+                                                                                borderRadius: 8
+                                                                            },
+                                                                            data: data
+                                                                        }
+                                                                    ]
+                                                                };
+                                                                apiCountChart.setOption(option)
+                                                                window.onresize = function () {
+                                                                    apiCountChart.resize();
+                                                                }
+                                                            })
+                                                            .catch(err => {
+                                                                console.error('axios请求错误' + err)
+                                                            })
                                                     }
-                                                    for (var i = 0; i < fileNames2.length; i++) {
-                                                        var fileName = fileNames2[i];
-                                                        var row = document.createElement('tr');
-                                                        var cell = document.createElement('td');
-                                                        cell.textContent = fileName;
-                                                        var cell2 = document.createElement('td');
-                                                        var checkbox = document.createElement('input');
-                                                        checkbox.type = 'checkbox';
-                                                        cell2.appendChild(checkbox);
-                                                        row.appendChild(cell);
-                                                        row.appendChild(cell2);
 
-                                                        tableBody2.appendChild(row);
-                                                    }
-                                                })
-                                                .catch(err => {
-                                                    console.error('axios请求错误' + err)
-                                                })
-                                        }
+                                                    api_count()
 
-                                        function addmodels() {
-                                            // 获取提交按钮元素
-                                            var addmodelBtn = document.querySelector('#add_models_to_pool');
-                                            // 添加点击事件处理程序
-                                            addmodelBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns1 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns1.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/add_models_to_pool');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns1));
-                                            });
-                                        }
-
-                                        function removemodels() {
-                                            // 获取提交按钮元素
-                                            var removemodelBtn = document.querySelector('#remove_models_from_pool');
-                                            // 添加点击事件处理程序
-                                            removemodelBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table2 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns2 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns2.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/remove_models_from_pool');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns2));
-                                            });
-                                        }
-
-                                        function deletemodels() {
-                                            // 获取提交按钮元素
-                                            var deleteBtn = document.querySelector('#delete_modes');
-                                            // 添加点击事件处理程序
-                                            deleteBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns3 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns3.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/delete_models');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns3));
-                                            });
-                                        }
-
-                                        updatetable();
-                                        addmodels();
-                                        removemodels();
-                                        deletemodels();
-                                    </script>
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-lg-6  stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">使用时段分析</h4>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

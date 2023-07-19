@@ -542,7 +542,6 @@ def logout():
     return redirect('/')
 
 
-
 @app.route('/offline')
 def offline():
     username = session.get('username')
