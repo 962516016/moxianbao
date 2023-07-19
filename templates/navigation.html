@@ -9,21 +9,6 @@
         </a>
     </li>
     <li class="nav-item">
-        <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
-           href="#tables">
-            <i class="typcn typcn-th-small-outline menu-icon"></i>
-            <span class="menu-title">管理员</span>
-            <i class="menu-arrow"></i>
-        </a>
-        <div class="collapse" id="tables">
-            <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
-                <li class="nav-item"><a class="nav-link" href="/log">日志管理</a></li>
-            </ul>
-        </div>
-    </li>
-
-    <li class="nav-item">
         <a class="nav-link" href="/predict">
             <i class="typcn typcn-chart-bar menu-icon"></i>
             <span class="menu-title">在线预测</span>
@@ -42,6 +27,30 @@
             <span class="menu-title">API使用文档</span>
         </a>
     </li>
+<!--    管理员 or 日志管理-->
+    {% if username == 'admin' %}
+    <li class="nav-item">
+        <a aria-controls="tables" aria-expanded="false" class="nav-link" data-toggle="collapse"
+           href="#tables">
+            <i class="typcn typcn-th-small-outline menu-icon"></i>
+            <span class="menu-title">管理员</span>
+            <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="tables">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><a class="nav-link" href="/admin">模型管理</a></li>
+                <li class="nav-item"><a class="nav-link" href="/log">日志管理</a></li>
+            </ul>
+        </div>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="/log">
+            <i class="typcn typcn-th-small-outline menu-icon"></i>
+            <span class="menu-title">日志管理</span>
+        </a>
+    </li>
+    {% endif %}
      <!--          个人中心-->
     <li class="nav-item">
         <a class="nav-link" href="/personalcenter">

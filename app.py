@@ -736,9 +736,9 @@ def download_resfile():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'],
            note="下载预测结果")
-    path = "userdata/%s/下载结果文件" % session.get('username')
+    path = "userdata/%s/下载结果文件/" % session.get('username')
     cnt = count_files_in_folder(path)
-    file_name = '/res' + str(cnt + 1) + '.csv'
+    file_name = 'res' + str(cnt + 1) + '.csv'
     file_path = path + file_name# 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name=file_name, as_attachment=True)
@@ -844,12 +844,14 @@ def register_submit():
 
 @app.route('/navigation.html')
 def navigation():
-    return render_template('navigation.html')
+    username = session.get('username')
+    return render_template('navigation.html', username=username)
 
 
 @app.route('/footer.html')
 def footer():
-    return render_template('footer.html')
+    username = session.get('username')
+    return render_template('footer.html', username=username)
 
 
 

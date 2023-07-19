@@ -10349,7 +10349,7 @@ pre code {
   display: block;
   width: 100%;
   overflow-x: auto;
-  max-height: 500px;
+  max-height: 450px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -12613,7 +12613,7 @@ input[type="button"].btn-block {
 .nav {
   display: flex;
   flex-wrap: wrap;
-  width: 200px !important;
+  width: 205px !important;
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
@@ -23595,7 +23595,7 @@ body.avgrund-active {
     top: 64px;
     bottom: 0;
     overflow: auto;
-    right: -255px;
+    right: -205px;
     -webkit-transition: all 0.25s ease-out;
     -o-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
