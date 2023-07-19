@@ -172,7 +172,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!--                主图表区域-->
                 <div class="row" style="margin-top: 10px">
                     <div class="col-lg-12 d-flex grid-margin stretch-card">
@@ -363,7 +362,7 @@
                                                     for (let i = 2; i <= 8; i++) {
                                                         cnt.push(parseInt(tmp[i]));
                                                     }
-                                                    console.log(cnt)
+                                                    // console.log(cnt)
                                                     // 指定图表的配置项和数据
                                                     var option = {
                                                         title: {
@@ -533,7 +532,7 @@
                                                     var xValue = ym[params.data.value[0]];
                                                     var yValue = tid[params.data.value[1]];
 
-                                                    return '月份：' + xValue + '\n' + ' 风场id：' + yValue + ' 该月发电量：' + params.data.value[2];
+                                                    return '月份：' + xValue + '<br/>' + ' 风场id：' + yValue + '<br/>' + ' 该月发电量：' + params.data.value[2];
                                                 }
                                             },
                                             visualMap: {

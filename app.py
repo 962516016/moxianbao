@@ -124,43 +124,22 @@ def query_pre_data(turbid, year, month, day, hour, length):
     return result
 
 
-def sqlverifypassword(password):
-    username = session['username']
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
-    cursor.execute(sql, (username, password))
-    result = cursor.fetchall()
-    connection.close()
-    cursor.close()
-    if result:
-        return True
-    else:
-        return False
-
-def sqlchangepassword(password):
-    username = session['username']
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    sql = "UPDATE usertable SET password='%s' WHERE username='%s';" % (password, username)
-    cursor.execute(sql)
-    flg = cursor.rowcount
-    print(flg)
-    connection.commit()
-    connection.close()
-    cursor.close()
-    if flg==1:
-        return True
-    else:
-        return False
-
-
-
 def query_winddirection_data(turbid):
     connection = pool.get_connection()
     cursor = connection.cursor()
     sql = "SELECT * FROM winddirection WHERE TurbID=%s"
     cursor.execute(sql, turbid)
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    return result
+
+
+def query_apicount_data(username, api):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s'" % (username, api)
+    cursor.execute(sql)
     result = cursor.fetchall()
     connection.close()
     cursor.close()
@@ -195,6 +174,7 @@ def verify_user(username, password):
     cursor.execute(sql, (username, password))
     # 获取查询结果
     result = cursor.fetchone()
+    print(result)
     # 关闭游标和连接
     connection.close()
     cursor.close()
@@ -292,6 +272,30 @@ def get_winddirection():
         "direction": res_list_direction
     })
     # print(res_list_direction)
+    return result
+
+
+@app.route('log')
+def log():
+    username = session.get('username')
+    sdk = session.get('sdk')
+    return render_template('log.html', username=username, log=log)
+
+
+@app.route('/get_apicount', methods=['GET'])
+def get_apicount():
+    username = request.args.get('username')
+    # data = query_apicount_data(username,)
+    # res_list_apicount = list(data[0])
+    res_list_apicount = []
+    for key in api_list.keys():
+        data = query_apicount_data(username, api_list[key])
+        # print('getapicount中的返回'+key, data[0])
+        res_list_apicount.append(data[0])
+    result = jsonify({
+        "cnt": len(api_list),
+        "apicount": res_list_apicount
+    })
     return result
 
 
@@ -518,7 +522,6 @@ def logout():
     return redirect('/')
 
 
-
 @app.route('/offline')
 def offline():
     username = session.get('username')
@@ -585,8 +588,7 @@ def createfolder(username):
 def login_verify():
     username = request.form['username']
     password = request.form['password']
-    print(username)
-    print(password)
+
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
@@ -595,10 +597,6 @@ def login_verify():
         # 为该用户建立需要的文件夹
         createfolder(username)
         return render_template("index.html", username=username, sdk=sdk)
-
-
-
-
     elif password == '':
         error = '密码不能为空'
         # redirect('/login')
@@ -607,6 +605,7 @@ def login_verify():
         error = '用户名或密码错误'
         # redirect('/login')
         return render_template('login.html', error=error, username=username)
+
 
 @app.route('/index')
 def to_index():
