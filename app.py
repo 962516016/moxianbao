@@ -198,11 +198,8 @@ def verify_user(username, password):
     # 关闭游标和连接
     connection.close()
     cursor.close()
-
     # 根据查询结果返回验证结果
     if result:
-        if result[4] == '1':
-            session[username + '_create'] = '1'
         return True
     else:
         return False
@@ -517,7 +514,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    del session['username']
+    session.clear()
     return redirect('/')
 
 
@@ -561,7 +558,6 @@ def getsdk():
     sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
-    print('获取sdk测试', result)
     if result is not None:
         session['sdk'] = result[0]
     else:
@@ -570,22 +566,19 @@ def getsdk():
     cursor.close()
     return session.get('sdk')
 
+
 def createfolder(username):
-    print(username)
-    flg = session.get(username+'_create')
-    print(flg)
-    if flg == None:
-        path1 = 'userdata/%s/上传数据集' % username
-        path2 = 'userdata/%s/下载结果文件' % username
-        path3 = 'static/usertouxiang/%s' % username
-        print('__________________________________')
-        os.makedirs(path1)
-        os.makedirs(path2)
-        os.makedirs(path3)
-        source_file = 'static/picture/touxiang.png'
-        destination_file = path3 + '/touxiang.png'
+    path1 = 'userdata/%s/上传数据集' % username
+    path2 = 'userdata/%s/下载结果文件' % username
+    path3 = 'static/usertouxiang/%s' % username
+    print('__________________________________')
+    os.makedirs(path1, exist_ok=True)
+    os.makedirs(path2, exist_ok=True)
+    os.makedirs(path3, exist_ok=True)
+    source_file = 'static/picture/touxiang.png'
+    destination_file = path3 + '/touxiang.png'
+    if os.path.exists(destination_file) == False:
         shutil.copy2(source_file, destination_file)
-        session[username+'_create'] = '1'
 
 
 @app.route('/index', methods=['POST'])
