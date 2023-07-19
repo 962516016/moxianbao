@@ -295,6 +295,30 @@ def get_winddirection():
     return result
 
 
+@app.route('/log')
+def log():
+    username = session.get('username')
+    sdk = session.get('sdk')
+    return render_template('log.html', username=username, log=log)
+
+
+@app.route('/get_apicount', methods=['GET'])
+def get_apicount():
+    username = request.args.get('username')
+    # data = query_apicount_data(username,)
+    # res_list_apicount = list(data[0])
+    res_list_apicount = []
+    for key in api_list.keys():
+        data = query_apicount_data(username, api_list[key])
+        # print('getapicount中的返回'+key, data[0])
+        res_list_apicount.append(data[0])
+    result = jsonify({
+        "cnt": len(api_list),
+        "apicount": res_list_apicount
+    })
+    return result
+
+
 # 获取他人使用offline程序跑出来的模型
 @app.route('/getmodel', methods=['POST'])
 def get_model():
