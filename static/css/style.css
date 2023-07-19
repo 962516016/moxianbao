@@ -25419,15 +25419,17 @@ body.avgrund-active {
   position: relative;
   max-height: 1000px;
   display: flex;
-  overflow: scroll;
 }
 
 .report-parent-component {
   position: absolute;
+  min-height: 450px;
+  height: 450px;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  margin: 0 !important;
 }
 
 .report-component {
@@ -25461,4 +25463,10 @@ body.avgrund-active {
 
 .modal-body input {
   margin-bottom: 10px;
+}
+
+.btn-tmp {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #337ab7;
 }

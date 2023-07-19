@@ -377,7 +377,7 @@ def analyze_wind_power():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['gptapi_analyze'], note="AI分析")
     # 编辑prompt
-    openai.api_key = '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'
+    openai.api_key = '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'
     openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
     # send a ChatCompletion request to GPT
     messages = [
@@ -703,7 +703,6 @@ def get_file():
     df_upload_file = df
     return jsonify({})
 
-
 @app.route('/data_analyze')
 def data_analysis():
     # profile = ProfileReport(df_upload_file)
@@ -712,11 +711,19 @@ def data_analysis():
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    name = '0001in.csv'
-    df = pd.read_csv(name)
-    dtale.show(df, host=myhost, port=report_port)
     return render_template('report.html')
 
+
+#暂时跳转版本
+@app.route('/data_analyze1')
+def data_analysis1():
+    # profile = ProfileReport(df_upload_file)
+    # profile.to_file("templates/report.html")
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
+    return render_template('report_new.html')
 
 # 前端获取文件，后端处理完，返回一段时间的预测值
 @app.route('/online_predict')
