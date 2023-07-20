@@ -100,7 +100,7 @@
                                         // 使用axios发送POST请求
                                         axios.post('/register_submit', { username: username, password: password ,repassword:repassword})
                                           .then(function(response) {
-                                                res = response.data
+                                                var res = response.data
                                                 var tmp = document.getElementById('response');
                                                 tmp.innerText = '';
                                                 if( res == '注册成功,点此登录'){

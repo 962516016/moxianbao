@@ -13,17 +13,7 @@
     <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script crossorigin="anonymous"
-            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
-            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
-    <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
-    <!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
-    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-    <!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"-->
-    <!--          rel="stylesheet">-->
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -100,252 +90,253 @@
             <div class="content-wrapper">
                 <!--                个人信息区域-->
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body" id="main-container2">
-                                <div class="row" style="margin-top: 10px">
-                                    <div class="col-lg-9 d-flex grid-margin stretch-card">
-                                        <div style="width: 100%;">
-                                            <h3>基本信息</h3>
-                                            <div>
-                                                <span class="info-item">
-                                                    <span style="font-weight: bold">用户名：</span>
-                                                    <span>{{ username }}</span>
-                                                </span>
-                                                <span class="info-item">
-                                                    <span style="font-weight: bold">密码：</span>
-                                                    <span class="hidden-value" id="pwdspan">••••••••••••</span>
-                                                    <button id="changepwdBtn">修改</button>
-                                                </span>
-                                                <script>
-                                                    function verifypassword() {
-                                                        document.getElementById("changepwdBtn").addEventListener("click", function () {
+                                <h3 class="mb-3">基本信息</h3>
+                                <div class="form-sample">
+                                    <div class="row">
+                                        <div class="col-md-9 d-flex grid-margin stretch-card">
+                                            <div class="form-group row mx-2">
+                                                <div class="col-md-6 min-vw-20 mt-2 mb-2">
+                                                    <span>
+                                                        <span style="font-weight: bold">用户名：</span>
+                                                        <span>{{ username }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-6 min-vw-20 mt-2 mb-2">
+                                                    <span>
+                                                        <span style="font-weight: bold">密码：</span>
+                                                        <span class="hidden-value" id="pwdspan">••••••••••••</span>
+                                                        <button id="changepwdBtn" onclick="verifypwd()">修改</button>
+                                                    </span>
+                                                    <script>
+                                                        function verifypwd() {
                                                             var password = prompt("请验证旧密码:");
                                                             if (password !== null) {
-                                                                var xhr = new XMLHttpRequest();
-                                                                xhr.open("POST", "/verifypassword", true);
-                                                                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                                                xhr.onreadystatechange = function () {
-                                                                    if (xhr.readyState === 4 && xhr.status === 200) {
-                                                                        var res = xhr.responseText
+                                                                var params = new URLSearchParams();
+                                                                params.append('password', password)
+                                                                axios.post('/verifypassword', params)
+                                                                    .then(function (response) {
+                                                                        var res = response.data
                                                                         if (res == '密码错误') {
                                                                             document.getElementById("pwdspan").style.color = "red";
                                                                             document.getElementById("pwdspan").innerText = '密码错误，请重试！'
                                                                         } else {
+                                                                            document.getElementById("pwdspan").style.color = "black";
                                                                             changepassword()
                                                                         }
-                                                                    }
-                                                                };
-                                                                xhr.send("password=" + encodeURIComponent(password));
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error(error);
+                                                                    });
                                                             }
-                                                        });
-                                                    }
-
-                                                    function changepassword() {
-                                                        var password = prompt("验证成功，请输入新密码:");
-                                                        if (password !== null) {
-                                                            var xhr = new XMLHttpRequest();
-                                                            xhr.open("POST", "/changepassword", true);
-                                                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                                            xhr.onreadystatechange = function () {
-                                                                if (xhr.readyState === 4 && xhr.status === 200) {
-                                                                    document.getElementById("pwdspan").innerText = xhr.responseText;
-                                                                }
-                                                            };
-                                                            xhr.send("password=" + encodeURIComponent(password));
-                                                        }
-                                                    }
-
-                                                    verifypassword()
-                                                </script>
-                                            </div>
-                                            <div>
-                                                <span class="info-item" style="display: inline-block">
-                                                    <span style="font-weight: bold">SDK：</span>
-                                                    <span class="hidden-value"
-                                                          id="sdkspan">••••••••••••••••••••••••</span>
-                                                    <button id="verifyBtn">查看</button>
-                                                    <script>
-                                                        function checksdk() {
-                                                            document.getElementById("verifyBtn").addEventListener("click", function () {
-                                                                var password = prompt("请输入密码:");
-                                                                if (password !== null) {
-                                                                    var xhr = new XMLHttpRequest();
-                                                                    xhr.open("POST", "/verifypassword", true);
-                                                                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                                                    xhr.onreadystatechange = function () {
-                                                                        if (xhr.readyState === 4 && xhr.status === 200) {
-                                                                            document.getElementById("sdkspan").innerText = xhr.responseText;
-                                                                        }
-                                                                    };
-                                                                    xhr.send("password=" + encodeURIComponent(password));
-                                                                }
-                                                            });
                                                         }
 
-                                                        checksdk()
+                                                        function changepassword() {
+                                                            var password = prompt("验证成功，请输入新密码:");
+                                                            if (password !== null) {
+                                                                var params = new URLSearchParams();
+                                                                params.append('password', password)
+                                                                axios.post('/changepassword', params)
+                                                                    .then(function (response) {
+                                                                        var res = response.data
+                                                                        document.getElementById("pwdspan").innerText = res
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error(error);
+                                                                    });
+                                                            }
+                                                        }
                                                     </script>
-                                                </span>
-                                                <span class="info-item">
-                                                    <span style="font-weight: bold">联系方式：</span>
-                                                    <span>1234567890</span>
-                                                </span>
-                                            </div>
-                                            <div>
-                                            <span class="info-item">
-                                                <span style="font-weight: bold">SDK剩余次数：</span>
-                                                <span class="hidden-value">=======---- 10/200</span>
-                                            </span>
+                                                </div>
+                                                <div class="col-md-12 min-vw-50 mt-2 mb-2">
+                                                    <span>
+                                                        <span style="font-weight: bold">SDK：</span>
+                                                        <span class="hidden-value"
+                                                              id="sdkspan">••••••••••••••••••••••••</span>
+                                                        <button id="verifyBtn" onclick="checksdk()">查看</button>
+                                                        <script>
+                                                            function checksdk() {
+                                                                let password = prompt("请输入密码:");
+                                                                if (password != null && password !== "") {
+                                                                    data = new FormData()
+                                                                    data.append('password', password)
+                                                                    axios.post('/verifypassword', data)
+                                                                        .then(res => {
+                                                                            document.getElementById("sdkspan").innerHTML = res.data;
+                                                                        })
+                                                                        .catch(err => {
+
+                                                                        })
+                                                                }
+                                                            }
+                                                        </script>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-6 min-vw-80 mt-2 mb-2">
+                                                    <span>
+                                                        <span style="font-weight: bold">SDK剩余：</span>
+                                                        <span class="hidden-value">====---- 5/10</span>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-6 min-vw-50 mt-2 mb-2">
+                                                    <span>
+                                                        <span style="font-weight: bold">联系方式：</span>
+                                                        <span>1234567890</span>
+                                                    </span>
+                                                </div>
+
                                             </div>
                                         </div>
-
+                                        <div class="col-md-3 ">
+                                            <img style="width: 50%;" id="avatar-img"
+                                                 src="/static/usertouxiang/{{username}}/touxiang.png" alt="Avatar">
+                                            <button id="change-avatar-btn" class="btn btn-outline-secondary"
+                                                    style="display: block; margin-top: 10px; margin-left: 2rem;border: none">
+                                                更换头像
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="col-lg-3">
-                                        <img style="width: 50%;" id="avatar-img" src="/static/usertouxiang/{{username}}/touxiang.png" alt="Avatar">
-                                        <button id="change-avatar-btn" class="btn btn-outline-secondary" style="display: block; margin-top: 10px; margin-left: 2rem;border: none">
-                                            更换头像
-                                        </button>
-                                    </div>
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row mt-3">
+                        <!--                    上传数据集-->
+                        <div class="col-xl-6 d-flex grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="table1">
+                                            <thead>
+                                            <tr>
+                                                <th>已上传的数据集</th>
+                                                <th>上传时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <script>
+                                            function updatetable() {
+                                                axios.get('/get_uploadcsv')
+                                                    .then(res => {
+                                                        let name1 = Object.entries(res.data)[0][1];
+                                                        // 假设通过后端获取到的文件名列表为fileNames
+                                                        var fileNames1 = name1;
+                                                        // 获取表格的tbody元素
+                                                        var tableBody1 = document.querySelector('#table1 tbody');
+                                                        tableBody1.innerHTML = '';
+                                                        // 遍历文件名列表，生成表格行并添加到表格中
+                                                        for (var i = 0; i < fileNames1.length; i++) {
+                                                            var fileName = fileNames1[i];
+                                                            var row = document.createElement('tr');
+                                                            var cell1 = document.createElement('td');
+                                                            cell1.textContent = fileName;
+                                                            var cell2 = document.createElement('td');
+                                                            cell2.textContent = '下载'
+                                                            row.appendChild(cell1);
+                                                            row.appendChild(cell2);
+                                                            tableBody1.appendChild(row);
+                                                        }
+                                                    })
+                                                    .catch(err => {
+                                                        console.error('axios请求错误' + err)
+                                                    })
+                                            }
+
+                                            updatetable();
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                    下载预测结果-->
+                        <div class="col-xl-6 d-flex grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="table2">
+                                            <thead>
+                                            <tr>
+                                                <th>已下载的结果文件</th>
+                                                <th>下载时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <script>
+                                            function updatetable() {
+                                                axios.get('/get_userfile')
+                                                    .then(res => {
+                                                        let tmp = res.data
+                                                        let name1 = tmp.uploadcsv;
+                                                        let name2 = tmp.downloadcsv;
+                                                        let time1 = tmp.uploadcsv_time
+                                                        let time2 = tmp.downloadcsv_time
+                                                        console.log(time1)
+                                                        console.log(time2)
+                                                        // 假设通过后端获取到的文件名列表为fileNames
+                                                        var fileNames1 = name1;
+                                                        var fileNames2 = name2;
+                                                        // 获取表格的tbody元素
+                                                        var tableBody1 = document.querySelector('#table1 tbody');
+                                                        var tableBody2 = document.querySelector('#table2 tbody');
+                                                        tableBody1.innerHTML = '';
+                                                        tableBody2.innerHTML = '';
+                                                        // 遍历文件名列表，生成表格行并添加到表格中
+                                                        for (var i = 0; i < fileNames1.length; i++) {
+                                                            var fileName = fileNames1[i];
+                                                            var time = time1[i]
+                                                            var row = document.createElement('tr');
+                                                            var cell1 = document.createElement('td');
+                                                            cell1.textContent = fileName;
+                                                            var cell1_5 = document.createElement('td');
+                                                            cell1_5.textContent = time;
+                                                            var cell2 = document.createElement('td');
+                                                            var href = document.createElement('a');
+                                                            href.href = '/download_history_csv?path=userdata/{{ username }}/上传数据集/in' + (i + 1) + '.csv';
+                                                            href.text = '下载';
+                                                            cell2.appendChild(href);
+                                                            row.appendChild(cell1);
+                                                            row.appendChild(cell1_5);
+                                                            row.appendChild(cell2);
+                                                            tableBody1.appendChild(row);
+                                                        }
+                                                        for (var i = 0; i < fileNames2.length; i++) {
+                                                            var fileName = fileNames2[i];
+                                                            var time = time2[i]
+                                                            var row = document.createElement('tr');
+                                                            var cell1 = document.createElement('td');
+                                                            cell1.textContent = fileName;
+                                                            var cell1_5 = document.createElement('td');
+                                                            cell1_5.textContent = time;
+                                                            var cell2 = document.createElement('td');
+                                                            var href = document.createElement('a');
+                                                            href.href = '/download_history_csv?path=userdata/{{ username }}/下载结果文件/res' + (i + 1) + '.csv';
+                                                            href.text = '下载';
+                                                            cell2.appendChild(href);
+                                                            row.appendChild(cell1);
+                                                            row.appendChild(cell1_5);
+                                                            row.appendChild(cell2);
+                                                            tableBody2.appendChild(row);
+                                                        }
+                                                    })
+                                                    .catch(err => {
+                                                        console.error('axios请求错误' + err)
+                                                    })
+                                            }
+
+                                            updatetable();
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <!--                两个列表-->
-                <div class="row  mt-3">
-                    <!--                    上传数据集-->
-                    <div class="col-xl-6 d-flex grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="table1">
-                                        <thead>
-                                        <tr>
-                                            <th>已上传的数据集</th>
-                                            <th>上传时间</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                    <script>
-                                        function updatetable() {
-                                            axios.get('/get_uploadcsv')
-                                                .then(res => {
-                                                    let name1 = Object.entries(res.data)[0][1];
-                                                    // 假设通过后端获取到的文件名列表为fileNames
-                                                    var fileNames1 = name1;
-                                                    // 获取表格的tbody元素
-                                                    var tableBody1 = document.querySelector('#table1 tbody');
-                                                    tableBody1.innerHTML = '';
-                                                    // 遍历文件名列表，生成表格行并添加到表格中
-                                                    for (var i = 0; i < fileNames1.length; i++) {
-                                                        var fileName = fileNames1[i];
-                                                        var row = document.createElement('tr');
-                                                        var cell1 = document.createElement('td');
-                                                        cell1.textContent = fileName;
-                                                        var cell2 = document.createElement('td');
-                                                        cell2.textContent = '下载'
-                                                        row.appendChild(cell1);
-                                                        row.appendChild(cell2);
-                                                        tableBody1.appendChild(row);
-                                                    }
-                                                })
-                                                .catch(err => {
-                                                    console.error('axios请求错误' + err)
-                                                })
-                                        }
 
-                                        updatetable();
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--                    下载预测结果-->
-                    <div class="col-xl-6 d-flex grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="table2">
-                                        <thead>
-                                        <tr>
-                                            <th>已下载的结果文件</th>
-                                            <th>下载时间</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                    <script>
-                                        function updatetable() {
-                                            axios.get('/get_userfile')
-                                                .then(res => {
-                                                    let tmp = res.data
-                                                    let name1 = tmp.uploadcsv;
-                                                    let name2 = tmp.downloadcsv;
-                                                    let time1 = tmp.uploadcsv_time
-                                                    let time2 = tmp.downloadcsv_time
-                                                    console.log(time1)
-                                                    console.log(time2)
-                                                    // 假设通过后端获取到的文件名列表为fileNames
-                                                    var fileNames1 = name1;
-                                                    var fileNames2 = name2;
-                                                    // 获取表格的tbody元素
-                                                    var tableBody1 = document.querySelector('#table1 tbody');
-                                                    var tableBody2 = document.querySelector('#table2 tbody');
-                                                    tableBody1.innerHTML = '';
-                                                    tableBody2.innerHTML = '';
-                                                    // 遍历文件名列表，生成表格行并添加到表格中
-                                                    for (var i = 0; i < fileNames1.length; i++) {
-                                                        var fileName = fileNames1[i];
-                                                        var time = time1[i]
-                                                        var row = document.createElement('tr');
-                                                        var cell1 = document.createElement('td');
-                                                        cell1.textContent = fileName;
-                                                        var cell1_5 = document.createElement('td');
-                                                        cell1_5.textContent = time;
-                                                        var cell2 = document.createElement('td');
-                                                        var href = document.createElement('a');
-                                                        href.href = '/download_history_csv?path=userdata/{{ username }}/上传数据集/in' + (i + 1) + '.csv';
-                                                        href.text = '下载';
-                                                        cell2.appendChild(href);
-                                                        row.appendChild(cell1);
-                                                        row.appendChild(cell1_5);
-                                                        row.appendChild(cell2);
-                                                        tableBody1.appendChild(row);
-                                                    }
-                                                    for (var i = 0; i < fileNames2.length; i++) {
-                                                        var fileName = fileNames2[i];
-                                                        var time = time2[i]
-                                                        var row = document.createElement('tr');
-                                                        var cell1 = document.createElement('td');
-                                                        cell1.textContent = fileName;
-                                                        var cell1_5 = document.createElement('td');
-                                                        cell1_5.textContent = time;
-                                                        var cell2 = document.createElement('td');
-                                                        var href = document.createElement('a');
-                                                        href.href = '/download_history_csv?path=userdata/{{ username }}/下载结果文件/res' + (i + 1) + '.csv';
-                                                        href.text = '下载';
-                                                        cell2.appendChild(href);
-                                                        row.appendChild(cell1);
-                                                        row.appendChild(cell1_5);
-                                                        row.appendChild(cell2);
-                                                        tableBody2.appendChild(row);
-                                                    }
-                                                })
-                                                .catch(err => {
-                                                    console.error('axios请求错误' + err)
-                                                })
-                                        }
-
-                                        updatetable();
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div id="footer-placeholder">

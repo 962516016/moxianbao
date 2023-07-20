@@ -15,9 +15,9 @@
     <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
-<!--    <script crossorigin="anonymous"-->
-<!--            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="-->
-<!--            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>-->
+    <!--    <script crossorigin="anonymous"-->
+    <!--            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="-->
+    <!--            src="http://lib.baomitu.com/echarts/5.4.3/echarts.common.js"></script>-->
     <script src="../static/js/echarts.js"></script>
 </head>
 
@@ -99,11 +99,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div>
-                                    <h4 class="card-title">日志操作记录
-                                        {% if username %}
-                                        <span class="font-weight-bold"> - {{username}}</span>
-                                        {% endif %}
-                                    </h4>
+                                    <h4 class="card-title">日志操作记录-ALL</h4>
                                 </div>
                                 <!--                                <button class="btn btn-outline-success" id="add_models_to_pool">-->
                                 <!--                                    添加-->
@@ -116,6 +112,7 @@
                                         <thead>
                                         <tr>
                                             <th class="text-lg-center">序号</th>
+                                            <th class="text-lg-center">用户</th>
                                             <th class="text-lg-center">操作时间</th>
                                             <th class="text-lg-center">调用功能</th>
                                             <th class="text-lg-center">备注</th>
@@ -130,6 +127,7 @@
                                             .then(res => {
                                                 let cnt = res.data.cnt;
                                                 let list = res.data.log;
+                                                console.log(list)
 
                                                 // 获取表格的tbody元素
                                                 var tableBody = document.querySelector('#log_table tbody');
@@ -143,6 +141,11 @@
                                                     cell0.align = 'center'
                                                     row.appendChild(cell0);
 
+                                                    const user = list[i][0];
+                                                    const cell0_5 = document.createElement('td');
+                                                    cell0_5.textContent = user;
+                                                    cell0_5.align = 'center'
+                                                    row.appendChild(cell0_5);
 
                                                     const operate_time = list[i][1];
                                                     const cell1 = document.createElement('td');

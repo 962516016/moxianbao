@@ -114,7 +114,7 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="row mt-2">
-                    <div class="col-lg-4 grid-margin stretch-card">
+                    <div class="col-lg-4 grid-margin stretch-card" id="left">
                         <div class="card">
                             <div class="card-body">
                                 <button id="uploadBtn" onclick="closeReport()"
@@ -147,21 +147,17 @@
                                 <script>
                                     function openReport() {
                                         document.getElementById('chart').style.display = 'none'
+                                        document.getElementById('buttons').style.display = 'block'
                                         $('#report').load('/data_analyze')
-                                        let iframe = document.createElement('iframe');
-                                        iframe.frameBorder = 0;
-                                        iframe.width = "100%";
-                                        iframe.height = "650px";
-                                        iframe.id = "d-tale-iframe";
-                                        iframe.src = "/data_analyze";
 
-                                        let tmp = document.getElementById('d-tale-container')
-                                        tmp.innerHTML = ''
-                                        tmp.append(iframe)
-                                        document.getElementById('report1').style.display = 'block'
+                                        let iframe = document.getElementById('report1');
+                                        iframe.src = "/data_analyze";
+                                        iframe.style.display = 'block'
+                                        iframe.style.border = '0px'
                                     }
 
                                     function closeReport() {
+                                        document.getElementById('buttons').style.display = 'none'
                                         document.getElementById('report1').style.display = 'none'
                                         document.getElementById('chart').style.display = 'block'
                                     }
@@ -330,39 +326,32 @@
                                 <textarea id="aianswer" readonly style="width: 100%;height:120px;">Hi，您好，欢迎使用风电功率预测与分析服务。
                                 </textarea>
                             </div>
-                            <div class="card-body report-parent-component" style="display: none" id="report1">
-                                <div>
-                                    <span style="margin-left: 30px;font-weight: bold">空缺值填充</span><input type="checkbox" style="margin-left: 5px">
-                                    <span style="margin-left: 30px;font-weight: bold">离群点修正</span><input type="checkbox" style="margin-left: 5px">
-                                    <span style="margin-left: 30px;font-weight: bold">数据去重</span><input type="checkbox" style="margin-left: 5px">
-                                    <span style="margin-left: 30px;font-weight: bold">重采样</span><input type="checkbox" style="margin-left: 5px">
-                                    <button class="btn-tmp ml-4" onclick="openReport1()">
-                                        提交
-                                    </button>
-                                    <script>
-                                        function openReport1() {
-                                            document.getElementById('chart').style.display = 'none'
-                                            $('#report').load('/data_analyze1')
-                                            let iframe = document.createElement('iframe');
-                                            iframe.frameBorder = 0;
-                                            iframe.width = "100%";
-                                            iframe.height = "650px";
-                                            iframe.id = "d-tale-iframe";
-                                            iframe.src = "/data_analyze1";
+                            <div style="width: 100%;height: 35px;display: none" id="buttons">
+                                <span style="margin-left: 30px;font-weight: bold">空缺值填充</span>
+                                <input type="checkbox" style="margin-left: 5px">
+                                <span style="margin-left: 30px;font-weight: bold">离群点修正</span>
+                                <input type="checkbox" style="margin-left: 5px">
+                                <span style="margin-left: 30px;font-weight: bold">数据去重</span>
+                                <input type="checkbox" style="margin-left: 5px">
+                                <span style="margin-left: 30px;font-weight: bold">重采样</span>
+                                <input type="checkbox" style="margin-left: 5px">
+                                <button class="btn-tmp ml-4" onclick="openReport1()">
+                                    提交
+                                </button>
+                                <script>
+                                    function openReport1() {
+                                        document.getElementById('chart').style.display = 'none'
+                                        $('#report').load('/data_analyze1')
 
-                                            let tmp = document.getElementById('d-tale-container')
-                                            tmp.innerHTML = ''
-                                            tmp.append(iframe)
-                                            document.getElementById('report1').style.display = 'block'
-                                        }
-                                    </script>
-                                </div>
-                                <div class="report-parent-content">
-                                    <div class="report-component" style="border: black" id="d-tale-container">
-
-                                    </div>
-                                </div>
+                                        let iframe = document.getElementById('report1');
+                                        iframe.src = "/data_analyze1";
+                                        iframe.style.display = 'block'
+                                        iframe.style.border = '0px'
+                                    }
+                                </script>
                             </div>
+                            <iframe class="card-body" style="width: 100%;height: 500px;display: none" id="report1">
+                            </iframe>
                         </div>
                     </div>
                 </div>

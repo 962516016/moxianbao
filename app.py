@@ -89,7 +89,7 @@ def get_file_paths(directory):
     for root, directories, files in os.walk(directory):
         for file in files:
             file_paths.append(os.path.join(file))
-            t = os.path.getmtime(directory+'/'+file)
+            t = os.path.getmtime(directory + '/' + file)
             # 将时间戳转换为datetime对象
             modified_datetime = datetime.fromtimestamp(t)
             # 格式化为年月日时分秒的格式
@@ -125,18 +125,22 @@ def query_pre_data(turbid, year, month, day, hour, length):
 
 
 def sqlverifypassword(password):
-    username = session['username']
+    username = session.get('username')
+    print(username)
+    print(password)
     connection = pool.get_connection()
     cursor = connection.cursor()
     sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
     cursor.execute(sql, (username, password))
     result = cursor.fetchall()
+    print(result)
     connection.close()
     cursor.close()
     if result:
         return True
     else:
         return False
+
 
 def sqlchangepassword(password):
     username = session['username']
@@ -149,11 +153,10 @@ def sqlchangepassword(password):
     connection.commit()
     connection.close()
     cursor.close()
-    if flg==1:
+    if flg == 1:
         return True
     else:
         return False
-
 
 
 def query_winddirection_data(turbid):
@@ -166,20 +169,43 @@ def query_winddirection_data(turbid):
     cursor.close()
     return result
 
+
 def query_apicount_data(username, api):
+    if username == 'admin':
+        sql = "SELECT COUNT(*) FROM log WHERE api='%s'" % api
+    else:
+        sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s'" % (username, api)
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s'" % (username, api)
     cursor.execute(sql)
     result = cursor.fetchall()
     connection.close()
     cursor.close()
     return result
 
-def query_apilist_data(username):
+
+def query_timeapicount_data(username, api, day):
+    day = '%-'+str(day) + '%'
+    if username == 'admin':
+        sql = "SELECT COUNT(*) FROM log WHERE api='%s' and operate_time LIKE '%s'" % (api, day)
+    else:
+        sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s' and operate_time LIKE '%s'" % (username, api, day)
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s'" % username
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    return result[0][0]
+
+
+def query_apilist_data(username):
+    if username == 'admin':
+        sql = "SELECT username,operate_time,api,note FROM log"
+    else:
+        sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s'" % username
+    connection = pool.get_connection()
+    cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     connection.close()
@@ -322,19 +348,58 @@ def log():
     return render_template('log.html', username=username, log=log)
 
 
+@app.route('/log_admin')
+def adminlog():
+    username = session.get('username')
+    sdk = session.get('sdk')
+    return render_template('log_admin.html', username=username, log=log)
+
+
 @app.route('/get_apicount', methods=['GET'])
 def get_apicount():
     username = request.args.get('username')
+    print('统计调用分布', username)
     # data = query_apicount_data(username,)
     # res_list_apicount = list(data[0])
     res_list_apicount = []
+    apilist = ['上传数据', '数据分析', '预测功率', 'AI分析', '下载结果', '上传模型']
     for key in api_list.keys():
         data = query_apicount_data(username, api_list[key])
-        # print('getapicount中的返回'+key, data[0])
-        res_list_apicount.append(data[0])
+        res_list_apicount.append(data[0][0])
+    print(res_list_apicount)
     result = jsonify({
         "cnt": len(api_list),
-        "apicount": res_list_apicount
+        "apicount": res_list_apicount,
+        "apilist": apilist
+    })
+    return result
+
+
+@app.route('/get_timeapicount')
+def get_timeapicount():
+    username = request.args.get('username')
+    daydata = []
+
+    for i in range(1,17):
+        api_list = [0,0,0,0,0,0]
+        daydata.append(api_list)
+    #17-20
+    # daydata.append([5, 0, 37, 1, 1, 0])
+    # daydata.append([1, 0, 0, 0, 0, 14])
+    # daydata.append([44, 138, 335, 9, 17, 0])
+    # daydata.append([2, 58, 9, 5, 0, 0])
+    for i in range(17, 21):
+        api_list = []
+        for api in range(6):
+            api_list.append(query_timeapicount_data(username, api, i))
+        daydata.append(api_list)
+
+    for i in range(21,32):
+        api_list = [0, 0, 0, 0, 0, 0]
+        daydata.append(api_list)
+
+    result = jsonify({
+        "daydata": daydata
     })
     return result
 
@@ -363,11 +428,11 @@ def download_offine_soft():
     file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
+
 @app.route('/download_history_csv')
 def download_history_csv():
     file_path = request.args.get('path')
     return send_file(file_path, as_attachment=True)
-
 
 
 @app.route('/gptapi_analyze')
@@ -637,7 +702,10 @@ def login_verify():
         sdk = session.get('sdk')
         # 为该用户建立需要的文件夹
         createfolder(username)
-        return render_template("index.html", username=username, sdk=sdk)
+        if username == 'admin':
+            return redirect('/admin')
+        else:
+            return render_template("index.html", username=username, sdk=sdk)
 
 
 
@@ -650,6 +718,7 @@ def login_verify():
         error = '用户名或密码错误'
         # redirect('/login')
         return render_template('login.html', error=error, username=username)
+
 
 @app.route('/index')
 def to_index():
@@ -678,10 +747,13 @@ def to_api():
 def to_predict():
     username = session.get('username')
     return render_template('predict.html', username=username)
+
+
 @app.route('/personalcenter')
 def to_personalcenter():
     username = session.get('username')
     return render_template('personalcenter.html', username=username)
+
 
 @app.route('/upload_file', methods=['POST'])
 def get_file():
@@ -697,11 +769,12 @@ def get_file():
     df = pd.read_csv(file)
     path = "userdata/%s/上传数据集" % session.get('username')
     cnt = count_files_in_folder(path)
-    filename = '/in' + str(cnt+1) + '.csv'
+    filename = '/in' + str(cnt + 1) + '.csv'
     df.to_csv(path + filename, index=False)
     global df_upload_file
     df_upload_file = df
     return jsonify({})
+
 
 @app.route('/data_analyze')
 def data_analysis():
@@ -714,7 +787,7 @@ def data_analysis():
     return render_template('report.html')
 
 
-#暂时跳转版本
+# 暂时跳转版本
 @app.route('/data_analyze1')
 def data_analysis1():
     # profile = ProfileReport(df_upload_file)
@@ -724,6 +797,7 @@ def data_analysis1():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
     return render_template('report_new.html')
+
 
 # 前端获取文件，后端处理完，返回一段时间的预测值
 @app.route('/online_predict')
@@ -746,9 +820,10 @@ def download_resfile():
     path = "userdata/%s/下载结果文件/" % session.get('username')
     cnt = count_files_in_folder(path)
     file_name = 'res' + str(cnt + 1) + '.csv'
-    file_path = path + file_name# 文件在服务器上的路径
+    file_path = path + file_name  # 文件在服务器上的路径
     df_upload_file.to_csv(file_path, index=False)
     return send_file(file_path, download_name=file_name, as_attachment=True)
+
 
 @app.route('/get_log')
 def get_loglist():
@@ -765,19 +840,20 @@ def get_loglist():
 
 @app.route('/get_modelname')
 def get_getmodels():
-    usingmodels_list,tmp = get_file_paths('usingmodels')
-    getmodels_list,tmp = get_file_paths('getmodels')
+    usingmodels_list, tmp = get_file_paths('usingmodels')
+    getmodels_list, tmp = get_file_paths('getmodels')
     return jsonify({
         'usingmodels': usingmodels_list,
         'getmodels': getmodels_list
     })
 
+
 @app.route('/get_userfile')
 def get_userfile():
     path1 = "userdata/%s/上传数据集" % session.get('username')
     path2 = "userdata/%s/下载结果文件" % session.get('username')
-    uploadcsv_list,time1 = get_file_paths(path1)
-    downloadcsv_list,time2 = get_file_paths(path2)
+    uploadcsv_list, time1 = get_file_paths(path1)
+    downloadcsv_list, time2 = get_file_paths(path2)
     print(time1)
     print(time2)
     return jsonify({
@@ -786,6 +862,7 @@ def get_userfile():
         'downloadcsv': downloadcsv_list,
         'downloadcsv_time': time2
     })
+
 
 # 把模型从左移到右
 @app.route('/add_models_to_pool', methods=['POST'])
@@ -861,18 +938,22 @@ def footer():
     return render_template('footer.html', username=username)
 
 
-
 @app.route('/verifypassword', methods=['POST'])
 def verifypassword():
     password = request.form.get('password')
-    if sqlverifypassword(password):#验证密码成功
-        sdk = getsdk()
-        if sdk == None:
+    print('___________', password)
+    if sqlverifypassword(password):  # 验证密码成功
+        sdk = session.get('sdk')
+        if sdk is None:
+            print('您还未申请sdk')
             return '您还未申请sdk'
         else:
+            print(sdk)
             return sdk
     else:
+        print('密码错误')
         return '密码错误'
+
 
 @app.route('/changepassword', methods=['POST'])
 def changepassword():
@@ -881,6 +962,7 @@ def changepassword():
         return '修改成功'
     else:
         return '修改失败，请重试'
+
 
 @app.route('/visual')
 def visual():

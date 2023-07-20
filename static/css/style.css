@@ -10352,6 +10352,13 @@ pre code {
   max-height: 450px;
   -webkit-overflow-scrolling: touch;
 }
+.table-responsive1 {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  max-height: 800px;
+  -webkit-overflow-scrolling: touch;
+}
 
 .table-responsive > .table-bordered {
   border: 0;
@@ -25387,19 +25394,14 @@ body.avgrund-active {
 .input-line {
   margin-bottom: 0.25rem !important
 }
-.bg-image {
-        background-image: 'http://172.24.187.133:5446/static/picture/bgi.jpg';
-        background-size: cover; /* 根据需要调整图片的适应方式 */
-        background-position: center; /* 根据需要调整图片的位置 */
-}
+
 .to_right{
   margin-right: 60rem !important;
 }
 .to_center{
-  position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .gif{
   width: 100%;
@@ -25413,6 +25415,14 @@ body.avgrund-active {
 
 .d3chart {
 
+}
+.logcntchart{
+  width: 100%;
+  height: 300px;
+}
+.timechart{
+  width: 100%;
+  height: 400px;
 }
 
 .report-parent-component {
