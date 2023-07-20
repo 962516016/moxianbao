@@ -20,6 +20,8 @@ from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
 
+from env import GPT_API
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 CORS(app)
@@ -120,6 +122,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
     result = cursor.fetchall()
     # 关闭连接
     connection.close()
+    cursor.close()
     cursor.close()
     return result
 
@@ -442,7 +445,7 @@ def analyze_wind_power():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['gptapi_analyze'], note="AI分析")
     # 编辑prompt
-    openai.api_key = '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'
+    openai.api_key = GPT_API
     openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
     # send a ChatCompletion request to GPT
     messages = [
