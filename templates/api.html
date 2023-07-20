@@ -31,8 +31,46 @@
                 <span class="typcn typcn-th-menu"></span>
             </button>
         </div>
+
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item d-none d-lg-flex  mr-2">
+                    {% if sdk %}
+                    <span>您已经拥有sdk，<a href="/check_sdk">点此查看</a></span>
+<!--                    <button class="" data-target="#defaultModal" data-toggle="modal" style="border: none" type="button">-->
+<!--                        点此查看-->
+<!--                    </button>-->
+<!--                    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="defaultModal"-->
+<!--                         role="dialog" tabindex="-1">-->
+<!--                        <div class="modal-dialog" role="document">-->
+<!--                            <div class="modal-content">-->
+<!--                                <div class="modal-header">-->
+<!--                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>-->
+<!--                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">-->
+<!--                                        <span aria-hidden="true">×</span>-->
+<!--                                    </button>-->
+<!--                                </div>-->
+<!--                                <div class="modal-body">-->
+<!--                                    <p>This is a modal with default size</p>-->
+<!--                                </div>-->
+<!--                                <div class="modal-footer">-->
+<!--                                    <button class="btn btn-secondary" data-dismiss="modal"-->
+<!--                                            type="button">Close-->
+<!--                                    </button>-->
+<!--                                    <button class="btn btn-primary" type="button">Save changes</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    {% else %}
+                    <span>您尚未获取sdk，
+                        <a href="/newsdk">点此申请</a>
+                    </span>
+                    {% endif %}
+
+
+                </li>
+
                 <li class="nav-item d-none d-lg-flex  mr-2">
                     {% if username %}
                     <span style="font-weight: bold">欢迎您, {{ username }}</span>

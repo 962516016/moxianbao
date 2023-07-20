@@ -156,6 +156,7 @@
                                                         <span class="hidden-value"
                                                               id="sdkspan">••••••••••••••••••••••••</span>
                                                         <button id="verifyBtn" onclick="checksdk()">查看</button>
+
                                                         <script>
                                                             function checksdk() {
                                                                 let password = prompt("请输入密码:");
@@ -172,6 +173,11 @@
                                                                 }
                                                             }
                                                         </script>
+                                                        {% if check %}
+                                                        <script>
+                                                            checksdk()
+                                                        </script>
+                                                        {% endif %}
                                                     </span>
                                                 </div>
                                                 <div class="col-md-6 min-vw-80 mt-2 mb-2">

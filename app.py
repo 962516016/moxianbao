@@ -632,7 +632,7 @@ def offline():
     username = session.get('username')
     # session.get('sdk')
     sdk = session.get('sdk')
-    print('sdk是多少:', sdk)
+    # print('sdk是多少:', sdk)
     return render_template("offline.html", username=username, sdk=sdk)
 
 
@@ -698,8 +698,8 @@ def login_verify():
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
-        session['sdk'] = getsdk()
-        sdk = session.get('sdk')
+        sdk = getsdk()
+        session['sdk'] = sdk
         # 为该用户建立需要的文件夹
         createfolder(username)
         if username == 'admin':
@@ -740,7 +740,8 @@ def to_admin():
 @app.route('/api')
 def to_api():
     username = session.get('username')
-    return render_template('api.html', username=username)
+    sdk = session.get('sdk')
+    return render_template('api.html', username=username, sdk=sdk)
 
 
 @app.route('/predict')
@@ -754,6 +755,11 @@ def to_personalcenter():
     username = session.get('username')
     return render_template('personalcenter.html', username=username)
 
+@app.route('/check_sdk')
+def check_sdk():
+    username = session.get('username')
+    sdk = True
+    return render_template('personalcenter.html', username=username, check=sdk)
 
 @app.route('/upload_file', methods=['POST'])
 def get_file():
