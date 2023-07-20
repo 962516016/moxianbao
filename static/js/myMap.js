@@ -143,9 +143,14 @@
   var NMGData = [
     [{ name: "内蒙古" }, { name: "呼和浩特", value: 100 }],
     [{ name: "内蒙古" }, { name: "乌鲁木齐", value: 100 }],
-    [{ name: "内蒙古" }, { name: "广州", value: 100 }],
-    [{ name: "内蒙古" }, { name: "西宁", value: 100 }],
-    [{ name: "内蒙古" }, { name: "拉萨", value: 100 }]
+    [{ name: "内蒙古" }, { name: "哈尔滨", value: 100 }],
+    [{ name: "内蒙古" }, { name: "南京", value: 100 }],
+    [{ name: "内蒙古" }, { name: "石家庄", value: 100 }],
+    [{ name: "内蒙古" }, { name: "沈阳", value: 100 }],
+    [{ name: "内蒙古" }, { name: "海口", value: 100 }],
+    [{ name: "内蒙古" }, { name: "昆明", value: 100 }],
+    [{ name: "内蒙古" }, { name: "银川", value: 100 }],
+    [{ name: "内蒙古" }, { name: "兰州", value: 100 }],
   ];
 
   // var XJData = [
@@ -273,7 +278,8 @@
       trigger: "item",
       formatter: function(params, ticket, callback) {
         if (params.seriesType == "effectScatter") {
-          return "线路：" + params.data.name + "" + params.data.value[2];
+          return "场区：" + params.data.name + "" ;
+          // + params.data.value[2]
         } else if (params.seriesType == "lines") {
           return (
             params.data.fromName +
