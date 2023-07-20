@@ -352,14 +352,14 @@ def get_winddirection():
 @app.route('/log')
 def log():
     username = session.get('username')
-    API_Key = session.get('API_Key')
+    sdk = session.get('sdk')
     return render_template('log.html', username=username, log=log)
 
 
 @app.route('/log_admin')
 def adminlog():
     username = session.get('username')
-    API_Key = session.get('API_Key')
+    sdk = session.get('sdk')
     return render_template('log_admin.html', username=username, log=log)
 
 
@@ -415,7 +415,7 @@ def get_timeapicount():
 # 获取他人使用offline程序跑出来的模型
 @app.route('/getmodel', methods=['POST'])
 def get_model():
-    API_Key = request.values.get('API_Key')  # 这是API_Key，可以从数据库中查出用户名，然后将日志表直接填了。
+    sdk = request.values.get('sdk')  # 这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
     currenttime = request.values.get('currenttime')
     file = request.files['file']
     cnt = count_files_in_folder('./getmodels')
@@ -638,19 +638,19 @@ def logout():
 @app.route('/offline')
 def offline():
     username = session.get('username')
-    # session.get('API_Key')
-    API_Key = session.get('API_Key')
-    # print('API_Key是多少:', API_Key)
-    return render_template("offline.html", username=username, API_Key=API_Key)
+    # session.get('sdk')
+    sdk = session.get('sdk')
+    # print('sdk是多少:', sdk)
+    return render_template("offline.html", username=username, sdk=sdk)
 
 
-@app.route('/newAPI_Key')
-def newAPI_Key():
-    API_Key = secrets.token_hex(16).__str__()
+@app.route('/newsdk')
+def newsdk():
+    sdk = secrets.token_hex(16).__str__()
     username = session.get('username')
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "UPDATE usertable SET API_Key='%s' WHERE username='%s';" % (API_Key, username)
+    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
     cursor.execute(sql)
     flg = cursor.rowcount
     print(flg)
@@ -658,29 +658,29 @@ def newAPI_Key():
     connection.close()
     cursor.close()
     if flg == 0:
-        API_Key = None
-    print('申请API_Key测试', API_Key)
-    session['API_Key'] = API_Key
-    # jsonify({'API_Key': API_Key})
+        sdk = None
+    print('申请sdk测试', sdk)
+    session['sdk'] = sdk
+    # jsonify({'sdk': sdk})
     return redirect('/offline')
-    # 将API_Key和username对应起来加到数据库中
+    # 将sdk和username对应起来加到数据库中
 
 
-# @app.route('/getAPI_Key')
-def getAPI_Key():
+# @app.route('/getsdk')
+def getsdk():
     username = session.get('username')
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "SELECT API_Key FROM usertable WHERE username='%s'" % username
+    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
     if result is not None:
-        session['API_Key'] = result[0]
+        session['sdk'] = result[0]
     else:
-        del session['API_Key']
+        del session['sdk']
     connection.close()
     cursor.close()
-    return session.get('API_Key')
+    return session.get('sdk')
 
 
 def createfolder(username):
@@ -706,14 +706,14 @@ def login_verify():
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
-        API_Key = getAPI_Key()
-        session['API_Key'] = API_Key
+        sdk = getsdk()
+        session['sdk'] = sdk
         # 为该用户建立需要的文件夹
         createfolder(username)
         if username == 'admin':
             return redirect('/admin')
         else:
-            return render_template("index.html", username=username, API_Key=API_Key)
+            return render_template("index.html", username=username, sdk=sdk)
 
 
 
@@ -748,8 +748,8 @@ def to_admin():
 @app.route('/api')
 def to_api():
     username = session.get('username')
-    API_Key = session.get('API_Key')
-    return render_template('api.html', username=username, API_Key=API_Key)
+    sdk = session.get('sdk')
+    return render_template('api.html', username=username, sdk=sdk)
 
 
 @app.route('/predict')
@@ -763,11 +763,11 @@ def to_personalcenter():
     username = session.get('username')
     return render_template('personalcenter.html', username=username)
 
-@app.route('/check_API_Key')
-def check_API_Key():
+@app.route('/check_sdk')
+def check_sdk():
     username = session.get('username')
-    API_Key = True
-    return render_template('personalcenter.html', username=username, check=API_Key)
+    sdk = True
+    return render_template('personalcenter.html', username=username, check=sdk)
 
 @app.route('/upload_file', methods=['POST'])
 def get_file():
@@ -957,13 +957,13 @@ def verifypassword():
     password = request.form.get('password')
     print('___________', password)
     if sqlverifypassword(password):  # 验证密码成功
-        API_Key = session.get('API_Key')
-        if API_Key is None:
-            print('您还未申请API_Key')
-            return '您还未申请API_Key'
+        sdk = session.get('sdk')
+        if sdk is None:
+            print('您还未申请sdk')
+            return '您还未申请sdk'
         else:
-            print(API_Key)
-            return API_Key
+            print(sdk)
+            return sdk
     else:
         print('密码错误')
         return '密码错误'
