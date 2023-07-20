@@ -35,8 +35,8 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    {% if sdk %}
-                    <span>您已经拥有API_Key，<a href="/check_sdk">点此查看</a></span>
+                    {% if API_Key %}
+                    <span>您已经拥有API_Key，<a href="/check_API_Key">点此查看</a></span>
 <!--                    <button class="" data-target="#defaultModal" data-toggle="modal" style="border: none" type="button">-->
 <!--                        点此查看-->
 <!--                    </button>-->
@@ -64,7 +64,7 @@
 <!--                    </div>-->
                     {% else %}
                     <span>您尚未获取API_Key，
-                        <a href="/newsdk">点此申请</a>
+                        <a href="/newAPI_Key">点此申请</a>
                     </span>
                     {% endif %}
 
