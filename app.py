@@ -875,6 +875,11 @@ def changepassword():
     else:
         return '修改失败，请重试'
 
+@app.route('/visual')
+def visual():
+    username = session.get('username')
+    return render_template('visual.html', username=username)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host=myhost, port=myport)
