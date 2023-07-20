@@ -120,6 +120,11 @@ def query_pre_data(turbid, year, month, day, hour, length):
     cursor.execute(sql, (turbid, previous_date, current_date))
     # 获取查询结果
     result = cursor.fetchall()
+    result_list = [[], [], [], [], []]
+    for item in result:
+        for i in range(5):
+            result_list[i].append(item[i])
+    print(result_list)
     # 关闭连接
     connection.close()
     cursor.close()
@@ -204,9 +209,9 @@ def query_timeapicount_data(username, api, day):
 
 def query_apilist_data(username):
     if username == 'admin':
-        sql = "SELECT username,operate_time,api,note FROM log"
+        sql = "SELECT username,operate_time,api,note FROM log ORDER BY operate_time desc "
     else:
-        sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s'" % username
+        sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s' ORDER BY operate_time desc " % username
     connection = pool.get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
@@ -391,13 +396,13 @@ def get_timeapicount():
     # daydata.append([1, 0, 0, 0, 0, 14])
     # daydata.append([44, 138, 335, 9, 17, 0])
     # daydata.append([2, 58, 9, 5, 0, 0])
-    for i in range(17, 21):
+    for i in range(17, 22):
         api_list = []
         for api in range(6):
             api_list.append(query_timeapicount_data(username, api, i))
         daydata.append(api_list)
 
-    for i in range(21,32):
+    for i in range(22,32):
         api_list = [0, 0, 0, 0, 0, 0]
         daydata.append(api_list)
 
