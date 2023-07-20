@@ -113,7 +113,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
 
-    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM data0 WHERE Turbid=%s AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
+    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE Turbid=%s AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
 
     cursor.execute(sql, (turbid, previous_date, current_date))
     # 获取查询结果

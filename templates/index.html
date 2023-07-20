@@ -134,8 +134,8 @@
                                             <option>9</option>
                                             <option>10</option>
                                             <option>11</option>
-                                            <option selected>12</option>
-                                            <option>13</option>
+                                            <option>12</option>
+                                            <option selected>13</option>
                                             <option>14</option>
                                             <option>15</option>
                                             <option>16</option>
@@ -248,7 +248,7 @@
                                                         text: '供、发电功率及其预测数据'
                                                     },
                                                     legend: {
-                                                        data: ['供电功率', '供电功率预测', '发电功率', '发电功率预测',],
+                                                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
                                                         show: true,
                                                         top: '6%'
                                                     },
@@ -285,7 +285,7 @@
                                                     ],
                                                     series: [
                                                         {
-                                                            name: '供电功率',
+                                                            name: '供电功率预测',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -293,7 +293,7 @@
                                                             data: round
                                                         },
                                                         {
-                                                            name: '供电功率预测',
+                                                            name: '发电功率',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
@@ -301,7 +301,7 @@
                                                             data: pre_round
                                                         },
                                                         {
-                                                            name: '发电功率',
+                                                            name: '供电功率',
                                                             type: 'line',
                                                             smooth: true,
                                                             symbol: 'none',
