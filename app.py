@@ -761,7 +761,7 @@ def to_predict():
 @app.route('/personalcenter', methods=['GET'])
 def to_personalcenter():
     username = session.get('username')
-    return render_template('personalcenter.html', username=username)
+    return render_template('personalcenter.html', username=username, key_amount=67)
 
 
 @app.route('/check_sdk')
@@ -773,7 +773,7 @@ def check_sdk():
     #     'sdk': sdk
     # }
     # return redirect(url_for('to_personalcenter', check=sdk, code=307))
-    return render_template('personalcenter.html', username=username, check=sdk)
+    return render_template('personalcenter.html', username=username, check=sdk, key_amount=67)
 
 
 @app.route('/upload_file', methods=['POST'])
