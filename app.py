@@ -6,7 +6,6 @@ import shutil
 import zipfile
 from datetime import datetime, timedelta
 
-import dtale
 import joblib
 import matplotlib.pyplot as plt
 import matplotx
@@ -14,7 +13,7 @@ import numpy as np
 import openai
 import pandas as pd
 import pymysqlpool
-from flask import Flask, jsonify, request, send_file, render_template, session, redirect
+from flask import Flask, jsonify, request, send_file, render_template, session, redirect, url_for
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
@@ -193,11 +192,12 @@ def query_apicount_data(username, api):
 
 
 def query_timeapicount_data(username, api, day):
-    day = '%-'+str(day) + '%'
+    day = '%-' + str(day) + '%'
     if username == 'admin':
         sql = "SELECT COUNT(*) FROM log WHERE api='%s' and operate_time LIKE '%s'" % (api, day)
     else:
-        sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s' and operate_time LIKE '%s'" % (username, api, day)
+        sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s' and operate_time LIKE '%s'" % (
+            username, api, day)
     connection = pool.get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
@@ -388,10 +388,10 @@ def get_timeapicount():
     username = request.args.get('username')
     daydata = []
 
-    for i in range(1,17):
-        api_list = [0,0,0,0,0,0]
+    for i in range(1, 17):
+        api_list = [0, 0, 0, 0, 0, 0]
         daydata.append(api_list)
-    #17-20
+    # 17-20
     # daydata.append([5, 0, 37, 1, 1, 0])
     # daydata.append([1, 0, 0, 0, 0, 14])
     # daydata.append([44, 138, 335, 9, 17, 0])
@@ -402,7 +402,7 @@ def get_timeapicount():
             api_list.append(query_timeapicount_data(username, api, i))
         daydata.append(api_list)
 
-    for i in range(22,32):
+    for i in range(22, 32):
         api_list = [0, 0, 0, 0, 0, 0]
         daydata.append(api_list)
 
@@ -758,16 +758,23 @@ def to_predict():
     return render_template('predict.html', username=username)
 
 
-@app.route('/personalcenter')
+@app.route('/personalcenter', methods=['GET'])
 def to_personalcenter():
     username = session.get('username')
     return render_template('personalcenter.html', username=username)
 
+
 @app.route('/check_sdk')
 def check_sdk():
     username = session.get('username')
-    sdk = True
+    sdk = session.get('sdk')
+    # json_dict = {
+    #     'username': username,
+    #     'sdk': sdk
+    # }
+    # return redirect(url_for('to_personalcenter', check=sdk, code=307))
     return render_template('personalcenter.html', username=username, check=sdk)
+
 
 @app.route('/upload_file', methods=['POST'])
 def get_file():

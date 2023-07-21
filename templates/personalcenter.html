@@ -112,14 +112,14 @@
                                                     </span>
                                                     <script>
                                                         function verifypwd() {
-                                                            var password = prompt("请验证旧密码:");
+                                                            var password = prompt("请输入密码以校验身份:");
                                                             if (password !== null) {
                                                                 var params = new URLSearchParams();
                                                                 params.append('password', password)
                                                                 axios.post('/verifypassword', params)
                                                                     .then(function (response) {
                                                                         var res = response.data
-                                                                        if (res == '密码错误') {
+                                                                        if (res === '密码错误') {
                                                                             document.getElementById("pwdspan").style.color = "red";
                                                                             document.getElementById("pwdspan").innerText = '密码错误，请重试！'
                                                                         } else {
@@ -148,6 +148,7 @@
                                                                     });
                                                             }
                                                         }
+
                                                     </script>
                                                 </div>
                                                 <div class="col-md-12 min-vw-50 mt-2 mb-2">
@@ -155,11 +156,12 @@
                                                         <span style="font-weight: bold">API_KEY：</span>
                                                         <span class="hidden-value"
                                                               id="sdkspan">••••••••••••••••••••••••</span>
+<!--                                                        <div class="typcn-eye "></div>-->
                                                         <button id="verifyBtn" onclick="checksdk()">查看</button>
 
                                                         <script>
                                                             function checksdk() {
-                                                                let password = prompt("请输入密码:");
+                                                                let password = prompt("请输入登录密码以校验身份:");
                                                                 if (password != null && password !== "") {
                                                                     data = new FormData()
                                                                     data.append('password', password)
@@ -168,7 +170,7 @@
                                                                             document.getElementById("sdkspan").innerHTML = res.data;
                                                                         })
                                                                         .catch(err => {
-
+                                                                            console.log(err)
                                                                         })
                                                                 }
                                                             }
