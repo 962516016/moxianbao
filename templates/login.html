@@ -94,6 +94,12 @@
                         function submitdiy() {
                             var username = document.getElementById('username').value()
                             var form = document.getElementById('login-form');
+                            // if(username!=='admin'){
+                            //     form.setAttribute('action', '/index?username=' + username)
+                            // console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
+                            // form.submit()
+                            // }
+
                             form.setAttribute('action', '/index?username=' + username)
                             console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
                             form.submit()

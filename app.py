@@ -436,6 +436,11 @@ def download_offine_soft():
     file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
+@app.route('/download_tdra')
+def download_tdra():
+    file_path = './offline_soft/tdra.apk'  # 文件在服务器上的路径
+    return send_file(file_path, as_attachment=True)
+
 
 @app.route('/download_history_csv')
 def download_history_csv():
@@ -675,6 +680,14 @@ def offline():
     # print('sdk是多少:', sdk)
     return render_template("offline.html", username=username, sdk=sdk)
 
+@app.route('/tdra')
+def tdra():
+    username = session.get('username')
+    # session.get('sdk')
+    sdk = session.get('sdk')
+    # print('sdk是多少:', sdk)
+    return render_template("tdra.html", username=username, sdk=sdk)
+
 
 @app.route('/newsdk')
 def newsdk():
@@ -765,6 +778,12 @@ def to_index():
     username = session.get('username')
     if username == None:
         return redirect('/')
+    if username != 'admin':
+        username = session.get('username')
+        # session.get('sdk')
+        sdk = session.get('sdk')
+        # print('sdk是多少:', sdk)
+        return render_template("tdra.html", username=username, sdk=sdk)
     return render_template('index.html', username=username)
 
 
