@@ -477,6 +477,38 @@ def analyze_wind_power():
     return jsonify({'ans': assistant_response})
 
 
+@app.route('/gpt_analyze_shiyou')
+def gpt_analyze_shiyou():
+    # 编辑prompt
+    openai.api_key = GPT_API
+    openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
+    # send a ChatCompletion request to GPT
+    messages = [
+        {"role": "system",
+         "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
+                    "程语言来解析数据。你对页岩气藏产能数据预测非常熟悉，包括温度、湿度、含烃量、是否有人、是否有光和预测的产量的关系。你的职责是分析这些数据，并提供关于可能原因和" +
+                    "潜在风险的解释。作为数据分析师，你会仔细研究页岩气藏产能数据中温度、湿度、含烃量、是否有人、是否有光和预测的产量之间的关系。你会运用统计方法分析数据的趋势和" +
+                    "模式，以确定预测的产量与温度、湿度、含烃量、是否有人、是否有光的关系。你会考虑众多因素对预测产量的影响，并尝试找出任何异常或异常行为。在" +
+                    "分析页岩气藏产能数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"
+         },
+        {"role": "user",
+         "content": "这是一列时间序列，" +to_string(res_datatime, 0) + "这是对应的温度列，" + to_string(res_windspeed,1)
+                    + "这是对应的预测产量列，" + to_string(res_power, 1) + "请结合时间分析一下温度对于预测产量的影响。"
+                    + "我需要你结合温度的变化，分析产量的变化情况，给出分析结果，比如某个时间到另一个时间内，温度发生了什么变化，"
+                    + "产量预测又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图，至少300字"
+         },
+    ]
+    response = openai.ChatCompletion.create(
+        model='gpt-3.5-turbo-0301',
+        messages=messages,
+        temperature=0,
+    )
+    print(messages)
+    # 获取助手角色的回答
+    assistant_response = response['choices'][0]['message']['content']
+    return jsonify({'ans': assistant_response})
+
+
 # 设置API密钥
 API_KEY = 'your-api-key'
 
