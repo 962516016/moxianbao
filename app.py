@@ -59,10 +59,10 @@ def to_string(a, f):
 
 # 配置数据库连接信息和连接池参数
 DB_CONFIG = {
-    'host': '140.143.125.244',
+    'host': 'localhost',
     'port': 3306,
-    'user': 'ly',
-    'password': 'longyuan',
+    'user': 'root',
+    'password': 'ldb20011226',
     'database': 'longyuan',
 }
 # 创建 pymysqlpool 连接池
@@ -117,6 +117,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
     sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE Turbid=%s AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
 
     cursor.execute(sql, (turbid, previous_date, current_date))
+    print(sql)
     # 获取查询结果
     result = cursor.fetchall()
     result_list = [[], [], [], [], []]
@@ -655,8 +656,8 @@ static_list = [
 @app.route('/')
 def home():
     username = session.get('username')
-    print(username)
-    if not username is None:
+    # print(username)
+    if username is not None:
         return redirect('/index')
     return redirect('/login')
 
