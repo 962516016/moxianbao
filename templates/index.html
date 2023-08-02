@@ -14,17 +14,12 @@
     <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script crossorigin="anonymous"
-            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="
-            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/echarts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
-    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
-<!--    <link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">-->
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-<!--    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"-->
-<!--          rel="stylesheet">-->
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -63,32 +58,9 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div class="settings-panel" id="theme-settings">
-                <i class="settings-close typcn typcn-delete-outline"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options" id="sidebar-light-theme">
-                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
-                    Light
-                </div>
-                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-                    Dark
-                </div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-1 px-4">
-                    <div class="tiles success">1</div>
-                    <div class="tiles warning">2</div>
-                    <div class="tiles danger">3</div>
-                    <div class="tiles primary">4</div>
-                    <div class="tiles info">5</div>
-                    <div class="tiles dark">6</div>
-                    <div class="tiles default border">7</div>
-                </div>
-            </div>
-        </div>
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
+
             </nav>
             <script>
                 $(function () {
@@ -539,7 +511,7 @@
                                                 }
                                             },
                                             visualMap: {
-                                                max: 20,
+                                                max: 50970879,
                                                 inRange: {
                                                     color: [
                                                         '#313695',
@@ -687,22 +659,9 @@
 <!-- container-scroller -->
 <!-- base:js -->
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
-<script src="../static/js/settings.js"></script>
-<script src="../static/js/todolist.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
 <script src="../static/js/progressbar.min.js"></script>
-<script src="../static/js/Chart.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
-<script src="../static/js/dashboard.js"></script>
-<!-- End custom js for this page-->
 </body>
 </html>

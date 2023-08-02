@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
@@ -17,7 +16,9 @@
     <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../static/js/modernizr-2.8.3.min.js"></script>
-    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
+    <script src="../static/js/jquery.js"></script>
+
+
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -37,31 +38,6 @@
                 <li class="nav-item d-none d-lg-flex  mr-2">
                     {% if sdk %}
                     <span>您已经拥有API_KEY，<a href="/check_sdk">点此查看</a></span>
-<!--                    <button class="" data-target="#defaultModal" data-toggle="modal" style="border: none" type="button">-->
-<!--                        点此查看-->
-<!--                    </button>-->
-<!--                    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="defaultModal"-->
-<!--                         role="dialog" tabindex="-1">-->
-<!--                        <div class="modal-dialog" role="document">-->
-<!--                            <div class="modal-content">-->
-<!--                                <div class="modal-header">-->
-<!--                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>-->
-<!--                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">-->
-<!--                                        <span aria-hidden="true">×</span>-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                                <div class="modal-body">-->
-<!--                                    <p>This is a modal with default size</p>-->
-<!--                                </div>-->
-<!--                                <div class="modal-footer">-->
-<!--                                    <button class="btn btn-secondary" data-dismiss="modal"-->
-<!--                                            type="button">Close-->
-<!--                                    </button>-->
-<!--                                    <button class="btn btn-primary" type="button">Save changes</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
                     {% else %}
                     <span>您尚未获取API_Key，
                         <a href="/newsdk">点此申请</a>
@@ -85,7 +61,7 @@
                 </li>
             </ul>
 
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="canvas"
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
                     type="button">
                 <span class="typcn typcn-th-menu"></span>
             </button>
@@ -93,33 +69,6 @@
     </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div class="settings-panel" id="theme-settings">
-                <i class="settings-close typcn typcn-delete-outline"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options" id="sidebar-light-theme">
-                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
-                    Light
-                </div>
-                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-                    Dark
-                </div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles primary"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default border"></div>
-                </div>
-            </div>
-        </div>
-        <!-- partial -->
-        <!-- partial:partials/_sidebar.html -->
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
             </nav>
@@ -217,36 +166,12 @@
 <!-- container-scroller -->
 <!-- base:js -->
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
-<script src="../static/js/hoverable-collapse.js"></script>
-<script src="../static/js/template.js"></script>
-<script src="../static/js/settings.js"></script>
-<script src="../static/js/todolist.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
-<script src="../static/js/progressbar.min.js"></script>
-<script src="../static/js/Chart.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
-<script src="../static/js/dashboard.js"></script>
-<!-- End custom js for this page-->
-<!-- Include All JS -->
-<script src="../static/js/jquery-3.5.1.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/isotope.pkgd.min.js"></script>
-<script src="../static/js/owl.carousel.min.js"></script>
-<script src="../static/js/slick.min.js"></script>
-<script src="../static/js/imagesloaded.pkgd.min.js"></script>
-<script src="../static/js/venobox.min.js"></script>
-<script src="../static/js/jquery.appear.js"></script>
-<script src="../static/js/jquery.knob.js"></script>
-<script src="../static/js/theme-pluginjs.js"></script>
-<script src="../static/js/jquery.meanmenu.js"></script>
-<script src="../static/js/ajax-mail.js"></script>
-<script src="../static/js/theme.js"></script>
+<!--<script src="../static/js/hoverable-collapse.js"></script>-->
+<!--<script src="../static/js/template.js"></script>-->
+<!--<script src="../static/js/settings.js"></script>-->
+<!--<script src="../static/js/todolist.js"></script>-->
+<!--<script src="../static/js/progressbar.min.js"></script>-->
+
 </body>
 </html>

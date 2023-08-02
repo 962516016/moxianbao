@@ -12,13 +12,10 @@
     <!-- endinject -->
     <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
-    <!-- endinject -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
-<!--    <script crossorigin="anonymous"-->
-<!--            integrity="sha512-RuUMLxuB8daxj+iqjuwA7u2lFFFQNlbnFnerb0FPhfZ761E0Wn6wD4f5vZskYgbxu+wSu36vfFHCUDaKaHHhUQ=="-->
-<!--            src="http://lib.baomitu.com/echarts/5.0.2/echarts.common.js"></script>-->
+<!--    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>-->
     <script src="../static/js/echarts.js"></script>
+    <script src="../static/js/jquery.js"></script>
 </head>
 
 <body>
@@ -105,12 +102,7 @@
                                         {% endif %}
                                     </h4>
                                 </div>
-                                <!--                                <button class="btn btn-outline-success" id="add_models_to_pool">-->
-                                <!--                                    添加-->
-                                <!--                                </button>-->
-                                <!--                                <button class="btn btn-outline-danger" id="delete_modes">-->
-                                <!--                                    删除-->
-                                <!--                                </button>-->
+
                                 <div class="table-responsive1">
                                     <table class="table table-hover" id="log_table">
                                         <thead>
@@ -284,8 +276,8 @@
                                                                 console.log(daydata)
 
                                                                 function getVirtualData() {
-                                                                    const date = +echarts.time.parse('2023-07-01');
-                                                                    const end = +echarts.time.parse('2023-08-01');
+                                                                    const date = +echarts.time.parse('2023-08-01');
+                                                                    const end = +echarts.time.parse('2023-09-01');
                                                                     const dayTime = 3600 * 24 * 1000;
                                                                     const data = [];
                                                                     let d = 0;
@@ -332,8 +324,8 @@
                                                                 }
 
                                                                 function getLabelData() {
-                                                                    const date = +echarts.time.parse('2023-07-01');
-                                                                    const end = +echarts.time.parse('2023-08-01');
+                                                                    const date = +echarts.time.parse('2023-08-01');
+                                                                    const end = +echarts.time.parse('2023-09-01');
                                                                     const dayTime = 3600 * 24 * 1000;
                                                                     const data = [];
                                                                     let d = 0;
@@ -387,7 +379,7 @@
                                                                         monthLabel: {
                                                                             show: false
                                                                         },
-                                                                        range: ['2023-07']
+                                                                        range: ['2023-08']
                                                                     },
                                                                     series: [
                                                                         {

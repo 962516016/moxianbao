@@ -59,10 +59,10 @@ def to_string(a, f):
 
 # 配置数据库连接信息和连接池参数
 DB_CONFIG = {
-    'host': 'issy-blog.store',
+    'host': 'localhost',
     'port': 3306,
-    'user': 'ly',
-    'password': 'longyuan',
+    'user': 'root',
+    'password': 'ldb20011226',
     'database': 'longyuan',
 }
 
@@ -193,20 +193,35 @@ def query_apicount_data(username, api):
     return result
 
 
-def query_timeapicount_data(username, api, day):
-    day = '%-' + str(day) + '%'
-    if username == 'admin':
-        sql = "SELECT COUNT(*) FROM log WHERE api='%s' and operate_time LIKE '%s'" % (api, day)
+def query_timeapicount_data(username, year, month, day):
+    if month < 10:
+        month = '0' + str(month)
     else:
-        sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s' and operate_time LIKE '%s'" % (
-            username, api, day)
+        month = str(month)
+    if day < 10:
+        day = '0' + str(day)
+    else:
+        day = str(day)
+    date = str(year) + '-' + month + '-' + day + '%'
+    if username == 'admin':
+        sql = "SELECT api,COUNT(*) AS count FROM log WHERE operate_time LIKE '%s' GROUP BY api" % date
+    else:
+        sql = "SELECT api,COUNT(*) AS count FROM log WHERE username='%s' and operate_time LIKE '%s' GROUP BY api" % (
+            username, date)
     connection = pool.get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     connection.close()
     cursor.close()
-    return result[0][0]
+    apimap = {int(item[0]): item[1] for item in result}
+    countlist = []
+    for i in range(6):
+        if i in apimap.keys():
+            countlist.append(apimap.get(i))
+        else:
+            countlist.append(0)
+    return countlist
 
 
 def query_apilist_data(username):
@@ -368,7 +383,6 @@ def adminlog():
 @app.route('/get_apicount', methods=['GET'])
 def get_apicount():
     username = request.args.get('username')
-    print('统计调用分布', username)
     # data = query_apicount_data(username,)
     # res_list_apicount = list(data[0])
     res_list_apicount = []
@@ -376,7 +390,6 @@ def get_apicount():
     for key in api_list.keys():
         data = query_apicount_data(username, api_list[key])
         res_list_apicount.append(data[0][0])
-    print(res_list_apicount)
     result = jsonify({
         "cnt": len(api_list),
         "apicount": res_list_apicount,
@@ -390,22 +403,8 @@ def get_timeapicount():
     username = request.args.get('username')
     daydata = []
 
-    for i in range(1, 17):
-        api_list = [0, 0, 0, 0, 0, 0]
-        daydata.append(api_list)
-    # 17-20
-    # daydata.append([5, 0, 37, 1, 1, 0])
-    # daydata.append([1, 0, 0, 0, 0, 14])
-    # daydata.append([44, 138, 335, 9, 17, 0])
-    # daydata.append([2, 58, 9, 5, 0, 0])
-    for i in range(17, 22):
-        api_list = []
-        for api in range(6):
-            api_list.append(query_timeapicount_data(username, api, i))
-        daydata.append(api_list)
-
-    for i in range(22, 32):
-        api_list = [0, 0, 0, 0, 0, 0]
+    for i in range(1, 32):
+        api_list = query_timeapicount_data(username, 2023, 8, i)
         daydata.append(api_list)
 
     result = jsonify({
