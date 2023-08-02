@@ -18909,7 +18909,7 @@ html {
 }
 
 .container-scroller {
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 pre {

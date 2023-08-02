@@ -59,12 +59,13 @@ def to_string(a, f):
 
 # 配置数据库连接信息和连接池参数
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': 'issy-blog.store',
     'port': 3306,
-    'user': 'root',
-    'password': 'ldb20011226',
+    'user': 'ly',
+    'password': 'longyuan',
     'database': 'longyuan',
 }
+
 # 创建 pymysqlpool 连接池
 pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
 
@@ -437,6 +438,7 @@ def download_offine_soft():
     file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
+
 @app.route('/download_tdra')
 def download_tdra():
     file_path = './offline_soft/tdra.apk'  # 文件在服务器上的路径
@@ -498,7 +500,7 @@ def gpt_analyze_shiyou():
                     "分析页岩气藏产能数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"
          },
         {"role": "user",
-         "content": "这是一列时间序列，" +to_string(res_datatime, 0) + "这是对应的温度列，" + to_string(res_windspeed,1)
+         "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的温度列，" + to_string(res_windspeed, 1)
                     + "这是对应的预测产量列，" + to_string(res_power, 1) + "请结合时间分析一下温度对于预测产量的影响。"
                     + "我需要你结合温度的变化，分析产量的变化情况，给出分析结果，比如某个时间到另一个时间内，温度发生了什么变化，"
                     + "产量预测又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图，至少300字"
@@ -681,6 +683,7 @@ def offline():
     # print('sdk是多少:', sdk)
     return render_template("offline.html", username=username, sdk=sdk)
 
+
 @app.route('/tdra')
 def tdra():
     username = session.get('username')
@@ -760,10 +763,6 @@ def login_verify():
             return redirect('/admin')
         else:
             return render_template("index.html", username=username, sdk=sdk)
-
-
-
-
     elif password == '':
         error = '密码不能为空'
         # redirect('/login')
@@ -777,14 +776,14 @@ def login_verify():
 @app.route('/index')
 def to_index():
     username = session.get('username')
-    if username == None:
+    if username is None:
         return redirect('/')
-    if username != 'admin':
-        username = session.get('username')
-        # session.get('sdk')
-        sdk = session.get('sdk')
-        # print('sdk是多少:', sdk)
-        return render_template("tdra.html", username=username, sdk=sdk)
+    # if username != 'admin':
+    #     username = session.get('username')
+    #     # session.get('sdk')
+    #     sdk = session.get('sdk')
+    #     # print('sdk是多少:', sdk)
+    #     return render_template("tdra.html", username=username, sdk=sdk)
     return render_template('index.html', username=username)
 
 
