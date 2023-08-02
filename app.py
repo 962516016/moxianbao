@@ -20,6 +20,7 @@ from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
 
 from env import GPT_API
+from env import DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -58,13 +59,7 @@ def to_string(a, f):
 
 
 # 配置数据库连接信息和连接池参数
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'ldb20011226',
-    'database': 'longyuan',
-}
+
 
 # 创建 pymysqlpool 连接池
 pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
