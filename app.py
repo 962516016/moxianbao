@@ -19,8 +19,7 @@ from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
 
-from env import GPT_API
-from env import DB_CONFIG
+from env import GPT_API,DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
