@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
-    <link rel="shortcut icon" href="../static/picture/favicon.ico" >
+    <link href="../static/picture/favicon.ico" rel="shortcut icon">
     <!-- base:css -->
     <link href="../static/css/typicons.css" rel="stylesheet">
     <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
@@ -62,11 +62,6 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
 
             </nav>
-            <script>
-                $(function () {
-                    $("#sidebar").load("/navigation.html");
-                });
-            </script>
         </div>
 
         {% if username %}
@@ -132,15 +127,7 @@
                                         >
                                         <span>小时</span>
                                     </label>
-
-
                                 </div>
-                                <script>
-                                    function getValue() {
-                                        main()
-                                        rose()
-                                    }
-                                </script>
                             </div>
                         </div>
                     </div>
@@ -153,163 +140,6 @@
                         <div class="card">
                             <div class="card-body" id="main-container">
                                 <div id="main" style="width: 100%;height:500px;"></div>
-                                <script type="text/javascript">
-                                    function main() {
-                                        // 基于准备好的dom，初始化echarts实例
-                                        var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
-
-                                        var input = document.getElementById('time-input');
-                                        var dateinput = input.value.split('T')[0].split('-')
-                                        var timeinput = input.value.split('T')[1].split(':')
-
-                                        var turbinput = document.getElementById('turb-input').value;
-                                        var lengthinput = document.getElementById('length-input').value;
-
-                                        let turbid = turbinput;
-                                        let year = dateinput[0];
-                                        let month = dateinput[1];
-                                        let day = dateinput[2];
-                                        let hour = timeinput[0];
-                                        let length = lengthinput;// 单位小时
-
-                                        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
-                                            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
-                                        console.log('测试ssy:', baseurl);
-
-                                        // GET请求
-                                        axios.get(baseurl)
-                                            .then(res => {
-                                                console.log('测试resdata', res.data)
-                                                let datetimeline = Object.entries(res.data)[0][1];
-                                                let pre_roundline = Object.entries(res.data)[1][1];
-                                                let pre_yd15line = Object.entries(res.data)[2][1];
-                                                let roundline = Object.entries(res.data)[3][1];
-                                                let yd15line = Object.entries(res.data)[4][1];
-
-                                                console.log('测试datetimeline', datetimeline)
-                                                console.log('测试pre_roundline', pre_roundline)
-                                                console.log('测试pre_yd15line', pre_yd15line)
-                                                console.log('测试roundline', roundline)
-                                                console.log('测试yd15line', yd15line)
-
-                                                datetime = []
-                                                pre_yd15 = []
-                                                pre_round = []
-                                                round = []
-                                                yd15 = []
-
-                                                mn = 10000000000
-                                                mx = -10000000000
-                                                for (let i = 0; i < datetimeline.length; i++) {
-                                                    datetime.push((datetimeline[i]))
-                                                    pre_round.push(Math.round(pre_roundline[i]))
-                                                    pre_yd15.push(Math.round(pre_yd15line[i]))
-                                                    round.push(Math.round(roundline[i]))
-                                                    yd15.push(Math.round(yd15line[i]))
-                                                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
-                                                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
-                                                }
-                                                console.log(mn)
-                                                console.log(mx)
-                                                var option = {
-                                                    tooltip: {
-                                                        trigger: 'axis',
-                                                        position: function (pt) {
-                                                            return [pt[0], '10%'];
-                                                        }
-                                                    },
-                                                    title: {
-                                                        left: 'left',
-                                                        text: '供、发电功率及其预测数据'
-                                                    },
-                                                    legend: {
-                                                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
-                                                        show: true,
-                                                        top: '6%'
-                                                    },
-                                                    toolbox: {
-                                                        feature: {
-                                                            dataZoom: {
-                                                                // yAxisIndex: 'none'
-                                                            },
-                                                            restore: {},
-                                                            saveAsImage: {}
-                                                        }
-                                                    },
-                                                    xAxis: {
-                                                        type: 'category',
-                                                        boundaryGap: false,
-                                                        data: datetime
-                                                    },
-                                                    yAxis: {
-                                                        min: -1500,
-                                                        max: mx,
-                                                        type: 'value',
-                                                        boundaryGap: [0, '100%']
-                                                    },
-                                                    dataZoom: [
-                                                        {
-                                                            type: 'inside',
-                                                            start: 0,
-                                                            end: 100
-                                                        },
-                                                        {
-                                                            start: 0,
-                                                            end: 30
-                                                        }
-                                                    ],
-                                                    series: [
-                                                        {
-                                                            name: '供电功率预测',
-                                                            type: 'line',
-                                                            smooth: true,
-                                                            symbol: 'none',
-                                                            //areaStyle: {},
-                                                            data: round
-                                                        },
-                                                        {
-                                                            name: '发电功率',
-                                                            type: 'line',
-                                                            smooth: true,
-                                                            symbol: 'none',
-                                                            //areaStyle: {},
-                                                            data: pre_round
-                                                        },
-                                                        {
-                                                            name: '供电功率',
-                                                            type: 'line',
-                                                            smooth: true,
-                                                            symbol: 'none',
-                                                            //areaStyle: {},
-                                                            data: yd15
-                                                        },
-                                                        {
-                                                            name: '发电功率预测',
-                                                            type: 'line',
-                                                            smooth: true,
-                                                            symbol: 'none',
-                                                            //areaStyle: {},
-                                                            data: pre_yd15
-                                                        }
-                                                    ]
-                                                };
-                                                myChart.setOption(option);
-                                                // const container = document.getElementById()
-                                                window.onresize = function () {
-                                                    myChart.resize();
-                                                }
-
-                                            })
-                                            .catch(err => {
-                                                console.error('axios请求错误' + err)
-                                            })
-                                        // 使用刚指定的配置项和数据显示图表。
-                                    }
-
-                                    main()
-
-                                </script>
-
                             </div>
                         </div>
                     </div>
@@ -321,83 +151,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="rosechart" id="rosechart">
-                                    <script>
-                                        function rose() {
-                                            var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
-                                            var turbinput = document.getElementById('turb-input').value;
-                                            var turbid = turbinput
-
-                                            const url = '/get_winddirection?' + 'turbid=' + turbid
-
-                                            // GET请求
-                                            axios.get(url)
-                                                .then(res => {
-                                                    var tmp = res.data.direction;
-                                                    let cnt = [parseInt(tmp[1])];
-                                                    for (let i = 2; i <= 8; i++) {
-                                                        cnt.push(parseInt(tmp[i]));
-                                                    }
-                                                    // console.log(cnt)
-                                                    // 指定图表的配置项和数据
-                                                    var option = {
-                                                        title: {
-                                                            text: '风向玫瑰图'
-                                                        },
-                                                        legend: {
-                                                            top: 'bottom',
-                                                            data: []
-                                                        },
-                                                        tooltip: {
-                                                            trigger: 'item',
-                                                            formatter: '{a} <br/>{b} : {c} ({d}%)'
-                                                        },
-                                                        toolbox: {
-                                                            show: true,
-                                                            feature: {
-                                                                mark: {show: true},
-                                                                dataView: {show: true, readOnly: false},
-                                                                restore: {show: true},
-                                                                saveAsImage: {show: true}
-                                                            }
-                                                        },
-                                                        series: [
-                                                            {
-                                                                name: '风向统计玫瑰图',
-                                                                type: 'pie',
-                                                                radius: [40, 100],
-                                                                center: ['50%', '50%'],
-                                                                roseType: 'area',
-                                                                itemStyle: {
-                                                                    borderRadius: 8
-                                                                },
-                                                                data: [
-                                                                    {value: cnt[0], name: '正北'},
-                                                                    {value: cnt[1], name: '东北'},
-                                                                    {value: cnt[2], name: '正东'},
-                                                                    {value: cnt[3], name: '东南'},
-                                                                    {value: cnt[4], name: '正南'},
-                                                                    {value: cnt[5], name: '西南'},
-                                                                    {value: cnt[6], name: '正西'},
-                                                                    {value: cnt[7], name: '西北'}
-                                                                ]
-                                                            }
-                                                        ]
-                                                    };
-                                                    roseChart.setOption(option)
-                                                    window.onresize = function () {
-                                                        roseChart.resize();
-                                                    }
-                                                })
-                                                .catch(err => {
-                                                    console.error('axios请求错误' + err)
-                                                })
-                                        }
-
-                                        rose()
-
-                                    </script>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -405,226 +159,7 @@
                     <div class="col-xl-7 d-flex grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <div>
-
-                                </div>
                                 <div class="d-flex d3chart" id="3dchart" style="width: 100%;height: 400px">
-                                    <script>
-                                        var d3chart = echarts.init(document.getElementById('3dchart'));
-                                        // 指定图表的配置项和数据
-                                        // prettier-ignore
-                                        var ym = ['202104', '202105', '202106', '202107', '202108',
-                                            '202109', '202110', '202111', '202112', '202201',
-                                            '202202', '202203', '202204', '202205', '202206'];
-                                        // prettier-ignore
-                                        var tid = ['11', '12', '13', '14', '15'];
-                                        // prettier-ignore
-                                        var data = [
-                                            [0, 0, 0],
-                                            [1, 0, 0],
-                                            [2, 0, 0],
-                                            [3, 0, 0],
-                                            [4, 0, 0],
-                                            [5, 0, 0],
-                                            [6, 0, 0],
-                                            [7, 0, 22953424.39],
-                                            [8, 0, 40579172.42],
-                                            [9, 0, 20226622.5],
-                                            [10, 0, 29466348.37],
-                                            [11, 0, 41558719.77],
-                                            [12, 0, 38466526.41],
-                                            [13, 0, 43300519.14],
-                                            [14, 0, 46242779.94],
-                                            [0, 1, 0],
-                                            [1, 1, 0],
-                                            [2, 1, 0],
-                                            [3, 1, 0],
-                                            [4, 1, 0],
-                                            [5, 1, 0],
-                                            [6, 1, 0],
-                                            [7, 1, 18307827.14],
-                                            [8, 1, 27852952.96],
-                                            [9, 1, 37130020.05],
-                                            [10, 1, 28419647.51],
-                                            [11, 1, 35952370.22],
-                                            [12, 1, 21693959.8],
-                                            [13, 1, 20095533.09],
-                                            [14, 1, 17783965.91],
-                                            [0, 2, 27158670.67],
-                                            [1, 2, 27391812.1],
-                                            [2, 2, 16838468.07],
-                                            [3, 2, 36470740.65],
-                                            [4, 2, 24121429.14],
-                                            [5, 2, 41191927.95],
-                                            [6, 2, 40398478.76],
-                                            [7, 2, 57756616.61],
-                                            [8, 2, 47679726.07],
-                                            [9, 2, 41394940.86],
-                                            [10, 2, 32137055.98],
-                                            [11, 2, 52921428.13],
-                                            [12, 2, 42507128.21],
-                                            [13, 2, 0],
-                                            [14, 2, 0],
-                                            [0, 3, 13851205.14],
-                                            [1, 3, 11103855.39],
-                                            [2, 3, 22144885.12],
-                                            [3, 3, 30888264.07],
-                                            [4, 3, 31132187.07],
-                                            [5, 3, 13311616.68],
-                                            [6, 3, 25764675.7],
-                                            [7, 3, 34865265.26],
-                                            [8, 3, 31745179.18],
-                                            [9, 3, 23408727.06],
-                                            [10, 3, 20537821.67],
-                                            [11, 3, 29708041.57],
-                                            [12, 3, 24073546.75],
-                                            [13, 3, 0],
-                                            [14, 3, 0],
-                                            [0, 4, 46337151.89],
-                                            [1, 4, 47017892.5],
-                                            [2, 4, 45759110.95],
-                                            [3, 4, 60761476.25],
-                                            [4, 4, 66081154.2],
-                                            [5, 4, 74800369.0],
-                                            [6, 4, 108098519.7],
-                                            [7, 4, 108467814.4],
-                                            [8, 4, 121823348.4],
-                                            [9, 4, 154492518.3],
-                                            [10, 4, 129098410.5],
-                                            [11, 4, 209708794.5],
-                                            [12, 4, 66502388.46],
-                                            [13, 4, 41496852.2],
-                                            [14, 4, 53398301.14]
-                                        ]
-
-                                        option = {
-                                            title: {
-                                                text: "发电量数据可视化"
-                                            },
-                                            tooltip: {
-                                                formatter: function (params) {
-                                                    // 获取 x 值和 y 值
-                                                    var xValue = ym[params.data.value[0]];
-                                                    var yValue = tid[params.data.value[1]];
-
-                                                    return '月份：' + xValue + '<br/>' + ' 风场id：' + yValue + '<br/>' + ' 该月发电量：' + params.data.value[2];
-                                                }
-                                            },
-                                            visualMap: {
-                                                max: 50970879,
-                                                inRange: {
-                                                    color: [
-                                                        '#313695',
-                                                        '#4575b4',
-                                                        '#74add1',
-                                                        '#abd9e9',
-                                                        '#e0f3f8',
-                                                        '#ffffbf',
-                                                        '#fee090',
-                                                        '#fdae61',
-                                                        '#f46d43',
-                                                        '#d73027',
-                                                        '#a50026'
-                                                    ]
-                                                }
-                                            },
-                                            xAxis3D: {
-                                                type: 'category',
-                                                data: ym,
-                                                top: '6%',
-                                                name: '年月'
-                                            },
-                                            yAxis3D: {
-                                                type: 'category',
-                                                data: tid,
-                                                top: '6%',
-                                                name: '风场'
-                                            },
-                                            zAxis3D: {
-                                                type: 'value',
-                                                top: '6%',
-                                                name: '发电量'
-                                            },
-                                            grid3D: {
-                                                boxWidth: 120,
-                                                boxHeight: 96,
-                                                boxDepth: 64,
-                                                axisLine: {
-                                                    show: true,
-                                                },
-                                                splitLine: {//平面上的分隔线。
-                                                    show: true,//立体网格线
-                                                    // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
-                                                    splitArea: {
-                                                        show: true,
-                                                        // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
-                                                        areaStyle: {
-                                                            color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)', 'rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)']
-                                                        }
-                                                    },
-                                                },
-                                                axisPointer: {//坐标轴指示线。
-                                                    show: true,//鼠标在chart上的显示线
-                                                    // lineStyle:{
-                                                    //     color:'#000',//颜色
-                                                    //     opacity:1,
-                                                    //     width:5//厚度（虽然为宽表现为高度），对应length*(宽)
-                                                    // }
-                                                },
-                                                viewControl: {//viewControl用于鼠标的旋转，缩放等视角控制。(以下适合用于地球自转等)
-                                                    // projection: 'orthographic'//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'。
-                                                    autoRotate: true,//会有自动旋转查看动画出现,可查看每个维度信息
-                                                    // autoRotateDirection:'ccw',//物体自传的方向。默认是 'cw' 也就是从上往下看是顺时针方向，也可以取 'ccw'，既从上往下看为逆时针方向。
-                                                    // autoRotateSpeed:12,//物体自传的速度
-                                                    // autoRotateAfterStill:2,//在鼠标静止操作后恢复自动旋转的时间间隔。在开启 autoRotate 后有效。
-                                                    distance: 200,//默认视角距离主体的距离(常用)
-                                                    // alpha:1,//视角绕 x 轴，即上下旋转的角度(与beta一起控制视野成像效果)
-                                                    beta: 15,//视角绕 y 轴，即左右旋转的角度。
-                                                    // center:[]//视角中心点，旋转也会围绕这个中心点旋转，默认为[0,0,0]。
-                                                    // zlevel://组件所在的层。
-                                                    animation: true
-                                                },
-                                                light: {
-                                                    main: {
-                                                        intensity: 1.2,
-                                                        shadow: true
-                                                    },
-                                                    ambient: {
-                                                        intensity: 0.5
-                                                    }
-                                                }
-                                            },
-                                            series: [
-                                                {
-                                                    type: 'bar3D',
-                                                    data: data.map(function (item) {
-                                                        return {
-                                                            value: [item[0], item[1], item[2]]
-                                                        };
-                                                    }),
-                                                    shading: 'lambert',
-                                                    label: {
-                                                        fontSize: 16,
-                                                        borderWidth: 1
-                                                    },
-                                                    emphasis: {
-                                                        label: {
-                                                            fontSize: 20,
-                                                            color: '#900'
-                                                        },
-                                                        itemStyle: {
-                                                            color: '#900'
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        };
-                                        d3chart.setOption(option)
-                                        window.onresize = function () {
-                                            d3chart.resize();
-                                        }
-
-                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -634,11 +169,7 @@
             <!-- content-wrapper ends -->
             <!-- partial:partials/_footer.html -->
             <div id="footer-placeholder">
-                <script>
-                    $(function () {
-                        $("#footer-placeholder").load("/footer.html");
-                    });
-                </script>
+
             </div>
             <!-- partial -->
         </div>
@@ -663,5 +194,474 @@
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/progressbar.min.js"></script>
+<script>
+    async function nav_loader() {
+        $(function () {
+            $("#sidebar").load("/navigation.html");
+        });
+    }
+
+    nav_loader()
+
+    async function footer_loader() {
+        $(function () {
+            $("#footer-placeholder").load("/footer.html");
+        });
+    }
+
+    footer_loader()
+
+    async function getValue() {
+        main()
+        rose()
+    }
+
+    async function main() {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        var input = document.getElementById('time-input');
+        var dateinput = input.value.split('T')[0].split('-')
+        var timeinput = input.value.split('T')[1].split(':')
+
+        var turbinput = document.getElementById('turb-input').value;
+        var lengthinput = document.getElementById('length-input').value;
+
+        let turbid = turbinput;
+        let year = dateinput[0];
+        let month = dateinput[1];
+        let day = dateinput[2];
+        let hour = timeinput[0];
+        let length = lengthinput;// 单位小时
+
+        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
+        console.log('测试ssy:', baseurl);
+
+        // GET请求
+        axios.get(baseurl)
+            .then(res => {
+                console.log('测试resdata', res.data)
+                let datetimeline = Object.entries(res.data)[0][1];
+                let pre_roundline = Object.entries(res.data)[1][1];
+                let pre_yd15line = Object.entries(res.data)[2][1];
+                let roundline = Object.entries(res.data)[3][1];
+                let yd15line = Object.entries(res.data)[4][1];
+
+                console.log('测试datetimeline', datetimeline)
+                console.log('测试pre_roundline', pre_roundline)
+                console.log('测试pre_yd15line', pre_yd15line)
+                console.log('测试roundline', roundline)
+                console.log('测试yd15line', yd15line)
+
+                datetime = []
+                pre_yd15 = []
+                pre_round = []
+                round = []
+                yd15 = []
+
+                mn = 10000000000
+                mx = -10000000000
+                for (let i = 0; i < datetimeline.length; i++) {
+                    datetime.push((datetimeline[i]))
+                    pre_round.push(Math.round(pre_roundline[i]))
+                    pre_yd15.push(Math.round(pre_yd15line[i]))
+                    round.push(Math.round(roundline[i]))
+                    yd15.push(Math.round(yd15line[i]))
+                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                }
+                console.log(mn)
+                console.log(mx)
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        position: function (pt) {
+                            return [pt[0], '10%'];
+                        }
+                    },
+                    title: {
+                        left: 'left',
+                        text: '供、发电功率及其预测数据'
+                    },
+                    legend: {
+                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
+                        show: true,
+                        top: '6%'
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                // yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: datetime
+                    },
+                    yAxis: {
+                        min: -1500,
+                        max: mx,
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 100
+                        },
+                        {
+                            start: 0,
+                            end: 30
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '供电功率预测',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: round
+                        },
+                        {
+                            name: '发电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: pre_round
+                        },
+                        {
+                            name: '供电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: yd15
+                        },
+                        {
+                            name: '发电功率预测',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: pre_yd15
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+                // const container = document.getElementById()
+                window.onresize = function () {
+                    myChart.resize();
+                }
+
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+        // 使用刚指定的配置项和数据显示图表。
+    }
+
+    main()
+
+    async function rose() {
+        var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
+        var turbinput = document.getElementById('turb-input').value;
+        var turbid = turbinput
+
+        const url = '/get_winddirection?' + 'turbid=' + turbid
+
+        // GET请求
+        axios.get(url)
+            .then(res => {
+                var tmp = res.data.direction;
+                let cnt = [parseInt(tmp[1])];
+                for (let i = 2; i <= 8; i++) {
+                    cnt.push(parseInt(tmp[i]));
+                }
+                // console.log(cnt)
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: '风向玫瑰图'
+                    },
+                    legend: {
+                        top: 'bottom',
+                        data: []
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {show: true},
+                            dataView: {show: true, readOnly: false},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    series: [
+                        {
+                            name: '风向统计玫瑰图',
+                            type: 'pie',
+                            radius: [40, 100],
+                            center: ['50%', '50%'],
+                            roseType: 'area',
+                            itemStyle: {
+                                borderRadius: 8
+                            },
+                            data: [
+                                {value: cnt[0], name: '正北'},
+                                {value: cnt[1], name: '东北'},
+                                {value: cnt[2], name: '正东'},
+                                {value: cnt[3], name: '东南'},
+                                {value: cnt[4], name: '正南'},
+                                {value: cnt[5], name: '西南'},
+                                {value: cnt[6], name: '正西'},
+                                {value: cnt[7], name: '西北'}
+                            ]
+                        }
+                    ]
+                };
+                roseChart.setOption(option)
+                window.onresize = function () {
+                    roseChart.resize();
+                }
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+    }
+
+    rose()
+
+    async function d3chart() {
+        var d3chart = echarts.init(document.getElementById('3dchart'));
+        // 指定图表的配置项和数据
+        // prettier-ignore
+        var ym = ['202104', '202105', '202106', '202107', '202108',
+            '202109', '202110', '202111', '202112', '202201',
+            '202202', '202203', '202204', '202205', '202206'];
+        // prettier-ignore
+        var tid = ['11', '12', '13', '14', '15'];
+        // prettier-ignore
+        var data = [
+            [0, 0, 0],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 22953424.39],
+            [8, 0, 40579172.42],
+            [9, 0, 20226622.5],
+            [10, 0, 29466348.37],
+            [11, 0, 41558719.77],
+            [12, 0, 38466526.41],
+            [13, 0, 43300519.14],
+            [14, 0, 46242779.94],
+            [0, 1, 0],
+            [1, 1, 0],
+            [2, 1, 0],
+            [3, 1, 0],
+            [4, 1, 0],
+            [5, 1, 0],
+            [6, 1, 0],
+            [7, 1, 18307827.14],
+            [8, 1, 27852952.96],
+            [9, 1, 37130020.05],
+            [10, 1, 28419647.51],
+            [11, 1, 35952370.22],
+            [12, 1, 21693959.8],
+            [13, 1, 20095533.09],
+            [14, 1, 17783965.91],
+            [0, 2, 27158670.67],
+            [1, 2, 27391812.1],
+            [2, 2, 16838468.07],
+            [3, 2, 36470740.65],
+            [4, 2, 24121429.14],
+            [5, 2, 41191927.95],
+            [6, 2, 40398478.76],
+            [7, 2, 57756616.61],
+            [8, 2, 47679726.07],
+            [9, 2, 41394940.86],
+            [10, 2, 32137055.98],
+            [11, 2, 52921428.13],
+            [12, 2, 42507128.21],
+            [13, 2, 0],
+            [14, 2, 0],
+            [0, 3, 13851205.14],
+            [1, 3, 11103855.39],
+            [2, 3, 22144885.12],
+            [3, 3, 30888264.07],
+            [4, 3, 31132187.07],
+            [5, 3, 13311616.68],
+            [6, 3, 25764675.7],
+            [7, 3, 34865265.26],
+            [8, 3, 31745179.18],
+            [9, 3, 23408727.06],
+            [10, 3, 20537821.67],
+            [11, 3, 29708041.57],
+            [12, 3, 24073546.75],
+            [13, 3, 0],
+            [14, 3, 0],
+            [0, 4, 46337151.89],
+            [1, 4, 47017892.5],
+            [2, 4, 45759110.95],
+            [3, 4, 60761476.25],
+            [4, 4, 66081154.2],
+            [5, 4, 74800369.0],
+            [6, 4, 108098519.7],
+            [7, 4, 108467814.4],
+            [8, 4, 121823348.4],
+            [9, 4, 154492518.3],
+            [10, 4, 129098410.5],
+            [11, 4, 209708794.5],
+            [12, 4, 66502388.46],
+            [13, 4, 41496852.2],
+            [14, 4, 53398301.14]
+        ]
+
+        option = {
+            title: {
+                text: "发电量数据可视化"
+            },
+            tooltip: {
+                formatter: function (params) {
+                    // 获取 x 值和 y 值
+                    var xValue = ym[params.data.value[0]];
+                    var yValue = tid[params.data.value[1]];
+
+                    return '月份：' + xValue + '<br/>' + ' 风场id：' + yValue + '<br/>' + ' 该月发电量：' + params.data.value[2];
+                }
+            },
+            visualMap: {
+                max: 50970879,
+                inRange: {
+                    color: [
+                        '#313695',
+                        '#4575b4',
+                        '#74add1',
+                        '#abd9e9',
+                        '#e0f3f8',
+                        '#ffffbf',
+                        '#fee090',
+                        '#fdae61',
+                        '#f46d43',
+                        '#d73027',
+                        '#a50026'
+                    ]
+                }
+            },
+            xAxis3D: {
+                type: 'category',
+                data: ym,
+                top: '6%',
+                name: '年月'
+            },
+            yAxis3D: {
+                type: 'category',
+                data: tid,
+                top: '6%',
+                name: '风场'
+            },
+            zAxis3D: {
+                type: 'value',
+                top: '6%',
+                name: '发电量'
+            },
+            grid3D: {
+                boxWidth: 120,
+                boxHeight: 96,
+                boxDepth: 64,
+                axisLine: {
+                    show: true,
+                },
+                splitLine: {//平面上的分隔线。
+                    show: true,//立体网格线
+                    // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
+                    splitArea: {
+                        show: true,
+                        // interval:100,//坐标轴刻度标签的显示间隔，在类目轴中有效
+                        areaStyle: {
+                            color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)', 'rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)']
+                        }
+                    },
+                },
+                axisPointer: {//坐标轴指示线。
+                    show: true,//鼠标在chart上的显示线
+                    // lineStyle:{
+                    //     color:'#000',//颜色
+                    //     opacity:1,
+                    //     width:5//厚度（虽然为宽表现为高度），对应length*(宽)
+                    // }
+                },
+                viewControl: {//viewControl用于鼠标的旋转，缩放等视角控制。(以下适合用于地球自转等)
+                    // projection: 'orthographic'//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'。
+                    autoRotate: true,//会有自动旋转查看动画出现,可查看每个维度信息
+                    // autoRotateDirection:'ccw',//物体自传的方向。默认是 'cw' 也就是从上往下看是顺时针方向，也可以取 'ccw'，既从上往下看为逆时针方向。
+                    // autoRotateSpeed:12,//物体自传的速度
+                    // autoRotateAfterStill:2,//在鼠标静止操作后恢复自动旋转的时间间隔。在开启 autoRotate 后有效。
+                    distance: 200,//默认视角距离主体的距离(常用)
+                    // alpha:1,//视角绕 x 轴，即上下旋转的角度(与beta一起控制视野成像效果)
+                    beta: 15,//视角绕 y 轴，即左右旋转的角度。
+                    // center:[]//视角中心点，旋转也会围绕这个中心点旋转，默认为[0,0,0]。
+                    // zlevel://组件所在的层。
+                    animation: true
+                },
+                light: {
+                    main: {
+                        intensity: 1.2,
+                        shadow: true
+                    },
+                    ambient: {
+                        intensity: 0.5
+                    }
+                }
+            },
+            series: [
+                {
+                    type: 'bar3D',
+                    data: data.map(function (item) {
+                        return {
+                            value: [item[0], item[1], item[2]]
+                        };
+                    }),
+                    shading: 'lambert',
+                    label: {
+                        fontSize: 16,
+                        borderWidth: 1
+                    },
+                    emphasis: {
+                        label: {
+                            fontSize: 20,
+                            color: '#900'
+                        },
+                        itemStyle: {
+                            color: '#900'
+                        }
+                    }
+                }
+            ]
+        };
+        d3chart.setOption(option)
+        window.onresize = function () {
+            d3chart.resize();
+        }
+    }
+
+    d3chart()
+
+
+</script>
 </body>
 </html>

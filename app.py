@@ -58,9 +58,6 @@ def to_string(a, f):
     return res
 
 
-# 配置数据库连接信息和连接池参数
-
-
 # 创建 pymysqlpool 连接池
 pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
 
