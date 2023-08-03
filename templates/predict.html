@@ -65,6 +65,7 @@
                         点此登录
                     </a>
                     {% endif %}
+                </li>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas"
                     type="button">
@@ -104,22 +105,17 @@
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
             </nav>
-            <script>
-                $(function () {
-                    $("#sidebar").load("/navigation.html");
-                });
-            </script>
         </div>
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
-                <div class="row mt-2">
-                    <div class="col-lg-4 grid-margin stretch-card" id="left">
+                <div class="row d-flex">
+                    <div class="col-lg-3 stretch-card" id="left">
                         <div class="card">
                             <div class="card-body">
                                 <button id="uploadBtn" onclick="closeReport()"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
-                                    <i class="my_typcn typcn-upload"></i><br>上传数据
+                                        style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
+                                    <i class="my_typcn typcn-upload " style="height: 10%"></i><br>上传数据
                                 </button>
                                 <input id="fileInput" style="display: none;" type="file">
                                 <script>
@@ -141,7 +137,7 @@
                                 </script>
 
                                 <button onclick="openReport()"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                                        style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-chart-bar-outline"></i><br>数据分析
                                 </button>
                                 <script>
@@ -163,10 +159,9 @@
                                     }
                                 </script>
 
-
                                 <button id="predictionBtn"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%"
                                         onclick="initmychart()"
+                                        style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%"
                                 >
                                     <i class="my_typcn typcn-device-laptop"></i><br>预测功率
                                 </button>
@@ -184,7 +179,7 @@
                                                     myChart.dispose();
                                                     myChart.clear();
                                                     myChart = null
-                                                    myChart = echarts.init(document.getElementById('linechart'));
+                                                    myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
                                                     // 指定图表的配置项和数据
                                                     var datatime = json_data.DATATIME;
                                                     var yd15 = json_data.PRE_YD15;
@@ -248,7 +243,7 @@
 
                                 </script>
                                 <button id="aiBtn" onclick="closeReport()"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                                        style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-zoom"></i><br>AI分析
                                 </button>
                                 <script>
@@ -266,18 +261,18 @@
                                     });
                                 </script>
                                 <button id="downloadBtn"
-                                        style="width: 80%;height: 90px;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
-                                    <a href="/download_resfile" style="text-decoration: none;color: black"
-                                       onclick="closeReport()"><i
+                                        style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
+                                    <a href="/download_resfile" onclick="closeReport()"
+                                       style="text-decoration: none;color: black"><i
                                             class="my_typcn typcn-download"></i><br>下载结果</a>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 grid-margin stretch-card">
+                    <div class="col-lg-9 stretch-card">
                         <div class="card">
                             <div class="card-body" id="chart">
-                                <div id="linechart" style="width: 100%;height: 500px">
+                                <div id="linechart" class="w-100 h-75">
                                     <script>
                                         var myChart = echarts.init(document.getElementById('linechart'));
                                         // 指定图表的配置项和数据
@@ -323,18 +318,18 @@
                                         myChart.setOption(option)
                                     </script>
                                 </div>
-                                <textarea id="aianswer" readonly style="width: 100%;height:120px;">Hi，您好，欢迎使用风电功率预测与分析服务。
+                                <textarea id="aianswer" readonly style="width: 100%;" class="h-auto">Hi，您好，欢迎使用风电功率预测与分析服务。
                                 </textarea>
                             </div>
-                            <div style="width: 100%;height: 35px;display: none" id="buttons">
+                            <div id="buttons" style="width: 100%;height: 35px;display: none">
                                 <span style="margin-left: 30px;font-weight: bold">空缺值填充</span>
-                                <input type="checkbox" style="margin-left: 5px">
+                                <input style="margin-left: 5px" type="checkbox">
                                 <span style="margin-left: 30px;font-weight: bold">离群点修正</span>
-                                <input type="checkbox" style="margin-left: 5px">
+                                <input style="margin-left: 5px" type="checkbox">
                                 <span style="margin-left: 30px;font-weight: bold">数据去重</span>
-                                <input type="checkbox" style="margin-left: 5px">
+                                <input style="margin-left: 5px" type="checkbox">
                                 <span style="margin-left: 30px;font-weight: bold">重采样</span>
-                                <input type="checkbox" style="margin-left: 5px">
+                                <input style="margin-left: 5px" type="checkbox">
                                 <button class="btn-tmp ml-4" onclick="openReport1()">
                                     提交
                                 </button>
@@ -350,18 +345,14 @@
                                     }
                                 </script>
                             </div>
-                            <iframe class="card-body" style="width: 100%;height: 500px;display: none" id="report1">
+                            <iframe class="card-body" id="report1" style="width: 100%;height: 500px;display: none">
                             </iframe>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="footer-placeholder">
-                <script>
-                    $(function () {
-                        $("#footer-placeholder").load("/footer.html");
-                    });
-                </script>
+
             </div>
             <!-- main-panel ends -->
         </div>
@@ -401,6 +392,7 @@
     <script src="../static/js/jquery.meanmenu.js"></script>
     <script src="../static/js/ajax-mail.js"></script>
     <script src="../static/js/theme.js"></script>
+    <script src="../static/js/nav-footer_loader.js"></script>
 </div>
 </body>
 </html>

@@ -196,30 +196,19 @@
                                                 </div>
                                                 <div class="col-md-3 min-vw-80 mt-2 mb-2">
                                                     <!--                                                    <span class="hidden-value">====&#45;&#45;&#45;&#45; 5/10</span>-->
-<!--                                                    <span style="font-weight: bold">API_KEY剩余：</span>-->
+                                                    <!--                                                    <span style="font-weight: bold">API_KEY剩余：</span>-->
                                                     <span class="d-flex justify-content-between">
-                                                        <span style="font-weight: bold">API_KEY剩余：</span>
-                                                        <span style="font-weight: bold">{{key_amount}} / 100</span>
+                                                        <span style="font-weight: bold">API_KEY到期时间：</span>
+
                                                     </span>
                                                 </div>
                                                 <div class="col-md-9 min-vw-50 mt-2 mb-2">
-
-                                                    <span class="progress progress-md mt-2 ">
-                                                        <span aria-valuemax="100"
-                                                              aria-valuemin="0"
-                                                              aria-valuenow="67"
-                                                              class="progress-bar bg-success"
-                                                              role="progressbar"
-                                                              id="progressbar"
-                                                        >
-                                                            <script>
-                                                                const wid = parseInt('{{key_amount}}')
-                                                                const width = Number(wid*100).toFixed(0)+'%'
-                                                                document.getElementById('progressbar').setAttribute('width', width)
-
-                                                            </script>
-                                                        </span>
-                                                    </span>
+                                                    <span class="mr-5" style="font-weight: bold;font-family: 'Courier New',serif">{{key_amount}}</span>
+                                                    <button class="btn btn-sm btn-outline-secondary text-center m-auto"
+                                                            id="apply-delay"
+                                                    >
+                                                        申请延期
+                                                    </button>
                                                 </div>
                                                 <div class="col-md-6 min-vw-50 mt-2 mb-2">
                                                     <span>

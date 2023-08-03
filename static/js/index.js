@@ -20,8 +20,11 @@ let end = N;
 const seconds = (Data.yd15.length - N) / 4;
 console.log('起始', N, '个点', '循环用时', seconds, '秒');
 
-(async function () {
+let year = '2021';
+let delta = 1;
 
+// 刷新数据的函数 - 全局实际功率倍增10%
+(async function () {
     for (let i = 0; i < Data.yd15.length; i++) {
         // Data.yd15[i] *= Data.yd15[i]<0 ? -1:1;
         // Data.actual[i] *= Data.actual[i]<0 ? -1:1;
@@ -41,7 +44,7 @@ console.log('起始', N, '个点', '循环用时', seconds, '秒');
     }
 })();
 
-// 柱状图1 模块
+// 各月份风场累计供电量 - 左上
 (async function () {
     // 实例化对象
     var myChart = echarts.init(document.querySelector(".bar .chart"));
@@ -138,14 +141,13 @@ console.log('起始', N, '个点', '循环用时', seconds, '秒');
     });
 })();
 
-let year = '2021';
-
+// 每2秒执行1次刷新数据的函数 - 左上轮询2021和2022
 setInterval(function () {
     year = (year === '2021') ? '2022' : '2021';
     document.getElementById(year).click()
-}, 2000);//每秒执行4次刷新数据的函数
+}, 2000);
 
-// 折线图定制
+// 发电功率实时预测 - 左中
 (async function () {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".line .chart"));
@@ -247,8 +249,79 @@ setInterval(function () {
     });
 })();
 
-let delta = 1;
+// 风向统计 - 左下
+(async function () {
+    // 1. 实例化对象
+    var myChart = echarts.init(document.querySelector(".pie1  .chart"));
+    // 2. 指定配置项和数据
+    var option = {
+        legend: {
+            top: "90%",
+            itemWidth: 10,
+            itemHeight: 10,
+            textStyle: {
+                color: "rgba(255,255,255,.5)",
+                fontSize: "12"
+            }
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        // 注意颜色写的位置
+        color: [
+            "#006cff",
+            "#60cda0",
+            "#ed8884",
+            "#ff9f7f",
+            "#0096ff",
+            "#9fe6b8",
+            "#32c5e9",
+            "#1d9dff"
+        ],
+        series: [
+            {
+                name: "风向",
+                type: "pie",
+                // 如果radius是百分比则必须加引号
+                radius: ["10%", "70%"],
+                center: ["50%", "42%"],
+                roseType: "radius",
+                data: [
+                    {value: 5317, name: "正北"},
+                    {value: 2084, name: "东北"},
+                    {value: 2451, name: "正东"},
+                    {value: 9672, name: "东南"},
+                    {value: 13803, name: "正南"},
+                    {value: 7657, name: "西南"},
+                    {value: 10377, name: "正西"},
+                    {value: 13201, name: "西北"}
+                ],
+                // 修饰饼形图文字相关的样式 label对象
+                label: {
+                    fontSize: 10
+                },
+                // 修饰引导线样式
+                labelLine: {
+                    // 连接到图形的线长度
+                    length: 10,
+                    // 连接到文字的线长度
+                    length2: 10
+                }
+            }
+        ]
+    };
 
+    // 3. 配置项和数据给我们的实例化对象
+    myChart.setOption(option);
+    // 4. 当我们浏览器缩放的时候，图表也等比例缩放
+    window.addEventListener("resize", function () {
+        // 让我们的图表调用 resize这个方法
+        myChart.resize();
+    });
+})();
+
+// 刷新数据的函数 - 左中 + 右中
 async function update() {
     var myChart = echarts.init(document.querySelector(".line .chart"));
     var myChart1 = echarts.init(document.querySelector(".line1 .chart"));
@@ -518,10 +591,12 @@ async function update() {
     myChart1.setOption(option1);
 }
 
-setInterval(function () {
-    update();
-}, 1000);//每秒执行4次刷新数据的函数
+// 每秒执行1次刷新数据的函数 - 左中 + 右中
+setInterval(async function () {
+    await update();
+}, 1000);
 
+// 每秒执行1次刷新数据的函数 - 中上 - 全风场累计供电量+全风场累计发电量
 setInterval(function () {
     const yd15_dom = document.getElementById('yd15');
     const pre_yd15_dom = document.getElementById('pre_yd15');
@@ -529,71 +604,8 @@ setInterval(function () {
     pre_yd15_dom.innerHTML = String(sum_pre_yd15[end - N]);
 }, 1000);
 
-// 饼形图定制
-// 折线图定制
-(async function () {
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".pie .chart"));
 
-    option = {
-        tooltip: {
-            trigger: "item",
-            formatter: "{a} <br/>{b}: {c} ({d}%)",
-            position: function (p) {
-                //其中p为当前鼠标的位置
-                return [p[0] + 10, p[1] - 10];
-            }
-        },
-        legend: {
-            top: "90%",
-            itemWidth: 10,
-            itemHeight: 10,
-            data: ["海南", "辽宁", "河北", "江苏", "黑龙江", "甘肃", "新疆", "内蒙古"],
-            textStyle: {
-                color: "rgba(255,255,255,.5)",
-                fontSize: "12"
-            }
-        },
-        series: [
-            {
-                name: "风场地区分布",
-                type: "pie",
-                center: ["50%", "42%"],
-                radius: ["40%", "60%"],
-                color: [
-                    "#065aab",
-                    "#066eab",
-                    "#0682ab",
-                    "#0696ab",
-                    "#06a0ab",
-                    "#06b4ab",
-                    "#06c8ab",
-                    "#06dcab",
-                    "#06f0ab"
-                ],
-                label: {show: false},
-                labelLine: {show: false},
-                data: [
-                    {value: 20, name: "海南"},
-                    {value: 26, name: "辽宁"},
-                    {value: 24, name: "河北"},
-                    {value: 25, name: "江苏"},
-                    {value: 20, name: "黑龙江"},
-                    {value: 25, name: "甘肃"},
-                    {value: 30, name: "新疆"},
-                    {value: 42, name: "内蒙古"}
-                ]
-            }
-        ]
-    };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
-    window.addEventListener("resize", function () {
-        myChart.resize();
-    });
-})();
-// 学习进度柱状图模块
+// 风场累计供电量 - 右上
 (async function () {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".bar1 .chart"));
@@ -708,7 +720,7 @@ setInterval(function () {
         myChart.resize();
     });
 })();
-// 折线图 优秀作品
+// 供电功率实时预测 - 右中
 (async function () {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".line1 .chart"));
@@ -884,75 +896,68 @@ setInterval(function () {
         myChart.resize();
     });
 })();
-
-// 点位分布统计模块
+// 风场地区分布 - 右下
 (async function () {
-    // 1. 实例化对象
-    var myChart = echarts.init(document.querySelector(".pie1  .chart"));
-    // 2. 指定配置项和数据
-    var option = {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.querySelector(".pie .chart"));
+
+    option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)",
+            position: function (p) {
+                //其中p为当前鼠标的位置
+                return [p[0] + 10, p[1] - 10];
+            }
+        },
         legend: {
             top: "90%",
             itemWidth: 10,
             itemHeight: 10,
+            data: ["海南", "辽宁", "河北", "江苏", "黑龙江", "甘肃", "新疆", "内蒙古"],
             textStyle: {
                 color: "rgba(255,255,255,.5)",
                 fontSize: "12"
             }
         },
-        tooltip: {
-            trigger: "item",
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        // 注意颜色写的位置
-        color: [
-            "#006cff",
-            "#60cda0",
-            "#ed8884",
-            "#ff9f7f",
-            "#0096ff",
-            "#9fe6b8",
-            "#32c5e9",
-            "#1d9dff"
-        ],
         series: [
             {
-                name: "风向",
+                name: "风场地区分布",
                 type: "pie",
-                // 如果radius是百分比则必须加引号
-                radius: ["10%", "70%"],
                 center: ["50%", "42%"],
-                roseType: "radius",
-                data: [
-                    {value: 5317, name: "正北"},
-                    {value: 2084, name: "东北"},
-                    {value: 2451, name: "正东"},
-                    {value: 9672, name: "东南"},
-                    {value: 13803, name: "正南"},
-                    {value: 7657, name: "西南"},
-                    {value: 10377, name: "正西"},
-                    {value: 13201, name: "西北"}
+                radius: ["40%", "60%"],
+                color: [
+                    "#065aab",
+                    "#066eab",
+                    "#0682ab",
+                    "#0696ab",
+                    "#06a0ab",
+                    "#06b4ab",
+                    "#06c8ab",
+                    "#06dcab",
+                    "#06f0ab"
                 ],
-                // 修饰饼形图文字相关的样式 label对象
-                label: {
-                    fontSize: 10
-                },
-                // 修饰引导线样式
-                labelLine: {
-                    // 连接到图形的线长度
-                    length: 10,
-                    // 连接到文字的线长度
-                    length2: 10
-                }
+                label: {show: false},
+                labelLine: {show: false},
+                data: [
+                    {value: 20, name: "海南"},
+                    {value: 26, name: "辽宁"},
+                    {value: 24, name: "河北"},
+                    {value: 25, name: "江苏"},
+                    {value: 20, name: "黑龙江"},
+                    {value: 25, name: "甘肃"},
+                    {value: 30, name: "新疆"},
+                    {value: 42, name: "内蒙古"}
+                ]
             }
         ]
     };
 
-    // 3. 配置项和数据给我们的实例化对象
+    // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
-    // 4. 当我们浏览器缩放的时候，图表也等比例缩放
     window.addEventListener("resize", function () {
-        // 让我们的图表调用 resize这个方法
         myChart.resize();
     });
 })();
+
+

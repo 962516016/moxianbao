@@ -65,6 +65,7 @@
         </div>
 
         {% if username %}
+        <!--        登录才给全功能-->
         <div class="main-panel">
             <div class="content-wrapper">
                 <!--                选择器按钮部分-->
@@ -72,66 +73,65 @@
                     <!--                    正在设计功能-日期选择器-datepicker-->
                     <div class="col-sm-4">
                         <div class="d-flex align-items-center justify-content-start">
-                            <div class="">
-                                <div class="input-container form-control input-box" id="input-group">
-                                    <label for="time-input" style="width: 100%">
-                                        <span style="font-weight: bold">请选择时间： </span>
-                                        <input class="input timeinput"
-                                               id="time-input"
-                                               max="2024-06-14T00:00"
-                                               min="2018-06-07T00:00"
-                                               name="meeting-time"
-                                               oninput="getValue();"
-                                               onporpertychange="getValue();"
-                                               style="margin-right: 2rem"
-                                               type="datetime-local"
-                                               value="2021-11-26T06:00"
-                                        >
-                                    </label>
-                                    <label for="turb-input" style="width: 100%">
-                                        <span style="font-weight: bold">请选择风场： </span>
-                                        <select class="input timeinput" id="turb-input" onchange="getValue()">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                            <option>6</option>
-                                            <option>7</option>
-                                            <option>8</option>
-                                            <option>9</option>
-                                            <option>10</option>
-                                            <option>11</option>
-                                            <option>12</option>
-                                            <option selected>13</option>
-                                            <option>14</option>
-                                            <option>15</option>
-                                            <option>16</option>
-                                            <option>17</option>
-                                            <option>18</option>
-                                            <option>19</option>
-                                            <option>20</option>
-                                        </select>
-                                    </label>
-                                    <label for="length-input" style="width: 100%">
-                                        <span style="font-weight: bold">请选择时长： </span>
-                                        <input class="input lengthinput"
-                                               id="length-input"
-                                               max="24"
-                                               min="5"
-                                               name="length-input"
-                                               oninput="getValue();"
-                                               onporpertychange="getValue();"
-                                               type="range"
-                                               value="12"
-                                        >
-                                        <span>小时</span>
-                                    </label>
-                                </div>
+                            <div class="input-container form-control input-box" id="input-group">
+                                <label for="turb-input" style="width: 100%">
+                                    <span style="font-weight: bold">请选择风场： </span>
+                                    <select class="input timeinput" id="turb-input" onchange="turbChange()">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                        <option>9</option>
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                        <option selected>13</option>
+                                        <option>14</option>
+                                        <option>15</option>
+                                        <option>16</option>
+                                        <option>17</option>
+                                        <option>18</option>
+                                        <option>19</option>
+                                        <option>20</option>
+                                    </select>
+                                </label>
+                                <label for="time-input" style="width: 100%">
+                                    <span style="font-weight: bold">请选择时间： </span>
+                                    <input class="input timeinput"
+                                           id="time-input"
+                                           max="2024-06-14T00:00"
+                                           min="2018-06-07T00:00"
+                                           name="meeting-time"
+                                           oninput="getValue();"
+                                           onporpertychange="getValue();"
+                                           style="margin-right: 2rem"
+                                           type="datetime-local"
+                                           value="2021-11-26T06:00"
+                                    >
+                                </label>
+                                <label for="length-input" style="width: 100%">
+                                    <span style="font-weight: bold">请选择时长： </span>
+                                    <input class="input lengthinput"
+                                           id="length-input"
+                                           max="24"
+                                           min="5"
+                                           name="length-input"
+                                           oninput="getValue();"
+                                           onporpertychange="getValue();"
+                                           type="range"
+                                           value="12"
+                                    >
+                                    <span>小时</span>
+                                </label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6" style="visibility: hidden">
+                    <!--                    占位撑起空间-->
+                    <div class="col-sm-8" style="visibility: hidden">
                     </div>
                 </div>
                 <!--                主图表区域-->
@@ -167,13 +167,14 @@
                 </div>
             </div>
             <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
+            <!-- partial:partials/_footer.html 页脚 -->
             <div id="footer-placeholder">
 
             </div>
             <!-- partial -->
         </div>
         {% else %}
+        <!--        没登录啥都不显示-->
         <div class="main-panel">
             <div class="content-wrapper">
                     <span style="text-align: center;font-size: 40px">
@@ -194,28 +195,9 @@
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/progressbar.min.js"></script>
+<script src="../static/js/nav-footer_loader.js"></script>
+<script src="../static/js/index-update.js"></script>
 <script>
-    async function nav_loader() {
-        $(function () {
-            $("#sidebar").load("/navigation.html");
-        });
-    }
-
-    nav_loader()
-
-    async function footer_loader() {
-        $(function () {
-            $("#footer-placeholder").load("/footer.html");
-        });
-    }
-
-    footer_loader()
-
-    async function getValue() {
-        main()
-        rose()
-    }
-
     async function main() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
