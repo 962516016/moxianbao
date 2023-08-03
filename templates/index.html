@@ -76,17 +76,17 @@
                             <div class="input-container form-control input-box" id="input-group">
                                 <label for="turb-input" style="width: 100%">
                                     <span style="font-weight: bold">请选择风场： </span>
-                                    <select class="input timeinput" id="turb-input" onchange="turbChange()">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                        <option>7</option>
-                                        <option>8</option>
-                                        <option>9</option>
-                                        <option>10</option>
+                                    <select class="input timeinput" id="turb-input" onchange="selectChange()">
+<!--                                        <option>1</option>-->
+<!--                                        <option>2</option>-->
+<!--                                        <option>3</option>-->
+<!--                                        <option>4</option>-->
+<!--                                        <option>5</option>-->
+<!--                                        <option>6</option>-->
+<!--                                        <option>7</option>-->
+<!--                                        <option>8</option>-->
+<!--                                        <option>9</option>-->
+<!--                                        <option>10</option>-->
                                         <option>11</option>
                                         <option>12</option>
                                         <option selected>13</option>
@@ -106,7 +106,7 @@
                                            max="2024-06-14T00:00"
                                            min="2018-06-07T00:00"
                                            name="meeting-time"
-                                           oninput="getValue();"
+                                           oninput="selectChange();"
                                            onporpertychange="getValue();"
                                            style="margin-right: 2rem"
                                            type="datetime-local"
@@ -120,7 +120,7 @@
                                            max="24"
                                            min="5"
                                            name="length-input"
-                                           oninput="getValue();"
+                                           oninput="selectChange();"
                                            onporpertychange="getValue();"
                                            type="range"
                                            value="12"
