@@ -20,7 +20,8 @@ let end = N;
 const seconds = (Data.yd15.length - N) / 4;
 console.log('起始', N, '个点', '循环用时', seconds, '秒');
 
-let year = '2021';
+let year_i = 0;
+let year_list = ['2021', '2022']
 let delta = 1;
 
 // 刷新数据的函数 - 全局实际功率倍增10%
@@ -142,8 +143,16 @@ let delta = 1;
 })();
 
 // 每2秒执行1次刷新数据的函数 - 左上轮询2021和2022
-setInterval(function () {
-    year = (year === '2021') ? '2022' : '2021';
+setInterval(async function () {
+    if(year_i === year_list.length-1){
+        year_i = 0;
+    }
+    else{
+        year_i = year_i + 1;
+    }
+    console.log('测试year_i', year_i);
+    let year = year_list[year_i]
+    document.getElementById('year').innerHTML = year
     document.getElementById(year).click()
 }, 2000);
 

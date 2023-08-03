@@ -110,10 +110,10 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="row d-flex">
-                    <div class="col-lg-3 stretch-card" id="left">
+                    <div class="col-lg-3 grid-margin  stretch-card" id="left">
                         <div class="card">
                             <div class="card-body">
-                                <button id="uploadBtn" onclick="closeReport()"
+                                <button id="uploadBtn" onclick="changeDisplay()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-upload " style="height: 10%"></i><br>上传数据
                                 </button>
@@ -152,7 +152,7 @@
                                         iframe.style.border = '0px'
                                     }
 
-                                    function closeReport() {
+                                    function changeDisplay() {
                                         document.getElementById('buttons').style.display = 'none'
                                         document.getElementById('report1').style.display = 'none'
                                         document.getElementById('chart').style.display = 'block'
@@ -168,8 +168,9 @@
                                 <script>
                                     function initmychart() {
                                         document.getElementById('predictionBtn').addEventListener('click', function () {
-                                            closeReport()
+                                            changeDisplay()
                                             var aitextarea = document.getElementById('aianswer');
+                                            var linechartdom = document.getElementById('linechart');
                                             // 在这里发送请求到后端获取数据并绘图
                                             let json_data;
                                             fetch('/online_predict')
@@ -179,7 +180,8 @@
                                                     myChart.dispose();
                                                     myChart.clear();
                                                     myChart = null
-                                                    myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
+                                                    linechartdom.innerHTML = null
+                                                    myChart = echarts.init(linechartdom, null, {renderer: 'svg'});
                                                     // 指定图表的配置项和数据
                                                     var datatime = json_data.DATATIME;
                                                     var yd15 = json_data.PRE_YD15;
@@ -189,7 +191,7 @@
                                                             trigger: 'axis'
                                                         },
                                                         legend: {
-                                                            data: ['ROUND(A.POWER,0)', 'YD15']
+                                                            data: ['发电功率预测', '供电功率预测']
                                                         },
                                                         grid: {
                                                             left: '3%',
@@ -212,13 +214,13 @@
                                                         },
                                                         series: [
                                                             {
-                                                                name: 'ROUND(A.POWER,0)',
+                                                                name: '发电功率预测',
                                                                 type: 'line',
                                                                 data: power,
                                                                 animation: true
                                                             },
                                                             {
-                                                                name: 'YD15',
+                                                                name: '供电功率预测',
                                                                 type: 'line',
                                                                 data: yd15,
                                                                 animation: true
@@ -242,12 +244,14 @@
                                     }
 
                                 </script>
-                                <button id="aiBtn" onclick="closeReport()"
+                                <button id="aiBtn" onclick="aiAnalyze()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-zoom"></i><br>AI分析
                                 </button>
                                 <script>
-                                    document.getElementById('aiBtn').addEventListener('click', function () {
+                                    async function aiAnalyze(){
+                                        changeDisplay()
+                                        document.getElementById('aiBtn').addEventListener('click', function () {
                                         var aitextarea = document.getElementById('aianswer');
                                         aitextarea.value = '正在分析...';
                                         let json_data;
@@ -259,22 +263,23 @@
                                                 aitextarea.value = ans;
                                             })
                                     });
+                                    }
                                 </script>
                                 <button id="downloadBtn"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
-                                    <a href="/download_resfile" onclick="closeReport()"
+                                    <a href="/download_resfile" onclick="changeDisplay()"
                                        style="text-decoration: none;color: black"><i
                                             class="my_typcn typcn-download"></i><br>下载结果</a>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-9 stretch-card">
+                    <div class="col-lg-9 grid-margin  stretch-card">
                         <div class="card">
                             <div class="card-body" id="chart">
-                                <div id="linechart" class="w-100 h-75">
+                                <div id="linechart" class="w-100 h-75 mb-3">
                                     <script>
-                                        var myChart = echarts.init(document.getElementById('linechart'));
+                                        var myChart = echarts.init(document.getElementById('linechart'),null, {renderer: 'svg'});
                                         // 指定图表的配置项和数据
                                         var option = {
                                             tooltip: {
@@ -318,7 +323,8 @@
                                         myChart.setOption(option)
                                     </script>
                                 </div>
-                                <textarea id="aianswer" readonly style="width: 100%;" class="h-auto">Hi，您好，欢迎使用风电功率预测与分析服务。
+                                <textarea id="aianswer" readonly class="mt-2"
+                                          style="width: 100%;height: 20%;border: none">  Hi，您好，欢迎使用风电功率预测与分析服务。
                                 </textarea>
                             </div>
                             <div id="buttons" style="width: 100%;height: 35px;display: none">
