@@ -169,6 +169,7 @@
                                     function initmychart() {
                                         document.getElementById('predictionBtn').addEventListener('click', function () {
                                             changeDisplay()
+                                            myChart.dispose();
                                             var aitextarea = document.getElementById('aianswer');
                                             var linechartdom = document.getElementById('linechart');
                                             // 在这里发送请求到后端获取数据并绘图
@@ -177,10 +178,6 @@
                                                 .then(response => response.json())
                                                 .then(data => {
                                                     json_data = data;
-                                                    myChart.dispose();
-                                                    myChart.clear();
-                                                    myChart = null
-                                                    linechartdom.innerHTML = null
                                                     myChart = echarts.init(linechartdom, null, {renderer: 'svg'});
                                                     // 指定图表的配置项和数据
                                                     var datatime = json_data.DATATIME;
