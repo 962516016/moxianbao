@@ -26,36 +26,11 @@
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item d-none d-lg-flex  mr-2">
-                    {% if API_Key %}
-                    <span>您已经拥有API_Key，<a href="/check_API_Key">点此查看</a></span>
-<!--                    <button class="" data-target="#defaultModal" data-toggle="modal" style="border: none" type="button">-->
-<!--                        点此查看-->
-<!--                    </button>-->
-<!--                    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="defaultModal"-->
-<!--                         role="dialog" tabindex="-1">-->
-<!--                        <div class="modal-dialog" role="document">-->
-<!--                            <div class="modal-content">-->
-<!--                                <div class="modal-header">-->
-<!--                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>-->
-<!--                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">-->
-<!--                                        <span aria-hidden="true">×</span>-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                                <div class="modal-body">-->
-<!--                                    <p>This is a modal with default size</p>-->
-<!--                                </div>-->
-<!--                                <div class="modal-footer">-->
-<!--                                    <button class="btn btn-secondary" data-dismiss="modal"-->
-<!--                                            type="button">Close-->
-<!--                                    </button>-->
-<!--                                    <button class="btn btn-primary" type="button">Save changes</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    {% if sdk %}
+                    <span>您已经拥有密钥，<a href="/check_sdk">点此查看</a></span>
                     {% else %}
-                    <span>您尚未获取API_Key，
-                        <a href="/newAPI_Key">点此申请</a>
+                    <span>您尚未获取密钥，
+                        <a href="/newsdk_api">点此申请</a>
                     </span>
                     {% endif %}
 

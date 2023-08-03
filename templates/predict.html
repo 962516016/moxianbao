@@ -178,6 +178,7 @@
                                                 .then(response => response.json())
                                                 .then(data => {
                                                     json_data = data;
+                                                    console.log(json_data)
                                                     myChart = echarts.init(linechartdom, null, {renderer: 'svg'});
                                                     // 指定图表的配置项和数据
                                                     var datatime = json_data.DATATIME;

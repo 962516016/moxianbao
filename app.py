@@ -1,39 +1,29 @@
 import glob
 import json
 import os
-import secrets
+import openai
+import joblib
 import shutil
 import zipfile
-from datetime import datetime, timedelta
-
-import joblib
-import matplotlib.pyplot as plt
+import secrets
 import matplotx
-import numpy as np
-import openai
-import pandas as pd
 import pymysqlpool
-from flask import Flask, jsonify, request, send_file, render_template, session, redirect, url_for
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from flask_cors import CORS
-from lightgbm import LGBMRegressor, early_stopping
+from env import GPT_API, DB_CONFIG
+from datetime import datetime, timedelta
 from matplotlib.ticker import MaxNLocator
+from lightgbm import LGBMRegressor, early_stopping
 from sklearn.model_selection import train_test_split
-
-from env import GPT_API,DB_CONFIG
+from flask import Flask, jsonify, request, send_file, render_template, session, redirect
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 CORS(app)
 
-# 预测结果
-res_datatime = []
-res_windspeed = []
-res_power = []
-
-myhost = '0.0.0.0'
-myport = 5446
-report_port = 40000
-
+# 字典存储各种功能对应的符号
 api_list = {
     'upload_file': '0',
     'data_analyze': '1',
@@ -42,6 +32,54 @@ api_list = {
     'download_resfile': '4',
     'getmodel': '5',
 }
+# _________________________________________________________________________数据库连接_________________________________________________________________________
+# 创建 pymysqlpool 连接池
+pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
+
+# _________________________________________________________________________功能性函数_________________________________________________________________________
+
+
+# 对一个数据集进行预测功率
+def upload_predict(data):
+    null_count = data['YD15'].isnull().sum()
+    session['null_count'] = str(null_count)
+    model1 = joblib.load("usingmodels/model1.pkl")
+    model2 = joblib.load("usingmodels/model2.pkl")
+    df = data[-null_count:]
+    data_new = df.copy()
+    # 新建一列
+    df['WINDSPEED2'] = df['WINDSPEED'] * np.cos(np.radians(df['WINDDIRECTION'].values))
+    train = df[["WINDSPEED", "WINDSPEED2"]]
+    output1 = model1.predict(train.values)
+    output2 = model2.predict(train.values)
+    data_new['YD15'] = output1
+    data_new['ROUND(A.POWER,0)'] = output2
+    data[-null_count:] = data_new
+    path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
+    data.to_csv(path, index=False)
+    return jsonify({
+        'DATATIME': data_new['DATATIME'].values.tolist(),
+        'PRE_POWER': data_new['ROUND(A.POWER,0)'].values.tolist(),
+        'PRE_YD15': data_new['YD15'].values.tolist()
+    })
+
+
+# 登录时创建文件夹
+def createfolder(username):
+    path1 = 'userdata/%s/上传数据集' % username
+    path2 = 'userdata/%s/下载结果文件' % username
+    path3 = 'static/usertouxiang/%s' % username
+    path4 = 'userdata/%s/当前上传数据集' % username
+    path5 = 'userdata/%s/当前结果文件' % username
+    os.makedirs(path1, exist_ok=True)
+    os.makedirs(path2, exist_ok=True)
+    os.makedirs(path3, exist_ok=True)
+    os.makedirs(path4, exist_ok=True)
+    os.makedirs(path5, exist_ok=True)
+    source_file = 'static/picture/touxiang.png'
+    destination_file = path3 + '/touxiang.png'
+    if os.path.exists(destination_file) == False:
+        shutil.copy2(source_file, destination_file)
 
 
 def to_string(a, f):
@@ -55,25 +93,18 @@ def to_string(a, f):
     return res
 
 
-# 创建 pymysqlpool 连接池
-pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
-
-
 # 计算文件夹中文件数量
 def count_files_in_folder(folder_path):
     file_count = 0
-
     # 获取指定文件夹下的所有文件路径
     file_paths = glob.glob(os.path.join(folder_path, '*'))
-
     for path in file_paths:
         if os.path.isfile(path):  # 只计算文件数量，排除文件夹和子文件夹
             file_count += 1
-
     return file_count
 
 
-# 获取路径下的所有文件，返回一个路径列表
+# 获取路径下的所有文件，返回两个列表，文件名列表，修改时间列表，按修改时间排序
 def get_file_paths(directory):
     file_paths = []
     time_list = []
@@ -95,24 +126,26 @@ def get_file_paths(directory):
     return file_paths, time_list
 
 
-# 在数据库中查询数据
+# _________________________________________________________________________数据库SQL语句_________________________________________________________________________
+
+# 查询密钥对应的用户名
+def query_sdk_username(sdk):
+    return 'false'
+
+
+# 主图数据查询
 def query_pre_data(turbid, year, month, day, hour, length):
     connection = pool.get_connection()
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
     previous_date = current_date - timedelta(hours=int(length))
-
     current_date = current_date.strftime("%y-%m-%d %H:%M")
     previous_date = previous_date.strftime("%y-%m-%d %H:%M")
-
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
-
     sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
           "'%%Y-%%m-%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d " \
           "%%H:%%i') <= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i')"
-
     cursor.execute(sql, (turbid, previous_date, current_date))
-    print(sql)
     # 获取查询结果
     result = cursor.fetchall()
     result_list = [[], [], [], [], []]
@@ -126,16 +159,14 @@ def query_pre_data(turbid, year, month, day, hour, length):
     return result
 
 
+# 验证用户名密码
 def sqlverifypassword(password):
     username = session.get('username')
-    print(username)
-    print(password)
     connection = pool.get_connection()
     cursor = connection.cursor()
     sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
     cursor.execute(sql, (username, password))
     result = cursor.fetchall()
-    print(result)
     connection.close()
     cursor.close()
     if result:
@@ -144,6 +175,7 @@ def sqlverifypassword(password):
         return False
 
 
+# 修改用户表中用户密码
 def sqlchangepassword(password):
     username = session['username']
     connection = pool.get_connection()
@@ -161,6 +193,7 @@ def sqlchangepassword(password):
         return False
 
 
+# 查询风向数据
 def query_winddirection_data(turbid):
     connection = pool.get_connection()
     cursor = connection.cursor()
@@ -172,6 +205,7 @@ def query_winddirection_data(turbid):
     return result
 
 
+# 查询某用户的功能分布（功能调用次数分布）
 def query_apicount_data(username, api):
     if username == 'admin':
         sql = "SELECT COUNT(*) FROM log WHERE api='%s'" % api
@@ -186,6 +220,7 @@ def query_apicount_data(username, api):
     return result
 
 
+# 查询某个用户某天内调用功能分布（使用时段分析）
 def query_timeapicount_data(username, year, month, day):
     if month < 10:
         month = '0' + str(month)
@@ -217,6 +252,7 @@ def query_timeapicount_data(username, year, month, day):
     return countlist
 
 
+# 获取日志（日志操作记录）
 def query_apilist_data(username):
     if username == 'admin':
         sql = "SELECT username,operate_time,api,note FROM log ORDER BY operate_time desc "
@@ -231,16 +267,14 @@ def query_apilist_data(username):
     return result
 
 
+# 新增用户（注册）
 def addUser(username, password):
     connection = pool.get_connection()
     cursor = connection.cursor()
-    print(username)
-    print(password)
     sql = 'INSERT IGNORE INTO usertable (username,password) VALUES (%s,%s)'
     cursor.execute(sql, (username, password))
     connection.commit()
     flg = cursor.rowcount
-    print(flg)
     connection.close()
     cursor.close()
     if flg == 1:
@@ -248,6 +282,7 @@ def addUser(username, password):
     return False
 
 
+# 验证用户名密码
 def verify_user(username, password):
     if username == '':
         return False
@@ -285,37 +320,104 @@ def addlog(username, operate_time, api, note=''):
     return False
 
 
-# 对上传的文件进行预测并返回
-def upload_predict(data):
-    null_count = data['YD15'].isnull().sum()
-    model1 = joblib.load("usingmodels/model1.pkl")
-    model2 = joblib.load("usingmodels/model2.pkl")
-    df = data[-null_count:]
-    data_new = df.copy()
-    # 新建一列
-    df['WINDSPEED2'] = df['WINDSPEED'] * np.cos(np.radians(df['WINDDIRECTION'].values))
-    train = df[["WINDSPEED", "WINDSPEED2"]]
-    output1 = model1.predict(train.values)
-    output2 = model2.predict(train.values)
-    data_new['YD15'] = output1
-    data_new['ROUND(A.POWER,0)'] = output2
-    data[-null_count:] = data_new
-    path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
-    data.to_csv(path, index=False)
-    global res_datatime
-    global res_windspeed
-    global res_power
-    res_datatime = data_new['DATATIME'].tolist()
-    res_power = data_new['YD15'].tolist()
-    res_windspeed = data_new['WINDSPEED'].tolist()
-    return jsonify({
-        'DATATIME': data_new['DATATIME'].values.tolist(),
-        'PRE_POWER': data_new['ROUND(A.POWER,0)'].values.tolist(),
-        'PRE_YD15': data_new['YD15'].values.tolist()
-    })
+# 查询当前用户的sdk
+def getsdk():
+    username = session.get('username')
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result is not None:
+        session['sdk'] = result[0]
+    else:
+        if 'sdk' in session:
+            del session['sdk']
+    connection.close()
+    cursor.close()
+    return session.get('sdk')
 
 
-# 给定一段时间预测接下来一段时间的值
+# _________________________________________________________________________注册登录退出_______________________________________________________________________
+
+# 注册界面
+@app.route('/register')
+def to_register():
+    return render_template('register.html')
+
+
+# 提交注册信息并进行注册
+@app.route('/register_submit', methods=['POST'])
+def register_submit():
+    data = request.get_json()
+    data = json.dumps(data)
+    print(data)
+    json_data = json.loads(data)
+
+    username = json_data['username']
+    password = json_data['password']
+    repassword = json_data['repassword']
+
+    if repassword != password:
+        return '两次密码不一致！'
+    else:
+        if addUser(username, password):
+            return '注册成功,点此登录'
+        else:
+            return '注册失败,请重试！'
+
+
+# 登录界面
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+
+# 退出界面
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
+# 登录验证
+@app.route('/index', methods=['POST'])
+def login_verify():
+    username = request.form['username']
+    password = request.form['password']
+    flg = verify_user(username, password)
+    if flg:
+        session['username'] = username
+        sdk = getsdk()
+        session['sdk'] = sdk
+        # 为该用户建立需要的文件夹
+        createfolder(username)
+        if username == 'admin':
+            return redirect('/admin')
+        else:
+            return render_template("index.html", username=username, sdk=sdk)
+    elif password == '':
+        error = '密码不能为空'
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
+    else:
+        error = '用户名或密码错误'
+        # redirect('/login')
+        return render_template('login.html', error=error, username=username)
+
+
+# _________________________________________________________________________主页_________________________________________________________________________
+
+# 跳转到主页，如果未登录跳转登录界面
+@app.route('/')
+def home():
+    username = session.get('username')
+    if username is not None:
+        return redirect('/index')
+    return redirect('/login')
+
+
+# 给定一段时间预测接下来一段时间的值（主图）
 @app.route('/predict_value', methods=['GET'])
 def predict_value():
     # 获取前端传递的查询参数
@@ -346,6 +448,7 @@ def predict_value():
     return result
 
 
+# 获取风向数据（风向玫瑰图）
 @app.route('/get_winddirection', methods=['GET'])
 def get_winddirection():
     # 获取前端传递的查询参数
@@ -360,90 +463,92 @@ def get_winddirection():
     return result
 
 
-@app.route('/log')
-def log():
+# 跳转主页
+@app.route('/index')
+def to_index():
     username = session.get('username')
-    sdk = session.get('sdk')
-    return render_template('log.html', username=username, log=log)
+    if username is None:
+        return redirect('/')
+    return render_template('index.html', username=username)
 
 
-@app.route('/log_admin')
-def adminlog():
+# _________________________________________________________________________可视化大屏_____________________________________________________________________
+
+# 跳转可视化大屏
+@app.route('/visual')
+def visual():
     username = session.get('username')
-    sdk = session.get('sdk')
-    return render_template('log_admin.html', username=username, log=log)
+    return render_template('visual.html', username=username)
 
 
-@app.route('/get_apicount', methods=['GET'])
-def get_apicount():
-    username = request.args.get('username')
-    # data = query_apicount_data(username,)
-    # res_list_apicount = list(data[0])
-    res_list_apicount = []
-    apilist = ['上传数据', '数据分析', '预测功率', 'AI分析', '下载结果', '上传模型']
-    for key in api_list.keys():
-        data = query_apicount_data(username, api_list[key])
-        res_list_apicount.append(data[0][0])
-    result = jsonify({
-        "cnt": len(api_list),
-        "apicount": res_list_apicount,
-        "apilist": apilist
-    })
-    return result
+# _________________________________________________________________________在线预测_______________________________________________________________________
+
+# 跳转在线预测界面
+@app.route('/predict')
+def to_predict():
+    username = session.get('username')
+    return render_template('predict.html', username=username)
 
 
-@app.route('/get_timeapicount')
-def get_timeapicount():
-    username = request.args.get('username')
-    daydata = []
-
-    for i in range(1, 32):
-        api_list = query_timeapicount_data(username, 2023, 8, i)
-        daydata.append(api_list)
-
-    result = jsonify({
-        "daydata": daydata
-    })
-    return result
-
-
-# 获取他人使用offline程序跑出来的模型
-@app.route('/getmodel', methods=['POST'])
-def get_model():
-    sdk = request.values.get('sdk')  # 这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
-    currenttime = request.values.get('currenttime')
+# 上传文件
+@app.route('/upload_file', methods=['POST'])
+def get_file():
+    if 'file' not in request.files:
+        return '未选择文件', 400
     file = request.files['file']
-    cnt = count_files_in_folder('./getmodels')
-    # 添加日志记录
+    if file.filename == '':
+        return '未选择文件', 400
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
+    df = pd.read_csv(file)
+    path = "userdata/%s/上传数据集" % session.get('username')
+    cnt = count_files_in_folder(path)
+    filename = '/in' + str(cnt + 1) + '.csv'
+    df.to_csv(path + filename, index=False)
+    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    df.to_csv(path, index=False)
 
-    if cnt % 2 == 0:
-        tmp = int(cnt / 2)
-        file_name = "yd15_" + str(tmp + 1) + ".pkl"
-    else:
-        tmp = int(cnt / 2)
-        file_name = "actualpower_" + str(tmp + 1) + ".pkl"
-    file.save('./getmodels/' + file_name)  # 保存到指定位置
-    return '文件上传成功！'
-
-
-@app.route('/download_offine_soft')
-def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
-    return send_file(file_path, as_attachment=True)
+    return jsonify({})
 
 
-@app.route('/download_tdra')
-def download_tdra():
-    file_path = './offline_soft/tdra.apk'  # 文件在服务器上的路径
-    return send_file(file_path, as_attachment=True)
+# 数据分析
+@app.route('/data_analyze')
+def data_analysis():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
+    return render_template('report.html')
 
 
-@app.route('/download_history_csv')
-def download_history_csv():
-    file_path = request.args.get('path')
-    return send_file(file_path, as_attachment=True)
+# 暂时跳转版本
+@app.route('/data_analyze1')
+def data_analysis1():
+    # profile = ProfileReport(df_upload_file)
+    # profile.to_file("templates/report.html")
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
+    return render_template('report_new.html')
 
 
+# 对上传的文件进行预测并返回（功率预测）
+@app.route('/online_predict')
+def file_predict():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['online_predict'], note="数据训练预测")
+    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    df = pd.read_csv(path)
+    tmp = upload_predict(df)
+    return tmp
+
+
+# chatgpt分析
 @app.route('/gptapi_analyze')
 def analyze_wind_power():
     now = datetime.now()
@@ -454,6 +559,13 @@ def analyze_wind_power():
     openai.api_key = GPT_API
     openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
     # send a ChatCompletion request to GPT
+    path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
+    df = pd.read_csv(path)
+    cnt = session.get('null_count')
+    cnt = int(cnt)
+    res_datatime = df[-cnt:]['DATATIME'].tolist()
+    res_windspeed = df[-cnt:]['WINDSPEED'].tolist()
+    res_power = df[-cnt:]['YD15'].tolist()
     messages = [
         {"role": "system",
          "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
@@ -464,8 +576,9 @@ def analyze_wind_power():
         {"role": "user",
          "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的风速列，" + to_string(res_windspeed,
                                                                                                        1) + "这是对应的功率列，" + to_string(
-             res_power, 1) + "请结合时间分析一下风速对于功率的影响。"
-                             "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
+             res_power, 1) +
+                    "请结合时间分析一下风速对于功率的影响。"
+                    "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
     ]
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo-0301',
@@ -478,41 +591,97 @@ def analyze_wind_power():
     return jsonify({'ans': assistant_response})
 
 
-@app.route('/gpt_analyze_shiyou')
-def gpt_analyze_shiyou():
-    # 编辑prompt
-    openai.api_key = GPT_API
-    openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
-    # send a ChatCompletion request to GPT
-    messages = [
-        {"role": "system",
-         "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
-                    "程语言来解析数据。你对页岩气藏产能数据预测非常熟悉，包括温度、湿度、含烃量、是否有人、是否有光和预测的产量的关系。你的职责是分析这些数据，并提供关于可能原因和" +
-                    "潜在风险的解释。作为数据分析师，你会仔细研究页岩气藏产能数据中温度、湿度、含烃量、是否有人、是否有光和预测的产量之间的关系。你会运用统计方法分析数据的趋势和" +
-                    "模式，以确定预测的产量与温度、湿度、含烃量、是否有人、是否有光的关系。你会考虑众多因素对预测产量的影响，并尝试找出任何异常或异常行为。在" +
-                    "分析页岩气藏产能数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"
-         },
-        {"role": "user",
-         "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的温度列，" + to_string(res_windspeed, 1)
-                    + "这是对应的预测产量列，" + to_string(res_power, 1) + "请结合时间分析一下温度对于预测产量的影响。"
-                    + "我需要你结合温度的变化，分析产量的变化情况，给出分析结果，比如某个时间到另一个时间内，温度发生了什么变化，"
-                    + "产量预测又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图，至少300字"
-         },
-    ]
-    response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo-0301',
-        messages=messages,
-        temperature=0,
-    )
-    print(messages)
-    # 获取助手角色的回答
-    assistant_response = response['choices'][0]['message']['content']
-    return jsonify({'ans': assistant_response})
+# 下载结果文件
+@app.route('/download_resfile')
+def download_resfile():
+    now = datetime.now()
+    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    # 添加日志
+    addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'],
+           note="下载预测结果")
+    path = "userdata/%s/下载结果文件/" % session.get('username')
+    cnt = count_files_in_folder(path)
+    file_name = 'res' + str(cnt + 1) + '.csv'
+    file_path = path + file_name  # 文件在服务器上的路径
+
+    tmp_path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
+    df = pd.read_csv(tmp_path)
+    df.to_csv(file_path, index=False)
+
+    return send_file(file_path, download_name=file_name, as_attachment=True)
 
 
-# 设置API密钥
-API_KEY = 'your-api-key'
+# _________________________________________________________________________离线应用_________________________________________________________________________
 
+# 跳转离线应用界面
+@app.route('/offline')
+def offline():
+    username = session.get('username')
+    # session.get('sdk')
+    sdk = session.get('sdk')
+    # print('sdk是多少:', sdk)
+    return render_template("offline.html", username=username, sdk=sdk)
+
+
+# 下载离线应用安装包
+@app.route('/download_offine_soft')
+def download_offine_soft():
+    file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
+    return send_file(file_path, as_attachment=True)
+
+# 将sdk和username对应起来加到数据库中（在离线应用界面申请sdk）
+@app.route('/newsdk_offline')
+def newsdkoffline():
+    sdk = secrets.token_hex(16).__str__()
+    username = session.get('username')
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
+    cursor.execute(sql)
+    flg = cursor.rowcount
+    print(flg)
+    connection.commit()
+    connection.close()
+    cursor.close()
+    if flg == 0:
+        sdk = None
+    print('申请sdk测试', sdk)
+    session['sdk'] = sdk
+    # jsonify({'sdk': sdk})
+    return redirect('/offline')
+
+
+# _________________________________________________________________________API使用文档_______________________________________________________________________
+
+# 跳转API使用文档界面
+@app.route('/api')
+def to_api():
+    username = session.get('username')
+    sdk = session.get('sdk')
+    return render_template('api.html', username=username, sdk=sdk)
+
+# 将sdk和username对应起来加到数据库中（在api文档界面申请sdk）
+@app.route('/newsdk_api')
+def newsdkapi():
+    sdk = secrets.token_hex(16).__str__()
+    username = session.get('username')
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
+    cursor.execute(sql)
+    flg = cursor.rowcount
+    print(flg)
+    connection.commit()
+    connection.close()
+    cursor.close()
+    if flg == 0:
+        sdk = None
+    print('申请sdk测试', sdk)
+    session['sdk'] = sdk
+    # jsonify({'sdk': sdk})
+    return redirect('/api')
+
+# _________________________________________________________________________longyuan龙源API_______________________________________________________________________
 
 @app.route('/longyuanapi', methods=['POST'])
 def api_predict():
@@ -521,7 +690,7 @@ def api_predict():
         return jsonify({'error': 'No file uploaded'})
 
     # 检查身份验证头部中是否包含正确的密钥
-    if 'Authorization' not in request.headers or request.headers['Authorization'] != API_KEY:
+    if 'Authorization' not in request.headers or query_sdk_username(request.headers['Authorization']) == 'false':
         return jsonify({'error': 'Unauthorized'})
     file = request.files['file']
     # 检查文件类型是否为CSV
@@ -627,163 +796,9 @@ def api_predict():
             return send_file(zip_file_path, as_attachment=True)
 
 
-router_list = [
-    '/',
-    '/index',
-    ''
-]
-static_list = [
-    '/staic',
+# _________________________________________________________________________管理员管理模型界面_______________________________________________________________________
 
-]
-
-
-# @app.before_request
-# def myredirect():
-#     if not request.path in router_list+static_list:
-#         username = request.args.get('username')
-#         if not username:
-#             print('测试username')
-#             return redirect('/?error=请登录', code=302, )
-#         else:
-#             print('success')
-
-@app.route('/')
-def home():
-    username = session.get('username')
-    # print(username)
-    if username is not None:
-        return redirect('/index')
-    return redirect('/login')
-
-
-@app.route('/login')
-def login():
-    return render_template("login.html")
-
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
-
-@app.route('/offline')
-def offline():
-    username = session.get('username')
-    # session.get('sdk')
-    sdk = session.get('sdk')
-    # print('sdk是多少:', sdk)
-    return render_template("offline.html", username=username, sdk=sdk)
-
-
-@app.route('/tdra')
-def tdra():
-    username = session.get('username')
-    # session.get('sdk')
-    sdk = session.get('sdk')
-    # print('sdk是多少:', sdk)
-    return render_template("tdra.html", username=username, sdk=sdk)
-
-
-@app.route('/newsdk')
-def newsdk():
-    sdk = secrets.token_hex(16).__str__()
-    username = session.get('username')
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
-    cursor.execute(sql)
-    flg = cursor.rowcount
-    print(flg)
-    connection.commit()
-    connection.close()
-    cursor.close()
-    if flg == 0:
-        sdk = None
-    print('申请sdk测试', sdk)
-    session['sdk'] = sdk
-    # jsonify({'sdk': sdk})
-    return redirect('/offline')
-    # 将sdk和username对应起来加到数据库中
-
-
-# @app.route('/getsdk')
-def getsdk():
-    username = session.get('username')
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
-    cursor.execute(sql)
-    result = cursor.fetchone()
-    if result is not None:
-        session['sdk'] = result[0]
-    else:
-        del session['sdk']
-    connection.close()
-    cursor.close()
-    return session.get('sdk')
-
-
-def createfolder(username):
-    path1 = 'userdata/%s/上传数据集' % username
-    path2 = 'userdata/%s/下载结果文件' % username
-    path3 = 'static/usertouxiang/%s' % username
-    path4 = 'userdata/%s/当前上传数据集' % username
-    path5 = 'userdata/%s/当前结果文件' % username
-    print('__________________________________')
-    os.makedirs(path1, exist_ok=True)
-    os.makedirs(path2, exist_ok=True)
-    os.makedirs(path3, exist_ok=True)
-    os.makedirs(path4, exist_ok=True)
-    os.makedirs(path5, exist_ok=True)
-    source_file = 'static/picture/touxiang.png'
-    destination_file = path3 + '/touxiang.png'
-    if os.path.exists(destination_file) == False:
-        shutil.copy2(source_file, destination_file)
-
-
-@app.route('/index', methods=['POST'])
-def login_verify():
-    username = request.form['username']
-    password = request.form['password']
-    print(username)
-    print(password)
-    flg = verify_user(username, password)
-    if flg:
-        session['username'] = username
-        sdk = getsdk()
-        session['sdk'] = sdk
-        # 为该用户建立需要的文件夹
-        createfolder(username)
-        if username == 'admin':
-            return redirect('/admin')
-        else:
-            return render_template("index.html", username=username, sdk=sdk)
-    elif password == '':
-        error = '密码不能为空'
-        # redirect('/login')
-        return render_template('login.html', error=error, username=username)
-    else:
-        error = '用户名或密码错误'
-        # redirect('/login')
-        return render_template('login.html', error=error, username=username)
-
-
-@app.route('/index')
-def to_index():
-    username = session.get('username')
-    if username is None:
-        return redirect('/')
-    # if username != 'admin':
-    #     username = session.get('username')
-    #     # session.get('sdk')
-    #     sdk = session.get('sdk')
-    #     # print('sdk是多少:', sdk)
-    #     return render_template("tdra.html", username=username, sdk=sdk)
-    return render_template('index.html', username=username)
-
-
+# 跳转模型管理
 @app.route('/admin')
 def to_admin():
     username = session.get('username')
@@ -793,127 +808,7 @@ def to_admin():
         return render_template('iderror.html')
 
 
-@app.route('/api')
-def to_api():
-    username = session.get('username')
-    sdk = session.get('sdk')
-    return render_template('api.html', username=username, sdk=sdk)
-
-
-@app.route('/predict')
-def to_predict():
-    username = session.get('username')
-    return render_template('predict.html', username=username)
-
-
-@app.route('/personalcenter', methods=['GET'])
-def to_personalcenter():
-    username = session.get('username')
-    return render_template('personalcenter.html', username=username, key_amount='2023年8月31日15:00:00')
-
-
-@app.route('/check_sdk')
-def check_sdk():
-    username = session.get('username')
-    sdk = session.get('sdk')
-    # json_dict = {
-    #     'username': username,
-    #     'sdk': sdk
-    # }
-    # return redirect(url_for('to_personalcenter', check=sdk, code=307))
-    return render_template('personalcenter.html', username=username, check=sdk, key_amount=67)
-
-
-@app.route('/upload_file', methods=['POST'])
-def get_file():
-    if 'file' not in request.files:
-        return '未选择文件', 400
-    file = request.files['file']
-    if file.filename == '':
-        return '未选择文件', 400
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
-    df = pd.read_csv(file)
-    path = "userdata/%s/上传数据集" % session.get('username')
-    cnt = count_files_in_folder(path)
-    filename = '/in' + str(cnt + 1) + '.csv'
-    df.to_csv(path + filename, index=False)
-    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
-    df.to_csv(path, index=False)
-
-    return jsonify({})
-
-
-@app.route('/data_analyze')
-def data_analysis():
-    # profile = ProfileReport(df_upload_file)
-    # profile.to_file("templates/report.html")
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    return render_template('report.html')
-
-
-# 暂时跳转版本
-@app.route('/data_analyze1')
-def data_analysis1():
-    # profile = ProfileReport(df_upload_file)
-    # profile.to_file("templates/report.html")
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    return render_template('report_new.html')
-
-
-# 前端获取文件，后端处理完，返回一段时间的预测值
-@app.route('/online_predict')
-def file_predict():
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['online_predict'], note="数据训练预测")
-    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
-    df = pd.read_csv(path)
-    tmp = upload_predict(df)
-    return tmp
-
-
-@app.route('/download_resfile')
-def download_resfile():
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['download_resfile'],
-           note="下载预测结果")
-    path = "userdata/%s/下载结果文件/" % session.get('username')
-    cnt = count_files_in_folder(path)
-    file_name = 'res' + str(cnt + 1) + '.csv'
-    file_path = path + file_name  # 文件在服务器上的路径
-
-    tmp_path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
-    df = pd.read_csv(tmp_path)
-    df.to_csv(file_path, index=False)
-
-    return send_file(file_path, download_name=file_name, as_attachment=True)
-
-
-@app.route('/get_log')
-def get_loglist():
-    username = session.get('username')
-    reslog = query_apilist_data(username)
-    res = []
-    for item in reslog:
-        res.append(list(item))
-    return jsonify({
-        'cnt': len(res),
-        'log': res
-    })
-
-
+# 获取模型列表
 @app.route('/get_modelname')
 def get_getmodels():
     usingmodels_list, tmp = get_file_paths('usingmodels')
@@ -921,20 +816,6 @@ def get_getmodels():
     return jsonify({
         'usingmodels': usingmodels_list,
         'getmodels': getmodels_list
-    })
-
-
-@app.route('/get_userfile')
-def get_userfile():
-    path1 = "userdata/%s/上传数据集" % session.get('username')
-    path2 = "userdata/%s/下载结果文件" % session.get('username')
-    uploadcsv_list, time1 = get_file_paths(path1)
-    downloadcsv_list, time2 = get_file_paths(path2)
-    return jsonify({
-        'uploadcsv': uploadcsv_list,
-        'uploadcsv_time': time1,
-        'downloadcsv': downloadcsv_list,
-        'downloadcsv_time': time2
     })
 
 
@@ -974,44 +855,86 @@ def removemodels():
     return 'ok'
 
 
-# 注册界面
-@app.route('/register')
-def to_register():
-    return render_template('register.html')
+# _________________________________________________________________________日志____________________________________________________________________________
 
-
-@app.route('/register_submit', methods=['POST'])
-def register_submit():
-    data = request.get_json()
-    data = json.dumps(data)
-    print(data)
-    json_data = json.loads(data)
-
-    username = json_data['username']
-    password = json_data['password']
-    repassword = json_data['repassword']
-
-    if repassword != password:
-        return '两次密码不一致！'
-    else:
-        if addUser(username, password):
-            return '注册成功,点此登录'
-        else:
-            return '注册失败,请重试！'
-
-
-@app.route('/navigation.html')
-def navigation():
+# 用户日志界面跳转
+@app.route('/log')
+def log():
     username = session.get('username')
-    return render_template('navigation.html', username=username)
+    return render_template('log.html', username=username, log=log)
 
 
-@app.route('/footer.html')
-def footer():
+# 管理员日志界面跳转
+@app.route('/log_admin')
+def adminlog():
     username = session.get('username')
-    return render_template('footer.html', username=username)
+    return render_template('log_admin.html', username=username, log=log)
 
 
+# 获取日志列表
+@app.route('/get_log')
+def get_loglist():
+    username = session.get('username')
+    reslog = query_apilist_data(username)
+    res = []
+    for item in reslog:
+        res.append(list(item))
+    return jsonify({
+        'cnt': len(res),
+        'log': res
+    })
+
+
+# 向前端返回（功能调用次数分布）数据
+@app.route('/get_apicount', methods=['GET'])
+def get_apicount():
+    username = request.args.get('username')
+    # data = query_apicount_data(username,)
+    # res_list_apicount = list(data[0])
+    res_list_apicount = []
+    apilist = ['上传数据', '数据分析', '预测功率', 'AI分析', '下载结果', '上传模型']
+    for key in api_list.keys():
+        data = query_apicount_data(username, api_list[key])
+        res_list_apicount.append(data[0][0])
+    result = jsonify({
+        "cnt": len(api_list),
+        "apicount": res_list_apicount,
+        "apilist": apilist
+    })
+    return result
+
+
+# 向前端返回（使用时段分析）数据
+@app.route('/get_timeapicount')
+def get_timeapicount():
+    username = request.args.get('username')
+    daydata = []
+    for i in range(1, 32):
+        api_list = query_timeapicount_data(username, 2023, 8, i)
+        daydata.append(api_list)
+    result = jsonify({
+        "daydata": daydata
+    })
+    return result
+
+
+# _________________________________________________________________________个人中心_________________________________________________________________________
+
+# 跳转个人中心界面
+@app.route('/personalcenter', methods=['GET'])
+def to_personalcenter():
+    username = session.get('username')
+    return render_template('personalcenter.html', username=username, key_amount='2023年8月31日15:00:00')
+
+
+# 前往个人中心查看密钥查看sdk
+@app.route('/check_sdk')
+def check_sdk():
+    username = session.get('username')
+    sdk = session.get('sdk')
+    return render_template('personalcenter.html', username=username, check=sdk, key_amount='2023年8月31日15:00:00')
+
+# 点击（查看）密钥
 @app.route('/verifypassword', methods=['POST'])
 def verifypassword():
     password = request.form.get('password')
@@ -1029,6 +952,7 @@ def verifypassword():
         return '密码错误'
 
 
+# 修改密码
 @app.route('/changepassword', methods=['POST'])
 def changepassword():
     password = request.form.get('password')
@@ -1038,20 +962,88 @@ def changepassword():
         return '修改失败，请重试'
 
 
-@app.route('/visual')
-def visual():
-    username = session.get('username')
-    return render_template('visual.html', username=username)
-
+# 更换头像
 @app.route('/changetx', methods=['POST'])
 def changetx():
     if 'image' not in request.files:
         return "No image uploaded", 400
     file = request.files['image']
-    path = "static/usertouxiang/%s/touxiang.png"%session.get('username')
+    path = "static/usertouxiang/%s/touxiang.png" % session.get('username')
     file.save(path)  # 将图片保存到指定路径
     return "Image uploaded successfully"
 
+
+# 获取用户文件列表
+@app.route('/get_userfile')
+def get_userfile():
+    path1 = "userdata/%s/上传数据集" % session.get('username')
+    path2 = "userdata/%s/下载结果文件" % session.get('username')
+    uploadcsv_list, time1 = get_file_paths(path1)
+    downloadcsv_list, time2 = get_file_paths(path2)
+    return jsonify({
+        'uploadcsv': uploadcsv_list,
+        'uploadcsv_time': time1,
+        'downloadcsv': downloadcsv_list,
+        'downloadcsv_time': time2
+    })
+
+
+# （个人中心）界面下载历史文件
+@app.route('/download_history_csv')
+def download_history_csv():
+    file_path = request.args.get('path')
+    return send_file(file_path, as_attachment=True)
+
+
+# _________________________________________________________________________离线app_________________________________________________________________________
+
+# 获取他人使用offline程序跑出来的模型
+@app.route('/getmodel', methods=['POST'])
+def get_model():
+    sdk = request.values.get('sdk')  # 这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
+    currenttime = request.values.get('currenttime')
+    file = request.files['file']
+    cnt = count_files_in_folder('./getmodels')
+    # 添加日志记录
+    addlog(username=query_sdk_username(sdk), operate_time=currenttime, api=api_list['getmodel'], note='上传模型')
+    if cnt % 2 == 0:
+        tmp = int(cnt / 2)
+        file_name = "yd15_" + str(tmp + 1) + ".pkl"
+    else:
+        tmp = int(cnt / 2)
+        file_name = "actualpower_" + str(tmp + 1) + ".pkl"
+    file.save('./getmodels/' + file_name)  # 保存到指定位置
+    return '文件上传成功！'
+
+
+router_list = [
+    '/',
+    '/index',
+    ''
+]
+static_list = [
+    '/staic',
+
+]
+
+
+# _________________________________________________________________________导航栏foot_________________________________________________________________________
+@app.route('/navigation.html')
+def navigation():
+    username = session.get('username')
+    return render_template('navigation.html', username=username)
+
+
+@app.route('/footer.html')
+def footer():
+    username = session.get('username')
+    return render_template('footer.html', username=username)
+
+
+# ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+myhost = '0.0.0.0'
+myport = 5446
+report_port = 40000
 
 if __name__ == '__main__':
     app.run(debug=True, host=myhost, port=myport)
