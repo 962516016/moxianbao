@@ -803,7 +803,7 @@ def to_predict():
 @app.route('/personalcenter', methods=['GET'])
 def to_personalcenter():
     username = session.get('username')
-    return render_template('personalcenter.html', username=username, key_amount=67)
+    return render_template('personalcenter.html', username=username,)
 
 
 @app.route('/check_sdk')
