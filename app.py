@@ -97,16 +97,13 @@ def query_pre_data(turbid, year, month, day, hour, length):
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
     previous_date = current_date - timedelta(hours=int(length))
 
-    current_date = current_date.strftime("%y/%m/%d %H:%M")
-    previous_date = previous_date.strftime("%y/%m/%d %H:%M")
-
-    # print(previous_date)
-    # print(current_date)
+    current_date = current_date.strftime("%y-%m-%d %H:%M")
+    previous_date = previous_date.strftime("%y-%m-%d %H:%M")
 
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
 
-    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE Turbid=%s AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y/%%m/%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y/%%m/%%d %%H:%%i')"
+    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d %%H:%%i') <= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i')"
 
     cursor.execute(sql, (turbid, previous_date, current_date))
     print(sql)
@@ -116,7 +113,6 @@ def query_pre_data(turbid, year, month, day, hour, length):
     for item in result:
         for i in range(5):
             result_list[i].append(item[i])
-    print(result_list)
     # 关闭连接
     connection.close()
     cursor.close()
