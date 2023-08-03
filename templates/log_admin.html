@@ -52,30 +52,6 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!--        导航栏，主题-->
-        <div class="theme-setting-wrapper">
-            <div class="settings-panel" id="theme-settings">
-                <i class="settings-close typcn typcn-delete-outline"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options" id="sidebar-light-theme">
-                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
-                    Light
-                </div>
-                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-                    Dark
-                </div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles primary"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default border"></div>
-                </div>
-            </div>
-        </div>
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
             </nav>
@@ -95,12 +71,6 @@
                                 <div>
                                     <h4 class="card-title">日志操作记录-ALL</h4>
                                 </div>
-                                <!--                                <button class="btn btn-outline-success" id="add_models_to_pool">-->
-                                <!--                                    添加-->
-                                <!--                                </button>-->
-                                <!--                                <button class="btn btn-outline-danger" id="delete_modes">-->
-                                <!--                                    删除-->
-                                <!--                                </button>-->
                                 <div class="table-responsive1">
                                     <table class="table table-hover" id="log_table">
                                         <thead>
@@ -264,7 +234,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <h4 class="card-title" >使用时段分析</h4>
-                                            <div class="timechart " id="timechart" >
+                                            <div class="timechart w-auto stretch-card" id="timechart" >
                                                 <script>
                                                     var chartDom = document.getElementById('timechart');
                                                     var myChart = echarts.init(chartDom, null, {renderer: 'svg'});
@@ -273,7 +243,7 @@
                                                     function timechart() {
                                                         var option;
                                                         // This example requires ECharts v5.4.0 or later
-                                                        const cellSize = [65, 55];
+                                                        const cellSize = [100, 55];
 
                                                         axios.get(url)
                                                             .then(res => {
@@ -397,7 +367,9 @@
                                                                                 formatter: function (params) {
                                                                                     return echarts.time.format(params.value[0], '{dd}', false);
                                                                                 },
-                                                                                offset: [-cellSize[0] / 2 + 10, -cellSize[1] / 2 + 10],
+                                                                                // top: -6,
+                                                                                // offset: [-cellSize[0] / 2 + 10, -cellSize[1] / 2 + 10],
+                                                                                offset: [-65 / 2 + 10, -55 / 2 + 10],
                                                                                 fontSize: 14
                                                                             },
                                                                             data: labelData

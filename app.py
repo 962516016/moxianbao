@@ -25,8 +25,6 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 CORS(app)
 
-# 上传的文件df格式
-df_upload_file = pd.DataFrame({})
 # 预测结果
 res_datatime = []
 res_windspeed = []
@@ -79,15 +77,21 @@ def count_files_in_folder(folder_path):
 def get_file_paths(directory):
     file_paths = []
     time_list = []
+    list = []
     for root, directories, files in os.walk(directory):
         for file in files:
-            file_paths.append(os.path.join(file))
+            # file_paths.append(os.path.join(file))
             t = os.path.getmtime(directory + '/' + file)
             # 将时间戳转换为datetime对象
             modified_datetime = datetime.fromtimestamp(t)
             # 格式化为年月日时分秒的格式
             formatted_time = modified_datetime.strftime("%Y-%m-%d %H:%M:%S")
-            time_list.append(formatted_time)
+            # time_list.append(formatted_time)
+            list.append([os.path.join(file), formatted_time])
+    sorted_list = sorted(list, key=lambda x: x[1])
+    for i in range(len(sorted_list)):
+        file_paths.append(sorted_list[i][0])
+        time_list.append(sorted_list[i][1])
     return file_paths, time_list
 
 
@@ -295,14 +299,15 @@ def upload_predict(data):
     output2 = model2.predict(train.values)
     data_new['YD15'] = output1
     data_new['ROUND(A.POWER,0)'] = output2
+    data[-null_count:] = data_new
+    path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
+    data.to_csv(path, index=False)
     global res_datatime
     global res_windspeed
     global res_power
-    global df_upload_file
     res_datatime = data_new['DATATIME'].tolist()
     res_power = data_new['YD15'].tolist()
     res_windspeed = data_new['WINDSPEED'].tolist()
-    df_upload_file[-null_count:] = data_new[-null_count:]
     return jsonify({
         'DATATIME': data_new['DATATIME'].values.tolist(),
         'PRE_POWER': data_new['ROUND(A.POWER,0)'].values.tolist(),
@@ -724,10 +729,14 @@ def createfolder(username):
     path1 = 'userdata/%s/上传数据集' % username
     path2 = 'userdata/%s/下载结果文件' % username
     path3 = 'static/usertouxiang/%s' % username
+    path4 = 'userdata/%s/当前上传数据集' % username
+    path5 = 'userdata/%s/当前结果文件' % username
     print('__________________________________')
     os.makedirs(path1, exist_ok=True)
     os.makedirs(path2, exist_ok=True)
     os.makedirs(path3, exist_ok=True)
+    os.makedirs(path4, exist_ok=True)
+    os.makedirs(path5, exist_ok=True)
     source_file = 'static/picture/touxiang.png'
     destination_file = path3 + '/touxiang.png'
     if os.path.exists(destination_file) == False:
@@ -831,8 +840,9 @@ def get_file():
     cnt = count_files_in_folder(path)
     filename = '/in' + str(cnt + 1) + '.csv'
     df.to_csv(path + filename, index=False)
-    global df_upload_file
-    df_upload_file = df
+    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    df.to_csv(path, index=False)
+
     return jsonify({})
 
 
@@ -866,7 +876,9 @@ def file_predict():
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['online_predict'], note="数据训练预测")
-    tmp = upload_predict(df_upload_file)
+    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    df = pd.read_csv(path)
+    tmp = upload_predict(df)
     return tmp
 
 
@@ -881,7 +893,11 @@ def download_resfile():
     cnt = count_files_in_folder(path)
     file_name = 'res' + str(cnt + 1) + '.csv'
     file_path = path + file_name  # 文件在服务器上的路径
-    df_upload_file.to_csv(file_path, index=False)
+
+    tmp_path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
+    df = pd.read_csv(tmp_path)
+    df.to_csv(file_path, index=False)
+
     return send_file(file_path, download_name=file_name, as_attachment=True)
 
 
@@ -914,8 +930,6 @@ def get_userfile():
     path2 = "userdata/%s/下载结果文件" % session.get('username')
     uploadcsv_list, time1 = get_file_paths(path1)
     downloadcsv_list, time2 = get_file_paths(path2)
-    print(time1)
-    print(time2)
     return jsonify({
         'uploadcsv': uploadcsv_list,
         'uploadcsv_time': time1,
@@ -1028,6 +1042,15 @@ def changepassword():
 def visual():
     username = session.get('username')
     return render_template('visual.html', username=username)
+
+@app.route('/changetx', methods=['POST'])
+def changetx():
+    if 'image' not in request.files:
+        return "No image uploaded", 400
+    file = request.files['image']
+    path = "static/usertouxiang/%s/touxiang.png"%session.get('username')
+    file.save(path)  # 将图片保存到指定路径
+    return "Image uploaded successfully"
 
 
 if __name__ == '__main__':
