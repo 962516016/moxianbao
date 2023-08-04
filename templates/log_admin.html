@@ -243,7 +243,7 @@
                                                     function timechart() {
                                                         var option;
                                                         // This example requires ECharts v5.4.0 or later
-                                                        const cellSize = [100, 55];
+                                                        const cellSize = [65, 55];
 
                                                         axios.get(url)
                                                             .then(res => {
@@ -282,6 +282,10 @@
                                                                             {
                                                                                 name: '上传模型',
                                                                                 value: daydata[d][5]
+                                                                            },
+                                                                            {
+                                                                                name: 'API调用',
+                                                                                value: daydata[d][6]
                                                                             }
                                                                         ];
                                                                         var tmp_r = 20
@@ -325,6 +329,7 @@
                                                                         radius: item.radius,
                                                                         coordinateSystem: 'calendar',
                                                                         label: {
+                                                                            show: false,
                                                                             formatter: '{c}',
                                                                             position: 'inside'
                                                                         },
@@ -367,9 +372,7 @@
                                                                                 formatter: function (params) {
                                                                                     return echarts.time.format(params.value[0], '{dd}', false);
                                                                                 },
-                                                                                // top: -6,
-                                                                                // offset: [-cellSize[0] / 2 + 10, -cellSize[1] / 2 + 10],
-                                                                                offset: [-65 / 2 + 10, -55 / 2 + 10],
+                                                                                offset: [-cellSize[0] / 2 + 10, -cellSize[1] / 2 + 10],
                                                                                 fontSize: 14
                                                                             },
                                                                             data: labelData

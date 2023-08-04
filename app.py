@@ -31,10 +31,12 @@ api_list = {
     'gptapi_analyze': '3',
     'download_resfile': '4',
     'getmodel': '5',
+    'api': '6'
 }
 # _________________________________________________________________________数据库连接_________________________________________________________________________
 # 创建 pymysqlpool 连接池
 pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
+
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
 
@@ -130,6 +132,14 @@ def get_file_paths(directory):
 
 # 查询密钥对应的用户名
 def query_sdk_username(sdk):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "select username from usertable where sdk = '%s';" % sdk
+    cursor.execute(sql)
+    res = cursor.fetchall()
+    print(res[0][0])
+    if res:
+        return res[0]
     return 'false'
 
 
@@ -244,7 +254,7 @@ def query_timeapicount_data(username, year, month, day):
     cursor.close()
     apimap = {int(item[0]): item[1] for item in result}
     countlist = []
-    for i in range(6):
+    for i in range(7):
         if i in apimap.keys():
             countlist.append(apimap.get(i))
         else:
@@ -629,6 +639,7 @@ def download_offine_soft():
     file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
+
 # 将sdk和username对应起来加到数据库中（在离线应用界面申请sdk）
 @app.route('/newsdk_offline')
 def newsdkoffline():
@@ -660,6 +671,7 @@ def to_api():
     sdk = session.get('sdk')
     return render_template('api.html', username=username, sdk=sdk)
 
+
 # 将sdk和username对应起来加到数据库中（在api文档界面申请sdk）
 @app.route('/newsdk_api')
 def newsdkapi():
@@ -681,6 +693,7 @@ def newsdkapi():
     # jsonify({'sdk': sdk})
     return redirect('/api')
 
+
 # _________________________________________________________________________longyuan龙源API_______________________________________________________________________
 
 @app.route('/longyuanapi', methods=['POST'])
@@ -691,7 +704,11 @@ def api_predict():
 
     # 检查身份验证头部中是否包含正确的密钥
     if 'Authorization' not in request.headers or query_sdk_username(request.headers['Authorization']) == 'false':
-        return jsonify({'error': 'Unauthorized'})
+        return jsonify({'error': '您的密钥未被授权，请更换密钥'})
+    else:
+        addlog(username=query_sdk_username(request.headers['Authorization']),
+               operate_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), api=api_list['api'], note='API调用')
+        return jsonify({'success': '密钥验证成功...'})
     file = request.files['file']
     # 检查文件类型是否为CSV
     if file.filename.endswith('.csv'):
@@ -892,7 +909,7 @@ def get_apicount():
     # data = query_apicount_data(username,)
     # res_list_apicount = list(data[0])
     res_list_apicount = []
-    apilist = ['上传数据', '数据分析', '预测功率', 'AI分析', '下载结果', '上传模型']
+    apilist = ['上传数据', '数据分析', '预测功率', 'AI分析', '下载结果', '上传模型', 'API调用']
     for key in api_list.keys():
         data = query_apicount_data(username, api_list[key])
         res_list_apicount.append(data[0][0])
@@ -933,6 +950,7 @@ def check_sdk():
     username = session.get('username')
     sdk = session.get('sdk')
     return render_template('personalcenter.html', username=username, check=sdk, key_amount='2023年8月31日15:00:00')
+
 
 # 点击（查看）密钥
 @app.route('/verifypassword', methods=['POST'])
@@ -1000,12 +1018,8 @@ def download_history_csv():
 # 获取他人使用offline程序跑出来的模型
 @app.route('/getmodel', methods=['POST'])
 def get_model():
-    sdk = request.values.get('sdk')  # 这是sdk，可以从数据库中查出用户名，然后将日志表直接填了。
-    currenttime = request.values.get('currenttime')
     file = request.files['file']
     cnt = count_files_in_folder('./getmodels')
-    # 添加日志记录
-    addlog(username=query_sdk_username(sdk), operate_time=currenttime, api=api_list['getmodel'], note='上传模型')
     if cnt % 2 == 0:
         tmp = int(cnt / 2)
         file_name = "yd15_" + str(tmp + 1) + ".pkl"
