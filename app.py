@@ -130,6 +130,20 @@ def get_file_paths(directory):
 
 # _________________________________________________________________________数据库SQL语句_________________________________________________________________________
 
+# 给密钥到期时间增加time个月份
+def addsdktimemonth(username, time):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "UPDATE usertable SET time = DATE_ADD(time, INTERVAL %s MONTH) WHERE username = '%s';" % (time, username)
+    print(sql)
+    cursor.execute(sql)
+    connection.commit()
+    flg = cursor.rowcount
+    if flg == 1:
+        return True
+    else:
+        return False
+
 # 查询密钥对应的用户名
 def query_sdk_username(sdk):
     connection = pool.get_connection()
@@ -335,11 +349,13 @@ def getsdk():
     username = session.get('username')
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
+    sql = "SELECT sdk,time FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
     if result is not None:
         session['sdk'] = result[0]
+        session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
+        print('当前密钥到期时间为',session['sdktime'])
     else:
         if 'sdk' in session:
             del session['sdk']
@@ -399,6 +415,8 @@ def login_verify():
     if flg:
         session['username'] = username
         sdk = getsdk()
+        print(username)
+        print(sdk)
         session['sdk'] = sdk
         # 为该用户建立需要的文件夹
         createfolder(username)
@@ -647,7 +665,9 @@ def newsdkoffline():
     username = session.get('username')
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
+    time = datetime.now() + timedelta(days=31)
+    time = time.strftime("%Y-%m-%d %H:%M:%S")
+    sql = "UPDATE usertable SET sdk='%s',time='%s' WHERE username='%s';" % (sdk, time, username)
     cursor.execute(sql)
     flg = cursor.rowcount
     print(flg)
@@ -679,7 +699,10 @@ def newsdkapi():
     username = session.get('username')
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "UPDATE usertable SET sdk='%s' WHERE username='%s';" % (sdk, username)
+    time = datetime.now() + timedelta(days=31)
+    time = time.strftime("%Y-%m-%d %H:%M:%S")
+    sql = "UPDATE usertable SET sdk='%s',time='%s' WHERE username='%s';" % (sdk, time, username)
+    print(sql)
     cursor.execute(sql)
     flg = cursor.rowcount
     print(flg)
@@ -941,7 +964,7 @@ def get_timeapicount():
 @app.route('/personalcenter', methods=['GET'])
 def to_personalcenter():
     username = session.get('username')
-    return render_template('personalcenter.html', username=username, key_amount='2023年8月31日15:00:00')
+    return render_template('personalcenter.html', username=username, key_amount=session.get('sdktime'))
 
 
 # 前往个人中心查看密钥查看sdk
@@ -949,7 +972,7 @@ def to_personalcenter():
 def check_sdk():
     username = session.get('username')
     sdk = session.get('sdk')
-    return render_template('personalcenter.html', username=username, check=sdk, key_amount='2023年8月31日15:00:00')
+    return render_template('personalcenter.html', username=username, check=sdk, key_amount=session.get('sdktime'))
 
 
 # 点击（查看）密钥
@@ -979,6 +1002,26 @@ def changepassword():
     else:
         return '修改失败，请重试'
 
+# 弹出续费界面
+@app.route('/addsdktime')
+def addsdktime():
+    username = session.get('username')
+    return render_template('addsdktime.html', username=username)
+
+# 将续费时长添加
+@app.route('/sdktimeadd', methods=['GET'])
+def sdktimeadd():
+    time = request.args.get('time')
+    print('月份数',time)
+    username = session.get('username')
+    flg = addsdktimemonth(username, time)
+    if flg:
+        getsdk()
+        return jsonify({
+        "result": 'success'})
+    else:
+        return jsonify({
+            "result": 'failed'})
 
 # 更换头像
 @app.route('/changetx', methods=['POST'])
