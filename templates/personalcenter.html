@@ -53,12 +53,8 @@
     <div class="container-fluid page-body-wrapper">
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
+
             </nav>
-            <script>
-                $(function () {
-                    $("#sidebar").load("/navigation.html");
-                });
-            </script>
         </div>
 
         <div class="main-panel">
@@ -177,7 +173,8 @@
                                                     </span>
                                                 </div>
                                                 <div class="col-md-9 min-vw-50 mt-2 mb-2">
-                                                    <span class="mr-5" style="font-weight: bold;font-family: 'Courier New',serif">{{key_amount}}</span>
+                                                    <span class="mr-5"
+                                                          style="font-weight: bold;font-family: 'Courier New',serif">{{key_amount}}</span>
                                                     <button class="btn btn-sm btn-outline-secondary text-center m-auto"
                                                             id="apply-delay"
                                                     >
@@ -200,36 +197,37 @@
                                                      style="min-width: 20%; width: 70%">
                                             </div>
                                             <div class="col-md-12 mt-4 mb-2 d-flex align-items-center">
-                                                <input type="file" id="change-avatar-btn" style="display: none">
-                                                <button class="btn btn-sm btn-outline-secondary text-center m-auto" onclick="changetx()">
+                                                <input id="change-avatar-btn" style="display: none" type="file">
+                                                <button class="btn btn-sm btn-outline-secondary text-center m-auto"
+                                                        onclick="changetx()">
                                                     更换头像
                                                 </button>
                                                 <script>
                                                     function changetx() {
-                                                      var fileInput = document.getElementById("change-avatar-btn");
-                                                      fileInput.click();
+                                                        var fileInput = document.getElementById("change-avatar-btn");
+                                                        fileInput.click();
                                                     }
 
-                                                    document.getElementById("change-avatar-btn").addEventListener("change", function() {
+                                                    document.getElementById("change-avatar-btn").addEventListener("change", function () {
                                                         var fileInput = document.getElementById("change-avatar-btn");
                                                         var file = fileInput.files[0];
 
-                                                      var formData = new FormData();
-                                                      formData.append("image", file);
+                                                        var formData = new FormData();
+                                                        formData.append("image", file);
 
-                                                      axios
-                                                        .post("/changetx", formData)
-                                                        .then(function(response) {
-                                                          // 上传成功
-                                                          console.log("图片上传成功！");
-                                                          var avatarImg = document.getElementById("avatar-img");
-                                                          var tmp = Math.random()
-                                                          avatarImg.src = '/static/usertouxiang/{{username}}/touxiang.png'+'?version='+tmp
-                                                        })
-                                                        .catch(function(error) {
-                                                          // 上传失败
-                                                          console.log("图片上传失败！");
-                                                        });
+                                                        axios
+                                                            .post("/changetx", formData)
+                                                            .then(function (response) {
+                                                                // 上传成功
+                                                                console.log("图片上传成功！");
+                                                                var avatarImg = document.getElementById("avatar-img");
+                                                                var tmp = Math.random()
+                                                                avatarImg.src = '/static/usertouxiang/{{username}}/touxiang.png' + '?version=' + tmp
+                                                            })
+                                                            .catch(function (error) {
+                                                                // 上传失败
+                                                                console.log("图片上传失败！");
+                                                            });
                                                     });
 
                                                 </script>
@@ -378,11 +376,7 @@
             </div>
 
             <div id="footer-placeholder">
-                <script>
-                    $(function () {
-                        $("#footer-placeholder").load("/footer.html");
-                    });
-                </script>
+
             </div>
         </div>
 
@@ -392,30 +386,18 @@
 
     <!-- partial -->
 </div>
-<!-- main-panel ends -->
-</div>
 
-<!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<!-- base:js -->
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
 <script src="../static/js/progressbar.min.js"></script>
 <script src="../static/js/Chart.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
 <script src="../static/js/dashboard.js"></script>
-<!-- End custom js for this page-->
+<script src="../static/js/nav-footer_loader.js"></script>
+
+
 </body>
 </html>

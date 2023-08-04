@@ -5,137 +5,157 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
-    <link href="static/css/typicons.css" rel="stylesheet">
-    <link href="static/css/vendor.bundle.base.css" rel="stylesheet">
-    <link href="static/css/style.css" rel="stylesheet">
+    <link href="../static/css/typicons.css" rel="stylesheet">
+    <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
 
 </head>
 
 <body>
 <div class="container-scroller">
     <div class="d-flex align-items-center auth px-0">
-            <div class="row w-100 mx-0">
-                <div class="col-lg-5 mx-auto mb-auto">
-                    <img src="{{ url_for('static', filename='/picture/gif/glyc1.png') }}" style="width: 100%;height: 100%;" id="animation">
-<!--                    <div style="width: 100%;height: 100%;" ></div>-->
-                    <script>
-                      var animationDiv = document.getElementById("animation");
-                      var frameIndex = 0;
-                      var totalFrames = 30;
-                      var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
-                      var images = []; // 存储图片对象的数组
-
-                      // 预加载所有图片
-                      for (var i = 1; i <= totalFrames; i++) {
-                        var img = new Image();
-                        img.src = "static/picture/gif/glyc" + i + ".png";
-                        images.push(img);
-                      }
-
-                      // 播放动画
-                      function playAnimation() {
-                        animationDiv.src = images[frameIndex].src ;
-                        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
-                        frameIndex++;
-                        if (frameIndex >= totalFrames) {
-                          frameIndex = 0;
-                        }
-
-                        setTimeout(playAnimation, animationSpeed);
-                      }
-
-                      // 开始播放动画
-                      playAnimation();
-                    </script>
-                </div>
-                <div class="col-lg-auto mx-auto mt-5">
-                    <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                        <div class="brand-logo">
-                            <img alt="logo" src="static/picture/logo.svg">
-                        </div>
-                        <h4>欢迎使用龙源风电功率预测系统油专特供版online</h4>
-                        <h6 class="font-weight-light" id="response">请注册</h6>
-                        <form class="pt-3">
-                            <div class="form-group">
-                                <input class="form-control form-control-lg" id="username" placeholder="用户名"
-                                       type="text">
-                            </div>
-
-                            <div class="form-group">
-                                <input class="form-control form-control-lg" id="password" placeholder="密码"
-                                       type="password">
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control form-control-lg" id="re_password" placeholder="确认密码"
-                                       type="password">
-                            </div>
-<!--                            <div class="mb-4">-->
-<!--                                <div class="form-check">-->
-<!--                                    <label class="form-check-label text-muted">-->
-<!--                                        <input class="form-check-input" type="checkbox">-->
-<!--                                        我同意所有许可协议-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-                            <div class="mt-3">
-                                <button id="registerBtn" type="button" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" >注册</button>
-<!--                                <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"-->
-<!--                                   >注册</a>-->
-                                <script>
-                                    var registerButton = document.getElementById('registerBtn');
-                                    registerButton.addEventListener('click', function() {
-                                        var usernameInput = document.getElementById('username');
-                                        var passwordInput = document.getElementById('password');
-                                        var passwordreInput = document.getElementById('re_password');
-                                        var username = usernameInput.value;
-                                        var password = passwordInput.value;
-                                        var repassword = passwordreInput.value;
-                                        // 使用axios发送POST请求
-                                        axios.post('/register_submit', { username: username, password: password ,repassword:repassword})
-                                          .then(function(response) {
-                                                var res = response.data
-                                                var tmp = document.getElementById('response');
-                                                tmp.innerText = '';
-                                                if( res == '注册成功,点此登录'){
-                                                    var link = document.createElement('a');
-                                                    link.href = '/'; // 设置超链接的URL
-                                                    link.textContent = res; // 设置超链接的显示文本
-                                                    tmp.appendChild(link);
-                                                }
-                                                else {
-                                                    tmp.innerText = res;
-                                                    tmp.style.fontSize = '17px'
-                                                    tmp.style.color = 'red'
-                                                }
-                                          })
-                                          .catch(function(error) {
-                                            // 处理错误逻辑
-                                          });
-                                      });
-                                </script>
-                            </div>
-                            <div class="text-center mt-4 font-weight-light">
-                                已经有账户了？ <a class="text-primary" href="/">登录</a>
-                            </div>
-                        </form>
+        <div class="row w-100 mx-0">
+            <div class="col-lg-5 m-auto justify-content-center align-items-center d-flex">
+                <img id="animation" src="{{ url_for('static', filename='/picture/gif/glyc1.png') }}"
+                     style="width: 90%;height: 90%;">
+                <!--                    <div style="width: 100%;height: 100%;" ></div>-->
+            </div>
+            <div class="col-lg-auto mx-auto mt-3 mb-3 mr-auto justify-content-center align-items-center d-flex">
+                <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                    <div class="brand-logo">
+                        <img alt="logo" src="static/picture/logo.svg">
                     </div>
+                    <h4>欢迎使用龙源风电功率预测系统油专特供版online</h4>
+                    <h5 class="font-weight-light" id="response">请注册</h5>
+                    <form class="pt-3">
+                        <div class="form-group">
+                            <input class="form-control form-control-lg" id="username" placeholder="用户名"
+                                   type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control form-control-lg" id="password" placeholder="密码"
+                                   type="password">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control form-control-lg" id="re_password" placeholder="确认密码"
+                                   type="password">
+                        </div>
+                        <!--                            <div class="mb-4">-->
+                        <!--                                <div class="form-check">-->
+                        <!--                                    <label class="form-check-label text-muted">-->
+                        <!--                                        <input class="form-check-input" type="checkbox">-->
+                        <!--                                        我同意所有许可协议-->
+                        <!--                                    </label>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <div class="mt-3">
+                            <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                                    id="registerBtn"
+                                    type="button">注册
+                            </button>
+                            <!--                                <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"-->
+                            <!--                                   >注册</a>-->
+                            <script>
+                                var registerButton = document.getElementById('registerBtn');
+                                registerButton.addEventListener('click', function () {
+                                    var usernameInput = document.getElementById('username');
+                                    var passwordInput = document.getElementById('password');
+                                    var passwordreInput = document.getElementById('re_password');
+                                    var username = usernameInput.value;
+                                    var password = passwordInput.value;
+                                    var repassword = passwordreInput.value;
+                                    // 使用axios发送POST请求
+                                    axios.post('/register_submit', {
+                                        username: username,
+                                        password: password,
+                                        repassword: repassword
+                                    })
+                                        .then(function (response) {
+                                            var res = response.data
+                                            var tmp = document.getElementById('response');
+                                            tmp.innerText = '';
+                                            if (res === '注册成功,点此登录') {
+                                                var link = document.createElement('a');
+                                                link.href = '/'; // 设置超链接的URL
+                                                link.textContent = res; // 设置超链接的显示文本
+                                                tmp.appendChild(link);
+                                            } else {
+                                                tmp.innerText = res;
+                                                tmp.style.fontSize = '17px'
+                                                tmp.style.color = 'red'
+                                            }
+                                        })
+                                        .catch(function (error) {
+                                            // 处理错误逻辑
+                                        });
+                                });
+                            </script>
+                        </div>
+                        <div class="text-center mt-4 font-weight-light">
+                            已经有账户了？ <a class="text-primary" href="/">登录</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    <!-- page-body-wrapper ends -->
+    </div>
+
+    <div id="footer-placeholder">
+        <footer class="footer">
+            <div class="d-sm-flex justify-content-center align-items-end">
+              <span class="text-center text-sm-left d-block d-sm-inline-block">
+                  Copyright &copy; 2023.
+                  <span style="font-weight: bold;font-style: italic">测试版LongYuan</span>
+                  All rights reserved.
+                  <!--                  <a href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>-->
+              </span>
+            </div>
+        </footer>
+
+    </div>
 </div>
-<!-- container-scroller -->
-<!-- base:js -->
-<script src="static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- inject:js -->
-<script src="static/js/off-canvas.js"></script>
-<script src="static/js/hoverable-collapse.js"></script>
-<script src="static/js/template.js"></script>
-<script src="static/js/settings.js"></script>
-<script src="static/js/todolist.js"></script>
+
+
+<script src="../static/js/nav-footer_loader.js"></script>
+<script src="../static/js/vendor.bundle.base.js"></script>
+<script src="../static/js/off-canvas.js"></script>
+<script src="../static/js/hoverable-collapse.js"></script>
+<script src="../static/js/template.js"></script>
+<script src="../static/js/settings.js"></script>
+<script src="../static/js/todolist.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <!-- endinject -->
+<script>
+    var animationDiv = document.getElementById("animation");
+    var frameIndex = 0;
+    var totalFrames = 30;
+    var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
+    var images = []; // 存储图片对象的数组
+
+    // 预加载所有图片
+    for (var i = 1; i <= totalFrames; i++) {
+        var img = new Image();
+        img.src = "static/picture/gif/glyc" + i + ".png";
+        images.push(img);
+    }
+
+    // 播放动画
+    function playAnimation() {
+        animationDiv.src = images[frameIndex].src;
+        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
+        frameIndex++;
+        if (frameIndex >= totalFrames) {
+            frameIndex = 0;
+        }
+
+        setTimeout(playAnimation, animationSpeed);
+    }
+
+    // 开始播放动画
+    playAnimation();
+</script>
 </body>
 
 </html>

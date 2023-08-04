@@ -48,12 +48,8 @@
     <div class="container-fluid page-body-wrapper">
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
+
             </nav>
-            <script>
-                $(function () {
-                    $("#sidebar").load("/navigation.html");
-                });
-            </script>
         </div>
         <div class="main-panel">
             <div class="content-wrapper">
@@ -98,162 +94,7 @@
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <script>
-                                        function updatetable() {
-                                            axios.get('/get_modelname')
-                                                .then(res => {
-                                                    let name1 = Object.entries(res.data)[0][1];
-                                                    let name2 = Object.entries(res.data)[1][1];
 
-                                                    // 假设通过后端获取到的文件名列表为fileNames
-                                                    var fileNames1 = name1;
-                                                    var fileNames2 = name2;
-                                                    // 获取表格的tbody元素
-                                                    var tableBody1 = document.querySelector('#model_table1 tbody');
-                                                    var tableBody2 = document.querySelector('#model_table2 tbody');
-                                                    tableBody1.innerHTML = '';
-                                                    tableBody2.innerHTML = '';
-                                                    // 遍历文件名列表，生成表格行并添加到表格中
-                                                    for (var i = 0; i < fileNames1.length; i++) {
-                                                        var fileName = fileNames1[i];
-                                                        var row = document.createElement('tr');
-                                                        var cell1 = document.createElement('td');
-                                                        cell1.textContent = fileName;
-                                                        var cell2 = document.createElement('td');
-                                                        var checkbox = document.createElement('input');
-                                                        checkbox.type = 'checkbox';
-                                                        cell2.appendChild(checkbox);
-                                                        row.appendChild(cell1);
-                                                        row.appendChild(cell2);
-                                                        tableBody1.appendChild(row);
-                                                    }
-                                                    for (var i = 0; i < fileNames2.length; i++) {
-                                                        var fileName = fileNames2[i];
-                                                        var row = document.createElement('tr');
-                                                        var cell = document.createElement('td');
-                                                        cell.textContent = fileName;
-                                                        var cell2 = document.createElement('td');
-                                                        var checkbox = document.createElement('input');
-                                                        checkbox.type = 'checkbox';
-                                                        cell2.appendChild(checkbox);
-                                                        row.appendChild(cell);
-                                                        row.appendChild(cell2);
-
-                                                        tableBody2.appendChild(row);
-                                                    }
-                                                })
-                                                .catch(err => {
-                                                    console.error('axios请求错误' + err)
-                                                })
-                                        }
-
-                                        function addmodels() {
-                                            // 获取提交按钮元素
-                                            var addmodelBtn = document.querySelector('#add_models_to_pool');
-                                            // 添加点击事件处理程序
-                                            addmodelBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns1 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns1.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/add_models_to_pool');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns1));
-                                            });
-                                        }
-
-                                        function removemodels() {
-                                            // 获取提交按钮元素
-                                            var removemodelBtn = document.querySelector('#remove_models_from_pool');
-                                            // 添加点击事件处理程序
-                                            removemodelBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table2 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns2 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns2.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/remove_models_from_pool');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns2));
-                                            });
-                                        }
-
-                                        function deletemodels() {
-                                            // 获取提交按钮元素
-                                            var deleteBtn = document.querySelector('#delete_modes');
-                                            // 添加点击事件处理程序
-                                            deleteBtn.addEventListener('click', function () {
-                                                // 获取所有被选中的复选框
-                                                var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
-                                                // 构造选中的列数据
-                                                var selectedColumns3 = [];
-                                                checkboxes.forEach(function (checkbox) {
-                                                    var row = checkbox.parentNode.parentNode;
-                                                    var fileName = row.cells[0].textContent;
-                                                    selectedColumns3.push(fileName);
-                                                });
-                                                // 将选中的列数据发送到后端
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open('POST', '/delete_models');
-                                                xhr.setRequestHeader('Content-Type', 'application/json');
-                                                xhr.onreadystatechange = function () {
-                                                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                        // 处理后端响应
-                                                        if (xhr.status === 200) {
-                                                            updatetable();
-                                                            console.log(xhr.responseText);
-                                                        } else {
-                                                            // 请求失败
-                                                            console.error('请求失败');
-                                                        }
-                                                    }
-                                                };
-                                                xhr.send(JSON.stringify(selectedColumns3));
-                                            });
-                                        }
-
-                                        updatetable();
-                                        addmodels();
-                                        removemodels();
-                                        deletemodels();
-                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -263,11 +104,7 @@
             <!-- content-wrapper ends -->
             <!-- partial:../../partials/_footer.html -->
             <div id="footer-placeholder">
-                <script>
-                    $(function () {
-                        $("#footer-placeholder").load("/footer.html");
-                    });
-                </script>
+
             </div>
             <!-- partial -->
         </div>
@@ -282,6 +119,163 @@
 <script src="../static/js/template.js"></script>
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
+<script src="../static/js/nav-footer_loader.js"></script>
+<script>
+    function updatetable() {
+        axios.get('/get_modelname')
+            .then(res => {
+                let name1 = Object.entries(res.data)[0][1];
+                let name2 = Object.entries(res.data)[1][1];
+
+                // 假设通过后端获取到的文件名列表为fileNames
+                var fileNames1 = name1;
+                var fileNames2 = name2;
+                // 获取表格的tbody元素
+                var tableBody1 = document.querySelector('#model_table1 tbody');
+                var tableBody2 = document.querySelector('#model_table2 tbody');
+                tableBody1.innerHTML = '';
+                tableBody2.innerHTML = '';
+                // 遍历文件名列表，生成表格行并添加到表格中
+                for (var i = 0; i < fileNames1.length; i++) {
+                    var fileName = fileNames1[i];
+                    var row = document.createElement('tr');
+                    var cell1 = document.createElement('td');
+                    cell1.textContent = fileName;
+                    var cell2 = document.createElement('td');
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    cell2.appendChild(checkbox);
+                    row.appendChild(cell1);
+                    row.appendChild(cell2);
+                    tableBody1.appendChild(row);
+                }
+                for (var i = 0; i < fileNames2.length; i++) {
+                    var fileName = fileNames2[i];
+                    var row = document.createElement('tr');
+                    var cell = document.createElement('td');
+                    cell.textContent = fileName;
+                    var cell2 = document.createElement('td');
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    cell2.appendChild(checkbox);
+                    row.appendChild(cell);
+                    row.appendChild(cell2);
+
+                    tableBody2.appendChild(row);
+                }
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+    }
+
+    function addmodels() {
+        // 获取提交按钮元素
+        var addmodelBtn = document.querySelector('#add_models_to_pool');
+        // 添加点击事件处理程序
+        addmodelBtn.addEventListener('click', function () {
+            // 获取所有被选中的复选框
+            var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
+            // 构造选中的列数据
+            var selectedColumns1 = [];
+            checkboxes.forEach(function (checkbox) {
+                var row = checkbox.parentNode.parentNode;
+                var fileName = row.cells[0].textContent;
+                selectedColumns1.push(fileName);
+            });
+            // 将选中的列数据发送到后端
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/add_models_to_pool');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // 处理后端响应
+                    if (xhr.status === 200) {
+                        updatetable();
+                        console.log(xhr.responseText);
+                    } else {
+                        // 请求失败
+                        console.error('请求失败');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(selectedColumns1));
+        });
+    }
+
+    function removemodels() {
+        // 获取提交按钮元素
+        var removemodelBtn = document.querySelector('#remove_models_from_pool');
+        // 添加点击事件处理程序
+        removemodelBtn.addEventListener('click', function () {
+            // 获取所有被选中的复选框
+            var checkboxes = document.querySelectorAll('#model_table2 tbody input[type="checkbox"]:checked');
+            // 构造选中的列数据
+            var selectedColumns2 = [];
+            checkboxes.forEach(function (checkbox) {
+                var row = checkbox.parentNode.parentNode;
+                var fileName = row.cells[0].textContent;
+                selectedColumns2.push(fileName);
+            });
+            // 将选中的列数据发送到后端
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/remove_models_from_pool');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // 处理后端响应
+                    if (xhr.status === 200) {
+                        updatetable();
+                        console.log(xhr.responseText);
+                    } else {
+                        // 请求失败
+                        console.error('请求失败');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(selectedColumns2));
+        });
+    }
+
+    function deletemodels() {
+        // 获取提交按钮元素
+        var deleteBtn = document.querySelector('#delete_modes');
+        // 添加点击事件处理程序
+        deleteBtn.addEventListener('click', function () {
+            // 获取所有被选中的复选框
+            var checkboxes = document.querySelectorAll('#model_table1 tbody input[type="checkbox"]:checked');
+            // 构造选中的列数据
+            var selectedColumns3 = [];
+            checkboxes.forEach(function (checkbox) {
+                var row = checkbox.parentNode.parentNode;
+                var fileName = row.cells[0].textContent;
+                selectedColumns3.push(fileName);
+            });
+            // 将选中的列数据发送到后端
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/delete_models');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // 处理后端响应
+                    if (xhr.status === 200) {
+                        updatetable();
+                        console.log(xhr.responseText);
+                    } else {
+                        // 请求失败
+                        console.error('请求失败');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(selectedColumns3));
+        });
+    }
+
+    updatetable();
+    addmodels();
+    removemodels();
+    deletemodels();
+</script>
 </body>
 
 </html>

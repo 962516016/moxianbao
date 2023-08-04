@@ -7,24 +7,24 @@
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
     <!-- base:css -->
-    <link href="static/css/typicons.css" rel="stylesheet">
-    <link href="static/css/vendor.bundle.base.css" rel="stylesheet">
+    <link href="../static/css/typicons.css" rel="stylesheet">
+    <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link href="static/css/style.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
 
 </head>
 
 <body style="background-color: #e8eff9">
 <div class="container-scroller">
-    <div class="d-flex align-items-center auth ">
+    <div class="d-flex align-items-center auth px-0">
         <div class="row w-100 mx-0">
-            <div class="col-lg-5 mx-auto mb-auto">
+            <div class="col-lg-5 m-auto justify-content-center align-items-center d-flex">
                 <img id="animation"
-                     style="width: 100%;height: 100%;">
+                     style="width: 90%;height: 90%;">
                 <!--                    <div style="width: 100%;height: 100%;" ></div>-->
                 <script>
                     var animationDiv = document.getElementById("animation");
@@ -56,18 +56,21 @@
                     playAnimation();
                 </script>
             </div>
-            <div class="col-lg-auto mt-8 mx-auto mb-8">
-                <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+            <div class="col-lg-auto mx-auto mt-3 mb-3 mr-auto justify-content-center align-items-center d-flex">
+                <div class="auth-form-light text-left py-5 px-4 px-sm-5 min-vw-50">
+                    <div class="text-center navbar-brand-wrapper d-flex align-items-start justify-content-start">
+                        <a class="navbar-brand brand-logo" href=""><img alt="logo" src="../static/picture/logo.svg"></a>
+                    </div>
                     <h4>欢迎使用龙源风电功率预测系统油专特供版online</h4>
-                    <h6 class="font-weight-light">请登录</h6>
-                    {% if error %}
-                    <p style="color: red;">{{ error }}</p>
-                    {% endif %}
+                    <h5 class="font-weight-light">请登录</h5>
+<!--                    {% if error %}-->
+<!--                    <p style="color: red;">{{ error }}</p>-->
+<!--                    {% endif %}-->
                     <form action="/index" class="pt-3" id="login-form" method="POST">
                         <div class="form-group">
                             {% if username %}
                             <input class="form-control form-control-lg" id="username" name="username"
-                                   placeholder="用户名" value="{{username}}" type="text">
+                                   placeholder="用户名" type="text" value="{{username}}">
                             {% else %}
                             <input class="form-control form-control-lg" id="username" name="username"
                                    placeholder="用户名" type="text">
@@ -83,7 +86,7 @@
                             </button>
                         </div>
                         <div class="my-2 d-flex justify-content-between align-items-center">
-                            <a class="auth-link text-black" href="#">忘记密码？</a>
+                            <a class="auth-link text-primary" href="#">忘记密码？</a>
                         </div>
                         <div class="text-center mt-4 font-weight-light">
                             还没有账号？<a class="text-primary" href="/register">注册</a>
@@ -110,17 +113,30 @@
         </div>
     </div>
     <!-- page-body-wrapper ends -->
+    <div id="footer-placeholder">
+        <footer class="footer">
+            <div class="d-sm-flex justify-content-center align-items-end">
+              <span class="text-center text-sm-left d-block d-sm-inline-block">
+                  Copyright &copy; 2023.
+                  <span style="font-weight: bold;font-style: italic">测试版LongYuan</span>
+                  All rights reserved.
+                  <!--                  <a href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>-->
+              </span>
+            </div>
+        </footer>
+
+    </div>
 </div>
 <!-- container-scroller -->
 <!-- base:js -->
-<script src="static/js/vendor.bundle.base.js"></script>
+<script src="../static/js/vendor.bundle.base.js"></script>
 <!-- endinject -->
 <!-- inject:js -->
-<script src="static/js/off-canvas.js"></script>
-<script src="static/js/hoverable-collapse.js"></script>
-<script src="static/js/template.js"></script>
-<script src="static/js/settings.js"></script>
-<script src="static/js/todolist.js"></script>
+<script src="../static/js/off-canvas.js"></script>
+<script src="../static/js/hoverable-collapse.js"></script>
+<script src="../static/js/template.js"></script>
+<script src="../static/js/settings.js"></script>
+<script src="../static/js/todolist.js"></script>
 <!-- endinject -->
 </body>
 
