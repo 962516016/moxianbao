@@ -29,7 +29,11 @@
             var old_str = document.querySelector(".showTime").innerHTML
             document.querySelector(".showTime").innerHTML =
                 // old_str.endsWith('{{username}}')+
-                "<a href='/' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>欢迎您</a>,{{username}}     " +
+                "{% if username %}" +
+                "<a href='/index' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>欢迎您</a>,{{username}}" +
+                "{% else %} " +
+                "<a href='/index' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>您尚未登录</a>," +
+                "{% endif %}" +
                 "当前时间：" +
                 y +
                 "年" +
@@ -47,14 +51,16 @@
         }
     </script>
 </header>
+
 <section class="mainbox">
+    {% if username %}
     <div class="column">
         <div class="panel bar">
             <h2>
                 <span id="year">2021</span>年 各月份风场累计供电量
                 <span style="font-size: 10px;display: none">
-                    <a id="2021" href="javascript:;">2021</a>
-                    <a id="2022" href="javascript:;">2022</a>
+                    <a href="javascript:;" id="2021">2021</a>
+                    <a href="javascript:;" id="2022">2022</a>
                 </span>
             </h2>
             <div class="chart"></div>
@@ -110,7 +116,16 @@
             <div class="panel-footer"></div>
         </div>
     </div>
+    {% else %}
+    <div class="column position-relative">
+        <span class="position-absolute " style="top: 50%;left: 50%;transform: translate(-50%, -50%)">
+            <a href="/" style="font-size: 40px">请登录</a>
+        </span>
+    </div>
+    {% endif %}
 </section>
+
+
 <script src="../static/js/flexible.js"></script>
 <script src="../static/js/jquery.js"></script>
 <script src="../static/js/echarts.min.js"></script>

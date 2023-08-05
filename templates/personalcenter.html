@@ -54,14 +54,11 @@
     <div class="container-fluid page-body-wrapper">
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
+
             </nav>
-            <script>
-                $(function () {
-                    $("#sidebar").load("/navigation.html");
-                });
-            </script>
         </div>
 
+        {% if username %}
         <div class="main-panel">
             <div id="initial" class="content-wrapper">
                 <!--                个人信息区域-->
@@ -644,44 +641,33 @@
             </div>
 
             <div id="footer-placeholder">
-                <script>
-                    $(function () {
-                        $("#footer-placeholder").load("/footer.html");
-                    });
-                </script>
+
             </div>
         </div>
+        {% else %}
+        <!--        没登录啥都不显示-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <span style="text-align: center;font-size: 40px">
+                    <a href="/">请登录</a>
+                </span>
+            </div>
+        </div>
+        {% endif %}
 
     </div>
-    <!-- content-wrapper ends -->
-    <!-- partial:partials/_footer.html -->
-
-    <!-- partial -->
-</div>
-<!-- main-panel ends -->
 </div>
 
-<!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<!-- base:js -->
+
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
 <script src="../static/js/progressbar.min.js"></script>
 <script src="../static/js/Chart.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
 <script src="../static/js/dashboard.js"></script>
-<!-- End custom js for this page-->
+<script src="../static/js/nav-footer_loader.js"></script>
 </body>
 </html>

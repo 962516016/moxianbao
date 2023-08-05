@@ -60,6 +60,7 @@
 
             </nav>
         </div>
+        {% if username %}
         <!--        主界面区域-->
         <div class="main-panel">
             <div class="content-wrapper">
@@ -406,28 +407,26 @@
             <!-- partial -->
         </div>
         <!-- main-panel ends -->
+        {% else %}
+        <!--        没登录啥都不显示-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <span style="text-align: center;font-size: 40px">
+                    <a href="/">请登录</a>
+                </span>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <!-- page-body-wrapper ends -->
 </div>
-<!-- container-scroller -->
-<!-- base:js -->
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
 <script src="../static/js/nav-footer_loader.js"></script>
-
-<!-- endinject -->
-<!-- plugin js for this page -->
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
-<!-- End custom js for this page-->
 </body>
 
 </html>

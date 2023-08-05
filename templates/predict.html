@@ -107,6 +107,7 @@
 
             </nav>
         </div>
+        {% if username %}
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
@@ -361,31 +362,30 @@
             </div>
             <!-- main-panel ends -->
         </div>
+        {% else %}
+        <!--        没登录啥都不显示-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <span style="text-align: center;font-size: 40px">
+                    <a href="/">请登录</a>
+                </span>
+            </div>
+        </div>
+        {% endif %}
         <!-- page-body-wrapper ends -->
     </div>
 </div>
 <!-- container-scroller -->
 <!-- base:js -->
 <script src="../static/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
 <script src="../static/js/template.js"></script>
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
-<!-- endinject -->
-<!-- plugin js for this page -->
 <script src="../static/js/progressbar.min.js"></script>
 <script src="../static/js/Chart.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- Custom js for this page-->
 <script src="../static/js/dashboard.js"></script>
-<!-- End custom js for this page-->
-<!-- Include All JS -->
-<!--   <script src="static/js/jquery-3.5.1.min.js"></script>-->
 <script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/js/isotope.pkgd.min.js"></script>
 <script src="../static/js/owl.carousel.min.js"></script>

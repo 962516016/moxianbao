@@ -74,6 +74,7 @@
 
             </nav>
         </div>
+        {% if username %}
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
@@ -150,6 +151,16 @@
             </div>
         </div>
         <!-- main-panel ends -->
+        {% else %}
+        <!--        没登录啥都不显示-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <span style="text-align: center;font-size: 40px">
+                    <a href="/">请登录</a>
+                </span>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <!-- page-body-wrapper ends -->
 </div>

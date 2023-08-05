@@ -91,6 +91,7 @@
 
             </nav>
         </div>
+        {% if username %}
         <div class="main-panel">
             <div class="content-wrapper">
                 <div style="background: white;width: 100%;height: 100%">
@@ -169,6 +170,16 @@ longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
 
             </div>
         </div>
+        {% else %}
+        <!--        没登录啥都不显示-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <span style="text-align: center;font-size: 40px">
+                    <a href="/">请登录</a>
+                </span>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 

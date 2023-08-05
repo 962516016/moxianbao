@@ -1,23 +1,27 @@
 import glob
 import json
 import os
-import openai
-import joblib
+import re
+import secrets
 import shutil
 import zipfile
-import secrets
-import matplotx
-import pymysqlpool
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from flask_cors import CORS
-from env import GPT_API, DB_CONFIG
 from datetime import datetime, timedelta
-from matplotlib.ticker import MaxNLocator
-from lightgbm import LGBMRegressor, early_stopping
-from sklearn.model_selection import train_test_split
+
+import joblib
+import matplotlib.pyplot as plt
+import matplotx
+import numpy as np
+import openai
+import pandas as pd
+import pymysqlpool
 from flask import Flask, jsonify, request, send_file, render_template, session, redirect
+from flask import url_for
+from flask_cors import CORS
+from lightgbm import LGBMRegressor, early_stopping
+from matplotlib.ticker import MaxNLocator
+from sklearn.model_selection import train_test_split
+
+from env import GPT_API, DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -143,6 +147,7 @@ def addsdktimemonth(username, time):
         return True
     else:
         return False
+
 
 # 查询密钥对应的用户名
 def query_sdk_username(sdk):
@@ -355,7 +360,7 @@ def getsdk():
     if result is not None:
         session['sdk'] = result[0]
         session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
-        print('当前密钥到期时间为',session['sdktime'])
+        print('当前密钥到期时间为', session['sdktime'])
     else:
         if 'sdk' in session:
             del session['sdk']
@@ -365,6 +370,20 @@ def getsdk():
 
 
 # _________________________________________________________________________注册登录退出_______________________________________________________________________
+
+pathNoneCheckList = ['/index', '/visual', '/predict', '/offline', '/api', '/admin', '/log_admin', '/personalcenter', '/log']
+
+
+# 路由安全性过滤与检查
+# @app.before_request
+# def check_login():
+#     path = request.path
+#     username = session.get('username')
+#     if path in pathNoneCheckList and username is None:
+#         print('测试', path, username)
+#         return redirect('/login')
+#     return
+
 
 # 注册界面
 @app.route('/register')
@@ -439,9 +458,6 @@ def login_verify():
 # 跳转到主页，如果未登录跳转登录界面
 @app.route('/')
 def home():
-    username = session.get('username')
-    if username is not None:
-        return redirect('/index')
     return redirect('/login')
 
 
@@ -495,8 +511,6 @@ def get_winddirection():
 @app.route('/index')
 def to_index():
     username = session.get('username')
-    if username is None:
-        return redirect('/')
     return render_template('index.html', username=username)
 
 
@@ -521,6 +535,7 @@ def to_predict():
 # 上传文件
 @app.route('/upload_file', methods=['POST'])
 def get_file():
+    username = session.get('username')
     if 'file' not in request.files:
         return '未选择文件', 400
     file = request.files['file']
@@ -529,13 +544,13 @@ def get_file():
     now = datetime.now()
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
     # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
+    addlog(username=username, operate_time=operate_time, api=api_list['upload_file'], note="上传数据文件")
     df = pd.read_csv(file)
-    path = "userdata/%s/上传数据集" % session.get('username')
+    path = "userdata/%s/上传数据集" % username
     cnt = count_files_in_folder(path)
     filename = '/in' + str(cnt + 1) + '.csv'
     df.to_csv(path + filename, index=False)
-    path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    path = 'userdata/%s/当前上传数据集/tmp.csv' % username
     df.to_csv(path, index=False)
 
     return jsonify({})
@@ -1002,26 +1017,29 @@ def changepassword():
     else:
         return '修改失败，请重试'
 
+
 # 弹出续费界面
 @app.route('/addsdktime')
 def addsdktime():
     username = session.get('username')
     return render_template('addsdktime.html', username=username)
 
+
 # 将续费时长添加
 @app.route('/sdktimeadd', methods=['GET'])
 def sdktimeadd():
     time = request.args.get('time')
-    print('月份数',time)
+    print('月份数', time)
     username = session.get('username')
     flg = addsdktimemonth(username, time)
     if flg:
         getsdk()
         return jsonify({
-        "result": 'success'})
+            "result": 'success'})
     else:
         return jsonify({
             "result": 'failed'})
+
 
 # 更换头像
 @app.route('/changetx', methods=['POST'])
