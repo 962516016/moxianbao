@@ -87,7 +87,7 @@
                                                     </div>
                                                     <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <select class="input timeinput" id="turb-input"
-                                                                onchange="">
+                                                                onchange="turb_update()">
                                                             <!--                                        <option>1</option>-->
                                                             <!--                                        <option>2</option>-->
                                                             <!--                                        <option>3</option>-->
@@ -137,18 +137,18 @@
                                                 <label for="length-input" style="width: 100%" class="mb-0">
                                                     <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <span style="font-weight: bold">请选择数据时长 - </span><span
-                                                            id="len">12</span><span>小时</span>
+                                                            id="len">10</span><span>日</span>
                                                     </div>
                                                     <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <input class="input lengthinput"
                                                                id="length-input"
-                                                               max="24"
-                                                               min="5"
+                                                               max="30"
+                                                               min="7"
                                                                name="length-input"
                                                                oninput=""
                                                                onporpertychange="selectChange();"
                                                                type="range"
-                                                               value="12"
+                                                               value="10"
                                                         >
                                                     </div>
                                                 </label>
@@ -187,8 +187,8 @@
                                                                max="24"
                                                                min="5"
                                                                name="length-input"
-                                                               oninput="selectChange();"
-                                                               onporpertychange="getValue();"
+                                                               oninput=""
+                                                               onporpertychange=""
                                                                type="range"
                                                                value="12"
                                                         >
@@ -199,7 +199,7 @@
                                                  style="padding-right: 0!important;padding-left: 0!important;">
                                                 <button class="btn btn-sm btn-outline-secondary text-center m-auto"
                                                         id="changepwdBtn2"
-                                                        onclick="verifypwd()"
+                                                        onclick="main2_update()"
                                                         style="text-align: center; margin: 0"
                                                 >预测
                                                 </button>
@@ -211,18 +211,18 @@
                         </div>
 
                         <!--                主图表区域-->
-                        <div class="row flex-grow w-100" style="margin-top: 10px">
-                            <div class="col-8 d-flex grid-margin stretch-card pr-0">
-                                <div class="card pr-0">
-                                    <div class="card-body pr-0 mr-n1 d-flex justify-content-end align-items-end" id="main-container" style="border-right: 2px dashed #000!important;">
+                        <div class="row flex-grow w-100 px-0 pr-0" style="margin-top: 10px">
+                            <div class="col-lg-8 d-flex grid-margin stretch-card px-0 pr-0">
+                                <div class="card pr-0 px-0">
+                                    <div class="card-body px-0 pr-0 mx-2 mr-n1 d-flex justify-content-end align-items-end" id="main-container" style="border-right: 2px dashed #000!important;">
                                         <div id="main" style="width: 100%;height:500px;"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4 d-flex grid-margin stretch-card px-0"
+                            <div class="col-lg-4 d-flex grid-margin stretch-card px-0 pr-0"
                                  style="padding-left: 0!important;">
-                                <div class="card px-0" >
-                                    <div class="card-body px-0 " id="main-container2" style="border-left: 2px dashed #000!important;">
+                                <div class="card px-0 pr-0" >
+                                    <div class="card-body px-0 pr-0 mx-0 mr-2" id="main-container2" style="border-left: 2px dashed #000!important;">
                                         <div id="main2" style="width: 100%;height:500px;"></div>
                                     </div>
                                 </div>
@@ -335,21 +335,16 @@
         axios.get(baseurl)
             .then(res => {
                 console.log('测试resdata', res.data)
+
                 let datetimeline = Object.entries(res.data)[0][1];
-                let pre_roundline = Object.entries(res.data)[1][1];
-                let pre_yd15line = Object.entries(res.data)[2][1];
-                let roundline = Object.entries(res.data)[3][1];
-                let yd15line = Object.entries(res.data)[4][1];
+                let roundline = Object.entries(res.data)[1][1];
+                let yd15line = Object.entries(res.data)[2][1];
 
                 console.log('测试datetimeline', datetimeline)
-                console.log('测试pre_roundline', pre_roundline)
-                console.log('测试pre_yd15line', pre_yd15line)
                 console.log('测试roundline', roundline)
                 console.log('测试yd15line', yd15line)
 
                 let datetime = []
-                let pre_yd15 = []
-                let pre_round = []
                 let round = []
                 let yd15 = []
 
@@ -357,12 +352,10 @@
                 let mx = -10000000000
                 for (let i = 0; i < datetimeline.length; i++) {
                     datetime.push((datetimeline[i]))
-                    pre_round.push(Math.round(pre_roundline[i]))
-                    pre_yd15.push(Math.round(pre_yd15line[i]))
                     round.push(Math.round(roundline[i]))
                     yd15.push(Math.round(yd15line[i]))
-                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
-                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mn = Math.min(mn, roundline[i], yd15line[i])
+                    mx = Math.max(mx, roundline[i], yd15line[i])
                 }
                 console.log(mn)
                 console.log(mx)
@@ -375,10 +368,10 @@
                     },
                     title: {
                         left: 'left',
-                        text: '供、发电功率及其预测数据',
+                        text: '供、发电功率数据',
                     },
                     legend: {
-                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
+                        data: ['供电功率', '发电功率',],
                         show: true,
                         itemHeight: 20,
                         top: '6%'
@@ -421,20 +414,12 @@
                     ],
                     series: [
                         {
-                            name: '供电功率预测',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: round
-                        },
-                        {
                             name: '发电功率',
                             type: 'line',
                             smooth: true,
                             symbol: 'none',
                             //areaStyle: {},
-                            data: pre_round
+                            data: round
                         },
                         {
                             name: '供电功率',
@@ -444,14 +429,6 @@
                             //areaStyle: {},
                             data: yd15
                         },
-                        {
-                            name: '发电功率预测',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: pre_yd15
-                        }
                     ]
                 };
                 myChart.setOption(option);
@@ -488,31 +465,25 @@
         let length2 = lengthinput2;// 单位小时
 
         // /train_predict?
-        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+        const baseurl = '/train_predict?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
-        console.log('测试ssy:', baseurl);
+        console.log('测试ssy2:', baseurl);
 
         // GET请求
         axios.get(baseurl)
             .then(res => {
-                console.log('测试resdata', res.data)
+                console.log('测试resdata2', res.data)
                 let datetimeline = Object.entries(res.data)[0][1];
                 let pre_roundline = Object.entries(res.data)[1][1];
                 let pre_yd15line = Object.entries(res.data)[2][1];
-                let roundline = Object.entries(res.data)[3][1];
-                let yd15line = Object.entries(res.data)[4][1];
 
-                console.log('测试datetimeline', datetimeline)
-                console.log('测试pre_roundline', pre_roundline)
-                console.log('测试pre_yd15line', pre_yd15line)
-                console.log('测试roundline', roundline)
-                console.log('测试yd15line', yd15line)
+                console.log('测试datetimeline2', datetimeline)
+                console.log('测试pre_roundline2', pre_roundline)
+                console.log('测试pre_yd15line2', pre_yd15line)
 
                 let datetime = []
                 let pre_yd15 = []
                 let pre_round = []
-                let round = []
-                let yd15 = []
 
                 let mn = 10000000000
                 let mx = -10000000000
@@ -520,13 +491,11 @@
                     datetime.push((datetimeline[i]))
                     pre_round.push(Math.round(pre_roundline[i]))
                     pre_yd15.push(Math.round(pre_yd15line[i]))
-                    round.push(Math.round(roundline[i]))
-                    yd15.push(Math.round(yd15line[i]))
-                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
-                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i])
+                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i])
                 }
-                console.log(mn)
-                console.log(mx)
+                console.log('2',mn)
+                console.log('2',mx)
                 var option = {
                     tooltip: {
                         trigger: 'axis',
@@ -536,10 +505,10 @@
                     },
                     title: {
                         left: 'left',
-                        text: '供、发电功率及其预测数据',
+                        text: '供、发电功率预测数据',
                     },
                     legend: {
-                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
+                        data: ['供电功率预测', '发电功率预测',],
                         show: true,
                         itemHeight: 20,
                         top: '6%'
@@ -561,7 +530,7 @@
                         type: 'category',
                         boundaryGap: false,
                         data: datetime,
-                        inverse: true
+                        // inverse: true
                     },
                     yAxis: {
                         position: 'right',
@@ -583,15 +552,7 @@
                     ],
                     series: [
                         {
-                            name: '供电功率预测',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: round
-                        },
-                        {
-                            name: '发电功率',
+                            name: '发电功率预测',
                             type: 'line',
                             smooth: true,
                             symbol: 'none',
@@ -599,15 +560,7 @@
                             data: pre_round
                         },
                         {
-                            name: '供电功率',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: yd15
-                        },
-                        {
-                            name: '发电功率预测',
+                            name: '供电功率预测',
                             type: 'line',
                             smooth: true,
                             symbol: 'none',

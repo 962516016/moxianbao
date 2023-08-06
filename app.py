@@ -50,6 +50,8 @@ def train(path1, path2):
     df1 = pd.read_csv(path1)
     df2 = pd.read_csv(path2)
 
+    datatimelist = df2[['DATATIME']].values
+
     # 预测YD15
     X_train1 = df1[["WINDSPEED"]]
     y_train1 = df1[["YD15"]]
@@ -72,7 +74,7 @@ def train(path1, path2):
                     callbacks=[early_stopping(stopping_rounds=1000)])
     POWER = gbm2.predict(X_test2)
     output2 = POWER
-    return [output1.tolist(), output2.tolist()]
+    return [datatimelist.tolist(), output1.tolist(), output2.tolist()]
 
 
 # 对一个数据集进行预测功率
@@ -625,8 +627,9 @@ def train_predict():
         path2 = path + 'predict.csv'
         res_list = train(path1, path2)
         return jsonify({
-            "PREYD15": res_list[0],
-            "PREACTUAL": res_list[1]
+            "DATATIME": res_list[0],
+            "PREYD15": res_list[1],
+            "PREACTUAL": res_list[2]
         })
     else:
         return jsonify({'error': 'error'})
