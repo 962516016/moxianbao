@@ -69,24 +69,25 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="border: none">
                         <!--                选择器按钮部分-->
                         <div class="row flex-grow w-100 d-flex js justify-content-center align-content-center d-flex">
                             <!--                    正在设计功能-日期选择器-datepicker-->
                             <div class="col-8 justify-content-center align-content-end d-flex"
                                  style="padding-right: 0!important;padding-left: 0!important;">
-                                <div class="col-10 justify-content-center align-content-center d-flex">
-                                    <div class="input-container form-control input-box m-auto" id="input-group">
+                                <div class="col-12 justify-content-center align-content-center d-flex">
+                                    <div class="input-container form-control input-box m-auto" id="input-group"
+                                        style="border: none!important;">
                                         <div class="row mx-1">
                                             <div class="col-xl-2 mb-sm-2 d-flex align-items-center justify-content-center"
                                                  style="padding-right: 0!important;padding-left: 0!important;">
                                                 <label for="turb-input" style="width: 100%" class="mb-0">
-                                                    <div class="row- flex-lg-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-lg-grow d-flex justify-content-start align-items-start">
                                                         <span style="font-weight: bold">请选择风场</span>
                                                     </div>
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <select class="input timeinput" id="turb-input"
-                                                                onchange="selectChange()">
+                                                                onchange="">
                                                             <!--                                        <option>1</option>-->
                                                             <!--                                        <option>2</option>-->
                                                             <!--                                        <option>3</option>-->
@@ -114,16 +115,16 @@
                                             <div class="col-xl-4 mb-sm-2 d-flex align-items-center justify-content-center"
                                                  style="padding-right: 0!important;padding-left: 0!important;">
                                                 <label for="time-input" style="width: 100%" class="mb-0">
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <span style="font-weight: bold">请选择结束时间</span>
                                                     </div>
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <input class="input timeinput"
                                                                id="time-input"
                                                                max="2024-06-14T00:00"
                                                                min="2018-06-07T00:00"
                                                                name="meeting-time"
-                                                               oninput="selectChange();"
+                                                               oninput=""
                                                                onporpertychange="getValue();"
                                                                type="datetime-local"
                                                                value="2021-11-26T06:00"
@@ -134,17 +135,17 @@
                                             <div class="col-xl-4 mb-sm-2 d-flex align-items-center justify-content-center"
                                                  style="padding-right: 0!important;padding-left: 0!important;">
                                                 <label for="length-input" style="width: 100%" class="mb-0">
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <span style="font-weight: bold">请选择数据时长 - </span><span
                                                             id="len">12</span><span>小时</span>
                                                     </div>
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <input class="input lengthinput"
                                                                id="length-input"
                                                                max="24"
                                                                min="5"
                                                                name="length-input"
-                                                               oninput="selectChange();"
+                                                               oninput=""
                                                                onporpertychange="selectChange();"
                                                                type="range"
                                                                value="12"
@@ -154,10 +155,10 @@
                                             </div>
                                             <div class="col-xl-2 mb-sm-2 d-flex align-items-center justify-content-center"
                                                  style="padding-right: 0!important;padding-left: 0!important;" >
-                                                <button class="btn btn-sm btn-outline-secondary text-center m-auto"
+                                                <button class="btn btn-sm btn-outline-secondary text-start m-auto"
                                                         id="changepwdBtn"
-                                                        onclick="verifypwd()"
-                                                        style="text-align: center; margin: 0"
+                                                        onclick="selectChange();"
+                                                        style="text-align: start; margin: 0"
                                                 >预览数据
                                                 </button>
                                             </div>
@@ -165,21 +166,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--                    正在设计功能-日期选择器-datepicker-->
-                            <div class="col-4 justify-content-center align-items-end d-flex"
+                            <!--                    正在设计功能-预测时长选择器-lengthselector-->
+                            <div class="col-4 justify-content-start align-items-end d-flex"
                                  style="padding-right: 0!important;padding-left: 0!important;">
-                                <div class="col-10 align-items-end justify-content-sm-end d-flex"
+                                <div class="col-12 align-items-end justify-content-sm-end d-flex"
                                     style="padding-left: 0!important;">
-                                    <div class="input-container form-control input-box m-auto" id="input-group2">
+                                    <div class="input-container form-control input-box m-auto" id="input-group2"
+                                        style="border: none!important;">
                                         <div class="row mx-1">
-                                            <div class="col-xl-9 mb-sm-2 d-flex align-items-center justify-content-center"
+                                            <div class="col-xl-9 mb-sm-2 d-flex align-items-start justify-content-start"
                                                  style="padding-right: 0!important;padding-left: 0!important;">
                                                 <label for="length2-input" style="width: 100%;" class="mb-0">
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <span style="font-weight: bold">请选择预测时长 - </span>
                                                         <span id="len2">12</span><span>小时</span>
                                                     </div>
-                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                    <div class="row flex-grow d-flex justify-content-start align-items-start">
                                                         <input class="input lengthinput"
                                                                id="length2-input"
                                                                max="24"
@@ -212,15 +214,15 @@
                         <div class="row flex-grow w-100" style="margin-top: 10px">
                             <div class="col-8 d-flex grid-margin stretch-card pr-0">
                                 <div class="card pr-0">
-                                    <div class="card-body pr-0" id="main-container">
+                                    <div class="card-body pr-0 mr-n1 d-flex justify-content-end align-items-end" id="main-container" style="border-right: 2px dashed #000!important;">
                                         <div id="main" style="width: 100%;height:500px;"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4 d-flex grid-margin stretch-card mx-0"
+                            <div class="col-4 d-flex grid-margin stretch-card px-0"
                                  style="padding-left: 0!important;">
-                                <div class="card">
-                                    <div class="card-body" id="main-container2">
+                                <div class="card px-0" >
+                                    <div class="card-body px-0 " id="main-container2" style="border-left: 2px dashed #000!important;">
                                         <div id="main2" style="width: 100%;height:500px;"></div>
                                     </div>
                                 </div>
@@ -381,6 +383,9 @@
                         itemHeight: 20,
                         top: '6%'
                     },
+                    grid: {
+                      right: 0
+                    },
                     toolbox: {
                         feature: {
                             dataZoom: {
@@ -398,8 +403,8 @@
                     },
                     yAxis: {
                         position: 'left',
-                        min: mn,
-                        max: mx,
+                        min: mn*1.1,
+                        max: mx*1.1,
                         type: 'value',
                         boundaryGap: [0, '100%']
                     },
@@ -463,6 +468,168 @@
     }
 
     main()
+
+    async function main2() {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
+
+        var input = document.getElementById('time-input');
+        var dateinput = input.value.split('T')[0].split('-')
+        var timeinput = input.value.split('T')[1].split(':')
+
+        var turbinput = document.getElementById('turb-input').value;
+        var lengthinput2 = document.getElementById('length2-input').value;
+
+        let turbid = turbinput;
+        let year = dateinput[0];
+        let month = dateinput[1];
+        let day = dateinput[2];
+        let hour = timeinput[0];
+        let length2 = lengthinput2;// 单位小时
+
+        // /train_predict?
+        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
+        console.log('测试ssy:', baseurl);
+
+        // GET请求
+        axios.get(baseurl)
+            .then(res => {
+                console.log('测试resdata', res.data)
+                let datetimeline = Object.entries(res.data)[0][1];
+                let pre_roundline = Object.entries(res.data)[1][1];
+                let pre_yd15line = Object.entries(res.data)[2][1];
+                let roundline = Object.entries(res.data)[3][1];
+                let yd15line = Object.entries(res.data)[4][1];
+
+                console.log('测试datetimeline', datetimeline)
+                console.log('测试pre_roundline', pre_roundline)
+                console.log('测试pre_yd15line', pre_yd15line)
+                console.log('测试roundline', roundline)
+                console.log('测试yd15line', yd15line)
+
+                let datetime = []
+                let pre_yd15 = []
+                let pre_round = []
+                let round = []
+                let yd15 = []
+
+                let mn = 10000000000
+                let mx = -10000000000
+                for (let i = 0; i < datetimeline.length; i++) {
+                    datetime.push((datetimeline[i]))
+                    pre_round.push(Math.round(pre_roundline[i]))
+                    pre_yd15.push(Math.round(pre_yd15line[i]))
+                    round.push(Math.round(roundline[i]))
+                    yd15.push(Math.round(yd15line[i]))
+                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                }
+                console.log(mn)
+                console.log(mx)
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        position: function (pt) {
+                            return [pt[0], pt[1]];
+                        }
+                    },
+                    title: {
+                        left: 'left',
+                        text: '供、发电功率及其预测数据',
+                    },
+                    legend: {
+                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
+                        show: true,
+                        itemHeight: 20,
+                        top: '6%'
+                    },
+                    grid: {
+                      left: 0
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                // yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        position: 'right',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: datetime,
+                        inverse: true
+                    },
+                    yAxis: {
+                        position: 'right',
+                        min: mn*1.1,
+                        max: mx*1.1,
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 100
+                        },
+                        {
+                            start: 0,
+                            end: 30
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '供电功率预测',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: round
+                        },
+                        {
+                            name: '发电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: pre_round
+                        },
+                        {
+                            name: '供电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: yd15
+                        },
+                        {
+                            name: '发电功率预测',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: pre_yd15
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+                // const container = document.getElementById()
+                window.onresize = function () {
+                    myChart.resize();
+                }
+
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+        // 使用刚指定的配置项和数据显示图表。
+    }
+
+    main2()
 
     async function rose() {
         var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
