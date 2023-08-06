@@ -394,17 +394,17 @@ function preLeftdown(id) {
 
             // 3. 配置项和数据给我们的实例化对象
             myChart.setOption(option);
+            // 4. 当我们浏览器缩放的时候，图表也等比例缩放
+            window.addEventListener("resize", function () {
+                // 让我们的图表调用 resize这个方法
+                myChart.resize();
+            });
 
         }).catch(err => {
         console.error('axios请求错误' + err)
     });
 
 
-    // 4. 当我们浏览器缩放的时候，图表也等比例缩放
-    window.addEventListener("resize", function () {
-        // 让我们的图表调用 resize这个方法
-        myChart.resize();
-    });
 }
 
 // 刷新数据的函数 - 左中 + 右中
@@ -446,7 +446,7 @@ async function update() {
         id = nowid;
         preLeftdown(id);
         preLeftup(id);
-        nowtime = firstdate[parseInt(id)-11];
+        nowtime = firstdate[parseInt(id) - 11];
         let nowdate = new Date(nowtime);
         // 获取年月日时分
         year = nowdate.getFullYear();
