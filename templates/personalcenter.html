@@ -34,7 +34,7 @@
                 <li class="nav-item d-none d-lg-flex  mr-2">
                     {% if username %}
                     <span style="font-weight: bold">欢迎您, {{ username }}</span>
-                    <a class="nav-link" href="/logout">
+                    <a class="nav-link" href="/logout" id="logout">
                         退出登录
                     </a>
                     {% else %}
@@ -60,7 +60,7 @@
 
         {% if username %}
         <div class="main-panel">
-            <div id="initial" class="content-wrapper">
+            <div class="content-wrapper" id="initial">
                 <!--                个人信息区域-->
                 <div class="row">
                     <div class="col-12 grid-margin stretch-card">
@@ -175,7 +175,8 @@
                                                     </span>
                                                 </div>
                                                 <div class="col-md-9 min-vw-50 mt-2 mb-2">
-                                                    <span class="mr-5" style="font-weight: bold;font-family: 'Courier New',serif">{{key_amount}}</span>
+                                                    <span class="mr-5"
+                                                          style="font-weight: bold;font-family: 'Courier New',serif">{{key_amount}}</span>
                                                     <button class="btn btn-sm btn-outline-secondary text-center m-auto"
                                                             id="apply-delay" onclick="addsdktime()"
                                                     >
@@ -206,7 +207,7 @@
                                                      style="min-width: 20%; width: 70%">
                                             </div>
                                             <div class="col-md-12 mt-4 mb-2 d-flex align-items-center">
-                                                <input type="file" id="change-avatar-btn" style="display: none">
+                                                <input id="change-avatar-btn" style="display: none" type="file">
                                                 <button class="btn btn-sm btn-outline-secondary text-center m-auto"
                                                         onclick="changetx()">
                                                     更换头像
@@ -242,6 +243,11 @@
                                                 </script>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center align-items-center">
+                                        <button class="btn btn-sm btn-outline-danger text-center m-auto"
+                                                onclick="logout()">退出登录
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -420,14 +426,15 @@
                                                 </div>
                                                 <div class="relative-to-total" style="display: none;">
                                                     <div class="quantity-input with-unit">
-                                                        <button type="button" class="reduce">
+                                                        <button class="reduce" type="button">
                                                             <i class="icon-reduce"></i>
                                                         </button>
                                                         <div class="input-area">
-                                                            <input type="text" class="quantity-input-tx"
-                                                                   id="BF85F6AB-3429-43F5-974A-EF239E43000B"><span>个月</span>
+                                                            <input class="quantity-input-tx"
+                                                                   id="BF85F6AB-3429-43F5-974A-EF239E43000B"
+                                                                   type="text"><span>个月</span>
                                                         </div>
-                                                        <button type="button" class="add">
+                                                        <button class="add" type="button">
                                                             <i class="icon-add"></i>
                                                         </button>
                                                     </div>
@@ -449,14 +456,15 @@
                                                 </div>
                                                 <div class="relative-to-total" style="display: none;">
                                                     <div class="quantity-input with-unit">
-                                                        <button type="button" class="reduce">
+                                                        <button class="reduce" type="button">
                                                             <i class="icon-reduce"></i>
                                                         </button>
                                                         <div class="input-area">
-                                                            <input type="text" class="quantity-input-tx"
-                                                                   id="D0777E8F-7134-4DF7-9A24-11391571ADEB"><span>个月</span>
+                                                            <input class="quantity-input-tx"
+                                                                   id="D0777E8F-7134-4DF7-9A24-11391571ADEB"
+                                                                   type="text"><span>个月</span>
                                                         </div>
-                                                        <button type="button" class="add">
+                                                        <button class="add" type="button">
                                                             <i class="icon-add"></i>
                                                         </button>
                                                     </div>
@@ -478,14 +486,15 @@
                                                 </div>
                                                 <div class="relative-to-total" style="display: none;">
                                                     <div class="quantity-input with-unit">
-                                                        <button type="button" class="reduce">
+                                                        <button class="reduce" type="button">
                                                             <i class="icon-reduce"></i>
                                                         </button>
                                                         <div class="input-area">
-                                                            <input type="text" class="quantity-input-tx"
-                                                                   id="7C42B26E-6E2B-4C5D-A2F7-E482F188D3CE"><span>个月</span>
+                                                            <input class="quantity-input-tx"
+                                                                   id="7C42B26E-6E2B-4C5D-A2F7-E482F188D3CE"
+                                                                   type="text"><span>个月</span>
                                                         </div>
-                                                        <button type="button" class="add">
+                                                        <button class="add" type="button">
                                                             <i class="icon-add"></i>
                                                         </button>
                                                     </div>
@@ -507,19 +516,21 @@
                                                 </div>
                                                 <div class="relative-to-total">
                                                     <div class="quantity-input with-unit">
-                                                        <button type="button" class="reduce" disabled="" id="reducebtn"
-                                                                onclick="reduce1()">
+                                                        <button class="reduce" disabled="" id="reducebtn"
+                                                                onclick="reduce1()"
+                                                                type="button">
                                                             <i class="icon-reduce"></i>
                                                         </button>
                                                         <div class="input-area">
-                                                            <input type="text" class="quantity-input-tx" value='1'
-                                                                   id="cnt"><span>个月</span>
+                                                            <input class="quantity-input-tx" id="cnt" type="text"
+                                                                   value='1'><span>个月</span>
                                                         </div>
-                                                        <button type="button" class="add" onclick="add1()">
+                                                        <button class="add" onclick="add1()" type="button">
                                                             <i class="icon-add"></i>
                                                         </button>
                                                         <script>
                                                             var time = 1;
+
                                                             function add1() {
                                                                 var cntElement = document.getElementById('cnt');
                                                                 var currentValue = parseInt(cntElement.getAttribute('value'));
@@ -531,7 +542,7 @@
                                                                 var newprice = (currentValue + 1) * 20;
                                                                 price.textContent = newprice
 
-                                                                if(currentValue  === 1){
+                                                                if (currentValue === 1) {
                                                                     document.getElementById('reducebtn').removeAttribute('disabled')
                                                                 }
                                                             };
@@ -548,8 +559,8 @@
                                                                 var newprice = (currentValue - 1) * 20;
                                                                 price.textContent = newprice
 
-                                                                if(currentValue === 2){
-                                                                    document.getElementById('reducebtn').setAttribute('disabled','')
+                                                                if (currentValue === 2) {
+                                                                    document.getElementById('reducebtn').setAttribute('disabled', '')
                                                                 }
                                                             }
                                                         </script>
@@ -621,16 +632,16 @@
                                         function reload() {
                                             const url = '/sdktimeadd?time=' + time.toString()
                                             axios.get(url)
-                                            .then(res => {
-                                                console.log(res)
-                                                document.getElementById('initial').style.display = 'block'
-                                                document.getElementById('addsdktime').style.display = 'none'
-                                                axios.get("/personalcenter")
-                                                window.location.href='/personalcenter'
-                                            })
-                                            .catch(err => {
-                                                console.error('axios请求错误' + err)
-                                            })
+                                                .then(res => {
+                                                    console.log(res)
+                                                    document.getElementById('initial').style.display = 'block'
+                                                    document.getElementById('addsdktime').style.display = 'none'
+                                                    axios.get("/personalcenter")
+                                                    window.location.href = '/personalcenter'
+                                                })
+                                                .catch(err => {
+                                                    console.error('axios请求错误' + err)
+                                                })
                                         }
                                     </script>
                                 </div>
@@ -669,5 +680,11 @@
 <script src="../static/js/Chart.min.js"></script>
 <script src="../static/js/dashboard.js"></script>
 <script src="../static/js/nav-footer_loader.js"></script>
+<script>
+    async function logout() {
+        let logoutDom = document.getElementById('logout');
+        logoutDom.click()
+    }
+</script>
 </body>
 </html>
