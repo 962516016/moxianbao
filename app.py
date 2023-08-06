@@ -243,7 +243,7 @@ def query_sdk_username(sdk):
 def query_pre_data(turbid, year, month, day, hour, length):
     connection = pool.get_connection()
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
-    previous_date = current_date - timedelta(hours=int(length))
+    previous_date = current_date - timedelta(days=int(length))
     current_date = current_date.strftime("%y-%m-%d %H:%M")
     previous_date = previous_date.strftime("%y-%m-%d %H:%M")
     cursor = connection.cursor()
