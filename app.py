@@ -438,6 +438,7 @@ def addUser(username, password):
 
 # 验证用户名密码
 def verify_user(username, password):
+    print('->',username,password)
     if username == '':
         return False
     connection = pool.get_connection()
@@ -482,13 +483,18 @@ def getsdk():
     sql = "SELECT sdk,time FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
-    if result is not None:
+    print('->>>',result)
+
+    if result[0] is not None:
         session['sdk'] = result[0]
-        session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
-        print('当前密钥到期时间为', session['sdktime'])
     else:
         if 'sdk' in session:
             del session['sdk']
+
+    if result[1] is not None:
+        session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
+        print('当前密钥到期时间为', session['sdktime'])
+
     cursor.close()
     connection.close()
     return session.get('sdk')
@@ -573,6 +579,7 @@ def login_verify():
         # redirect('/login')
         return render_template('login.html', error=error, username=username)
     else:
+        print('error')
         error = '用户名或密码错误'
         # redirect('/login')
         return render_template('login.html', error=error, username=username)
