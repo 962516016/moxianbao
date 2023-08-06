@@ -35,10 +35,40 @@ api_list = {
 }
 # _________________________________________________________________________数据库连接_________________________________________________________________________
 # 创建 pymysqlpool 连接池
-pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=1, **DB_CONFIG)
+pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=5, **DB_CONFIG)
 
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
+
+
+# 对两个csv文件进行训练和预测
+def train(path1, path2):
+    df1 = pd.read_csv(path1)
+    df2 = pd.read_csv(path2)
+
+    # 预测YD15
+    X_train1 = df1[["WINDSPEED"]]
+    y_train1 = df1[["YD15"]]
+    X_test1 = df2[["WINDSPEED"]]
+    # gbm
+    x_train, x_test, y_train, y_test = train_test_split(X_train1, y_train1, test_size=0.2)
+    gbm1 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
+    gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
+                    callbacks=[early_stopping(stopping_rounds=1000)])
+    y_pred15 = gbm1.predict(X_test1)
+    output1 = y_pred15
+    # 预测POWER
+    X_train2 = df1[["WINDSPEED"]]
+    y_train2 = df1[["ROUND(A.POWER,0)"]]
+    X_test2 = df2[["WINDSPEED"]]
+    # gbm
+    x_train, x_test, y_train, y_test = train_test_split(X_train2, y_train2, test_size=0.2)
+    gbm2 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
+    gbm2 = gbm2.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
+                    callbacks=[early_stopping(stopping_rounds=1000)])
+    POWER = gbm2.predict(X_test2)
+    output2 = POWER
+    return [output1.tolist(), output2.tolist()]
 
 
 # 对一个数据集进行预测功率
@@ -130,6 +160,53 @@ def get_file_paths(directory):
 
 # _________________________________________________________________________数据库SQL语句_________________________________________________________________________
 
+# 查询供电量
+def querypowersupply(id):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "select month,value from powersupply where TurbID = '%s';" % id
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    result_list = [[], []]
+    for item in result:
+        for i in range(2):
+            result_list[i].append(item[i])
+    return result_list
+
+# 查询某个id的供发电功率及预测
+def queryiddata(id):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' LIMIT 300;" % id
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    result_list = [[], [], [], [], []]
+    for item in result:
+        for i in range(5):
+            result_list[i].append(item[i])
+    return result_list
+
+
+def queryonedatabyidandtime(id, year, month, day, hour, minute):
+    connection = pool.get_connection()
+    cursor = connection.cursor()
+    sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' and year = '%s' and month = '%s' and day = '%s' and hour = '%s' and minute = '%s';" % (
+    id, year, month, day, hour, minute)
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    result_list = [[], [], [], [], []]
+    for item in result:
+        for i in range(5):
+            result_list[i].append(item[i])
+    return result_list
+
+
 # 给密钥到期时间增加time个月份
 def addsdktimemonth(username, time):
     connection = pool.get_connection()
@@ -139,10 +216,13 @@ def addsdktimemonth(username, time):
     cursor.execute(sql)
     connection.commit()
     flg = cursor.rowcount
+    cursor.close()
+    connection.close()
     if flg == 1:
         return True
     else:
         return False
+
 
 # 查询密钥对应的用户名
 def query_sdk_username(sdk):
@@ -152,6 +232,8 @@ def query_sdk_username(sdk):
     cursor.execute(sql)
     res = cursor.fetchall()
     print(res[0][0])
+    cursor.close()
+    connection.close()
     if res:
         return res[0]
     return 'false'
@@ -166,7 +248,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
     previous_date = previous_date.strftime("%y-%m-%d %H:%M")
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
-    sql = "SELECT DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
+    sql = "SELECT DATATIME,WINDSPEED,WINDSPEED2,ACTUAL,YD15 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
           "'%%Y-%%m-%%d %%H:%%i') >= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d " \
           "%%H:%%i') <= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i')"
     cursor.execute(sql, (turbid, previous_date, current_date))
@@ -177,10 +259,52 @@ def query_pre_data(turbid, year, month, day, hour, length):
         for i in range(5):
             result_list[i].append(item[i])
     # 关闭连接
+    cursor.close()
     connection.close()
+    df = pd.DataFrame({
+        'DATATIME': result_list[0],
+        'WINDSPEED': result_list[1],
+        'WINDSPEED2': result_list[2],
+        'ROUND(A.POWER,0)': result_list[3],
+        'YD15': result_list[4],
+    })
+    path = 'userdata/%s/train.csv' % session.get('username')
+    df.to_csv(path, index=False)
+    return [result_list[0], result_list[3], result_list[4]]
+
+
+def query_preinput_data(turbid, year, month, day, hour, length):
+    connection = pool.get_connection()
+    current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
+    following_date = current_date + timedelta(hours=int(length))
+    current_date = current_date.strftime("%y-%m-%d %H:%M")
+    following_date = following_date.strftime("%y-%m-%d %H:%M")
+    cursor = connection.cursor()
+    # 使用 SQL 查询语句从数据库中获取满足条件的数据
+    sql = "SELECT DATATIME,WINDSPEED,WINDSPEED2 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
+          "'%%Y-%%m-%%d %%H:%%i') > STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d " \
+          "%%H:%%i') <= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i')"
+    cursor.execute(sql, (turbid, current_date, following_date))
+    # 获取查询结果
+    result = cursor.fetchall()
+    result_list = [[], [], []]
+    for item in result:
+        for i in range(3):
+            result_list[i].append(item[i])
+    df = pd.DataFrame({
+        'DATATIME': result_list[0],
+        'WINDSPEED': result_list[1],
+        'WINDSPEED2': result_list[2],
+    })
+
+    path = 'userdata/%s/predict.csv' % session.get('username')
+    df.to_csv(path, index=False)
+    # 关闭连接
     cursor.close()
-    cursor.close()
-    return result
+    connection.close()
+    if result:
+        return True
+    return False
 
 
 # 验证用户名密码
@@ -191,8 +315,8 @@ def sqlverifypassword(password):
     sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
     cursor.execute(sql, (username, password))
     result = cursor.fetchall()
-    connection.close()
     cursor.close()
+    connection.close()
     if result:
         return True
     else:
@@ -209,8 +333,8 @@ def sqlchangepassword(password):
     flg = cursor.rowcount
     print(flg)
     connection.commit()
-    connection.close()
     cursor.close()
+    connection.close()
     if flg == 1:
         return True
     else:
@@ -224,8 +348,8 @@ def query_winddirection_data(turbid):
     sql = "SELECT * FROM winddirection WHERE TurbID=%s"
     cursor.execute(sql, turbid)
     result = cursor.fetchall()
-    connection.close()
     cursor.close()
+    connection.close()
     return result
 
 
@@ -239,8 +363,8 @@ def query_apicount_data(username, api):
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    connection.close()
     cursor.close()
+    connection.close()
     return result
 
 
@@ -264,8 +388,8 @@ def query_timeapicount_data(username, year, month, day):
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    connection.close()
     cursor.close()
+    connection.close()
     apimap = {int(item[0]): item[1] for item in result}
     countlist = []
     for i in range(7):
@@ -286,8 +410,8 @@ def query_apilist_data(username):
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    connection.close()
     cursor.close()
+    connection.close()
     return result
 
 
@@ -299,8 +423,8 @@ def addUser(username, password):
     cursor.execute(sql, (username, password))
     connection.commit()
     flg = cursor.rowcount
-    connection.close()
     cursor.close()
+    connection.close()
     if flg == 1:
         return True
     return False
@@ -319,8 +443,8 @@ def verify_user(username, password):
     # 获取查询结果
     result = cursor.fetchone()
     # 关闭游标和连接
-    connection.close()
     cursor.close()
+    connection.close()
     # 根据查询结果返回验证结果
     if result:
         return True
@@ -337,8 +461,8 @@ def addlog(username, operate_time, api, note=''):
     connection.commit()
     flg = cursor.rowcount
     print(flg)
-    connection.close()
     cursor.close()
+    connection.close()
     if flg == 1:
         return True
     return False
@@ -355,12 +479,12 @@ def getsdk():
     if result is not None:
         session['sdk'] = result[0]
         session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
-        print('当前密钥到期时间为',session['sdktime'])
+        print('当前密钥到期时间为', session['sdktime'])
     else:
         if 'sdk' in session:
             del session['sdk']
-    connection.close()
     cursor.close()
+    connection.close()
     return session.get('sdk')
 
 
@@ -445,7 +569,7 @@ def home():
     return redirect('/login')
 
 
-# 给定一段时间预测接下来一段时间的值（主图）
+# 获取一定时间范围内的数据作为训练数据（主图左）
 @app.route('/predict_value', methods=['GET'])
 def predict_value():
     # 获取前端传递的查询参数
@@ -458,22 +582,39 @@ def predict_value():
 
     # 查询数据库中满足条件的数据
     data = query_pre_data(turbid, year, month, day, hour, length)
-    # print(data)
-    result_list_datatime = [item[0] for item in data]
-    result_list_actualpower = [float(item[1]) for item in data]
-    result_list_preactual = [float(item[2]) for item in data]
-    result_list_yd15 = [float(item[3]) for item in data]
-    result_list_preyd15 = [float(item[4]) for item in data]
-    # print(result_list)
+    print(data[0])
     # 将查询结果处理为 JSON 格式
     result = jsonify({
-        "DATETIME": result_list_datatime,
-        "ROUND(A.POWER,0)": result_list_actualpower,
-        "PRE_ROUND(A.POWER,0)": result_list_preactual,
-        "YD15": result_list_yd15,
-        "PRE_YD15": result_list_preyd15
+        "DATETIME": data[0],
+        "ROUND(A.POWER,0)": data[1],
+        "YD15": data[2],
     })
     return result
+
+
+@app.route('/train_predict', methods=['GET'])
+def train_predict():
+    # 获取前端传递的查询参数
+    turbid = request.args.get('turbid')
+    year = request.args.get('year')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    hour = request.args.get('hour')
+    length = request.args.get('length')
+
+    flg = query_preinput_data(turbid, year, month, day, hour, length)
+
+    if flg:
+        path = "userdata/%s/" % session.get('username')
+        path1 = path + 'train.csv'
+        path2 = path + 'predict.csv'
+        res_list = train(path1, path2)
+        return jsonify({
+            "PREYD15": res_list[0],
+            "PREACTUAL": res_list[1]
+        })
+    else:
+        return jsonify({'error': 'error'})
 
 
 # 获取风向数据（风向玫瑰图）
@@ -508,6 +649,51 @@ def visual():
     username = session.get('username')
     return render_template('visual.html', username=username)
 
+
+# 根据id读取供发电功率及预测功率
+@app.route('/getiddata', methods=['GET'])
+def getiddata():
+    id = request.args.get('id')
+    list = queryiddata(id)
+    print('test', list[0][0])
+    return jsonify({
+        'DATATIME': list[0],
+        'ACTUAL': list[1],
+        'PREACTUAL': list[2],
+        'YD15': list[3],
+        'PREYD15': list[4]
+    })
+
+
+# 根据id和日期读取供发电功率及预测功率
+@app.route('/queryonedatabyidandtime', methods=['GET'])
+def getonedatabyidandtime():
+    id = request.args.get('id')
+    year = request.args.get('year')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    hour = request.args.get('hour')
+    minute = request.args.get('minute')
+    list = queryonedatabyidandtime(id, year, month, day, hour, minute)
+    return jsonify({
+        'DATATIME': list[0][0],
+        'ACTUAL': list[1][0],
+        'PREACTUAL': list[2][0],
+        'YD15': list[3][0],
+        'PREYD15': list[4][0]
+    })
+
+# 根据id获取不同月份的供电量
+@app.route('/querypowersupply', methods=['GET'])
+def getpowersupply():
+    id = request.args.get('id')
+    print('__________>>',id)
+    list = querypowersupply(id)
+    print(list)
+    return jsonify({
+        'month': list[0],
+        'values': list[1],
+    })
 
 # _________________________________________________________________________在线预测_______________________________________________________________________
 
@@ -1002,26 +1188,29 @@ def changepassword():
     else:
         return '修改失败，请重试'
 
+
 # 弹出续费界面
 @app.route('/addsdktime')
 def addsdktime():
     username = session.get('username')
     return render_template('addsdktime.html', username=username)
 
+
 # 将续费时长添加
 @app.route('/sdktimeadd', methods=['GET'])
 def sdktimeadd():
     time = request.args.get('time')
-    print('月份数',time)
+    print('月份数', time)
     username = session.get('username')
     flg = addsdktimemonth(username, time)
     if flg:
         getsdk()
         return jsonify({
-        "result": 'success'})
+            "result": 'success'})
     else:
         return jsonify({
             "result": 'failed'})
+
 
 # 更换头像
 @app.route('/changetx', methods=['POST'])

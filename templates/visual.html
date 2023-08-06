@@ -6,10 +6,26 @@
     <title>风电数据综合分析展示平台</title>
     <link href="../favicon.ico" rel="shortcut icon"/>
     <link href="../static/css/index.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
 <header>
+    <label for="turb-input" style="width: 100%">
+        <span style="font-weight: bold;color: white">请选择风场： </span>
+        <select class="input timeinput" id="turb-input" onchange="visualchange()" style="background-color: #0A133E;color: white;border: none">
+            <option>11</option>
+            <option>12</option>
+            <option selected>13</option>
+            <option>14</option>
+            <option>15</option>
+            <option>16</option>
+            <option>17</option>
+            <option>18</option>
+            <option>19</option>
+            <option>20</option>
+        </select>
+    </label>
     <h1>风 电 数 据 综 合 分 析 展 示 平 台</h1>
 
     <div class="showTime"></div>
@@ -51,8 +67,9 @@
     <div class="column">
         <div class="panel bar">
             <h2>
-                <span id="year">2021</span>年 各月份风场累计供电量
+                <span id="year">2020</span>年 <span id="leftupid">13</span>号风场各月份风场累计供电量
                 <span style="font-size: 10px;display: none">
+                    <a id="2020" href="javascript:;">2020</a>
                     <a id="2021" href="javascript:;">2021</a>
                     <a id="2022" href="javascript:;">2022</a>
                 </span>
@@ -61,12 +78,12 @@
             <div class="panel-footer"></div>
         </div>
         <div class="panel line">
-            <h2>风场 - <span>13</span> <span style="font-weight: bold">发电功率实时预测</span></h2>
+            <h2>风场 - <span id="leftmiddleid">13</span> <span style="font-weight: bold">发电功率实时预测</span></h2>
             <div class="chart"></div>
             <div class="panel-footer"></div>
         </div>
         <div class="panel pie1">
-            <h2>风场 - <span>13</span> <span style="font-weight: bold">风向统计</span></h2>
+            <h2>风场 - <span id="leftdownid">13</span> <span style="font-weight: bold">风向统计</span></h2>
             <div class="chart"></div>
             <div class="panel-footer"></div>
         </div>
@@ -100,7 +117,7 @@
             <div class="panel-footer"></div>
         </div>
         <div class="panel line1">
-            <h2>风场 - <span>13</span> <span style="font-weight: bold">供电功率实时预测</span></h2>
+            <h2>风场 - <span id="rightmiddleid">13</span> <span style="font-weight: bold">供电功率实时预测</span></h2>
             <div class="chart"></div>
             <div class="panel-footer"></div>
         </div>
@@ -111,11 +128,21 @@
         </div>
     </div>
 </section>
+<script>
+    function visualchange(){
+        var id = document.getElementById('turb-input').value;
+        document.getElementById('leftupid').innerText = id
+        document.getElementById('leftdownid').innerText = id
+        document.getElementById('leftmiddleid').innerText = id
+        document.getElementById('rightmiddleid').innerText = id
+    }
+</script>
 <script src="../static/js/flexible.js"></script>
 <script src="../static/js/jquery.js"></script>
 <script src="../static/js/echarts.min.js"></script>
 <script src="../static/js/index.js"></script>
 <script src="../static/js/china.js"></script>
 <script src="../static/js/myMap.js"></script>
+
 </body>
 </html>

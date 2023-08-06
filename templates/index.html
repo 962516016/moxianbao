@@ -77,16 +77,6 @@
                                 <label for="turb-input" style="width: 100%">
                                     <span style="font-weight: bold">请选择风场： </span>
                                     <select class="input timeinput" id="turb-input" onchange="selectChange()">
-<!--                                        <option>1</option>-->
-<!--                                        <option>2</option>-->
-<!--                                        <option>3</option>-->
-<!--                                        <option>4</option>-->
-<!--                                        <option>5</option>-->
-<!--                                        <option>6</option>-->
-<!--                                        <option>7</option>-->
-<!--                                        <option>8</option>-->
-<!--                                        <option>9</option>-->
-<!--                                        <option>10</option>-->
                                         <option>11</option>
                                         <option>12</option>
                                         <option selected>13</option>
@@ -216,29 +206,25 @@
         let hour = timeinput[0];
         let length = lengthinput;// 单位小时
 
-        const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
+        const baseurl1 = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
-        console.log('测试ssy:', baseurl);
 
+
+        const baseurl = '/predict_value?turbid=13&&year=2022&&month=4&&day=30&&hour=0&&length=240'
+        console.log('测试ssy:', baseurl);
         // GET请求
         axios.get(baseurl)
             .then(res => {
                 console.log('测试resdata', res.data)
                 let datetimeline = Object.entries(res.data)[0][1];
-                let pre_roundline = Object.entries(res.data)[1][1];
-                let pre_yd15line = Object.entries(res.data)[2][1];
-                let roundline = Object.entries(res.data)[3][1];
-                let yd15line = Object.entries(res.data)[4][1];
+                let roundline = Object.entries(res.data)[1][1];
+                let yd15line = Object.entries(res.data)[2][1];
 
                 console.log('测试datetimeline', datetimeline)
-                console.log('测试pre_roundline', pre_roundline)
-                console.log('测试pre_yd15line', pre_yd15line)
                 console.log('测试roundline', roundline)
                 console.log('测试yd15line', yd15line)
 
                 datetime = []
-                pre_yd15 = []
-                pre_round = []
                 round = []
                 yd15 = []
 
@@ -246,13 +232,12 @@
                 mx = -10000000000
                 for (let i = 0; i < datetimeline.length; i++) {
                     datetime.push((datetimeline[i]))
-                    pre_round.push(Math.round(pre_roundline[i]))
-                    pre_yd15.push(Math.round(pre_yd15line[i]))
                     round.push(Math.round(roundline[i]))
                     yd15.push(Math.round(yd15line[i]))
-                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
-                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mn = Math.min(mn, roundline[i], yd15line[i])
+                    mx = Math.max(mx, roundline[i], yd15line[i])
                 }
+                mx = mx * 1.5
                 console.log(mn)
                 console.log(mx)
                 var option = {
@@ -267,7 +252,7 @@
                         text: '供、发电功率及其预测数据'
                     },
                     legend: {
-                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
+                        data: ['供电功率', '发电功率'],
                         show: true,
                         top: '6%'
                     },
@@ -304,20 +289,12 @@
                     ],
                     series: [
                         {
-                            name: '供电功率预测',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: round
-                        },
-                        {
                             name: '发电功率',
                             type: 'line',
                             smooth: true,
                             symbol: 'none',
                             //areaStyle: {},
-                            data: pre_round
+                            data: round
                         },
                         {
                             name: '供电功率',
@@ -326,14 +303,6 @@
                             symbol: 'none',
                             //areaStyle: {},
                             data: yd15
-                        },
-                        {
-                            name: '发电功率预测',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: pre_yd15
                         }
                     ]
                 };
@@ -342,7 +311,6 @@
                 window.onresize = function () {
                     myChart.resize();
                 }
-
             })
             .catch(err => {
                 console.error('axios请求错误' + err)
