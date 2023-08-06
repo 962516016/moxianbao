@@ -68,78 +68,162 @@
         <!--        登录才给全功能-->
         <div class="main-panel">
             <div class="content-wrapper">
-                <!--                选择器按钮部分-->
-                <div class="row">
-                    <!--                    正在设计功能-日期选择器-datepicker-->
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="input-container form-control input-box" id="input-group">
-                                <label for="turb-input" style="width: 100%">
-                                    <span style="font-weight: bold">请选择风场： </span>
-                                    <select class="input timeinput" id="turb-input" onchange="selectChange()">
-                                        <!--                                        <option>1</option>-->
-                                        <!--                                        <option>2</option>-->
-                                        <!--                                        <option>3</option>-->
-                                        <!--                                        <option>4</option>-->
-                                        <!--                                        <option>5</option>-->
-                                        <!--                                        <option>6</option>-->
-                                        <!--                                        <option>7</option>-->
-                                        <!--                                        <option>8</option>-->
-                                        <!--                                        <option>9</option>-->
-                                        <!--                                        <option>10</option>-->
-                                        <option>11</option>
-                                        <option>12</option>
-                                        <option selected>13</option>
-                                        <option>14</option>
-                                        <option>15</option>
-                                        <option>16</option>
-                                        <option>17</option>
-                                        <option>18</option>
-                                        <option>19</option>
-                                        <option>20</option>
-                                    </select>
-                                </label>
-                                <label for="time-input" style="width: 100%">
-                                    <span style="font-weight: bold">请选择时间： </span>
-                                    <input class="input timeinput"
-                                           id="time-input"
-                                           max="2024-06-14T00:00"
-                                           min="2018-06-07T00:00"
-                                           name="meeting-time"
-                                           oninput="selectChange();"
-                                           onporpertychange="getValue();"
-                                           style="margin-right: 2rem"
-                                           type="datetime-local"
-                                           value="2021-11-26T06:00"
-                                    >
-                                </label>
-                                <label for="length-input" style="width: 100%">
-                                    <span style="font-weight: bold">请选择时长： </span>
-                                    <input class="input lengthinput"
-                                           id="length-input"
-                                           max="24"
-                                           min="5"
-                                           name="length-input"
-                                           oninput="selectChange();"
-                                           onporpertychange="getValue();"
-                                           type="range"
-                                           value="12"
-                                    >
-                                    <span>小时</span>
-                                </label>
+                <div class="card">
+                    <div class="card-body">
+                        <!--                选择器按钮部分-->
+                        <div class="row flex-grow w-100 d-flex js justify-content-center align-content-center d-flex">
+                            <!--                    正在设计功能-日期选择器-datepicker-->
+                            <div class="col-8 justify-content-center align-content-end d-flex"
+                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                <div class="col-10 justify-content-center align-content-center d-flex">
+                                    <div class="input-container form-control input-box m-auto" id="input-group">
+                                        <div class="row mx-1">
+                                            <div class="col-xl-2 mb-sm-2 d-flex align-items-center justify-content-center"
+                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                <label for="turb-input" style="width: 100%" class="mb-0">
+                                                    <div class="row- flex-lg-grow d-flex justify-content-center align-items-center">
+                                                        <span style="font-weight: bold">请选择风场</span>
+                                                    </div>
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <select class="input timeinput" id="turb-input"
+                                                                onchange="selectChange()">
+                                                            <!--                                        <option>1</option>-->
+                                                            <!--                                        <option>2</option>-->
+                                                            <!--                                        <option>3</option>-->
+                                                            <!--                                        <option>4</option>-->
+                                                            <!--                                        <option>5</option>-->
+                                                            <!--                                        <option>6</option>-->
+                                                            <!--                                        <option>7</option>-->
+                                                            <!--                                        <option>8</option>-->
+                                                            <!--                                        <option>9</option>-->
+                                                            <!--                                        <option>10</option>-->
+                                                            <option>11</option>
+                                                            <option>12</option>
+                                                            <option selected>13</option>
+                                                            <option>14</option>
+                                                            <option>15</option>
+                                                            <option>16</option>
+                                                            <option>17</option>
+                                                            <option>18</option>
+                                                            <option>19</option>
+                                                            <option>20</option>
+                                                        </select>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-xl-4 mb-sm-2 d-flex align-items-center justify-content-center"
+                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                <label for="time-input" style="width: 100%" class="mb-0">
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <span style="font-weight: bold">请选择结束时间</span>
+                                                    </div>
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <input class="input timeinput"
+                                                               id="time-input"
+                                                               max="2024-06-14T00:00"
+                                                               min="2018-06-07T00:00"
+                                                               name="meeting-time"
+                                                               oninput="selectChange();"
+                                                               onporpertychange="getValue();"
+                                                               type="datetime-local"
+                                                               value="2021-11-26T06:00"
+                                                        >
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-xl-4 mb-sm-2 d-flex align-items-center justify-content-center"
+                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                <label for="length-input" style="width: 100%" class="mb-0">
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <span style="font-weight: bold">请选择数据时长 - </span><span
+                                                            id="len">12</span><span>小时</span>
+                                                    </div>
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <input class="input lengthinput"
+                                                               id="length-input"
+                                                               max="24"
+                                                               min="5"
+                                                               name="length-input"
+                                                               oninput="selectChange();"
+                                                               onporpertychange="selectChange();"
+                                                               type="range"
+                                                               value="12"
+                                                        >
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-xl-2 mb-sm-2 d-flex align-items-center justify-content-center"
+                                                 style="padding-right: 0!important;padding-left: 0!important;" >
+                                                <button class="btn btn-sm btn-outline-secondary text-center m-auto"
+                                                        id="changepwdBtn"
+                                                        onclick="verifypwd()"
+                                                        style="text-align: center; margin: 0"
+                                                >预览数据
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                    正在设计功能-日期选择器-datepicker-->
+                            <div class="col-4 justify-content-center align-items-end d-flex"
+                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                <div class="col-10 align-items-end justify-content-sm-end d-flex"
+                                    style="padding-left: 0!important;">
+                                    <div class="input-container form-control input-box m-auto" id="input-group2">
+                                        <div class="row mx-1">
+                                            <div class="col-xl-9 mb-sm-2 d-flex align-items-center justify-content-center"
+                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                <label for="length2-input" style="width: 100%;" class="mb-0">
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <span style="font-weight: bold">请选择预测时长 - </span>
+                                                        <span id="len2">12</span><span>小时</span>
+                                                    </div>
+                                                    <div class="row flex-grow d-flex justify-content-center align-items-center">
+                                                        <input class="input lengthinput"
+                                                               id="length2-input"
+                                                               max="24"
+                                                               min="5"
+                                                               name="length-input"
+                                                               oninput="selectChange();"
+                                                               onporpertychange="getValue();"
+                                                               type="range"
+                                                               value="12"
+                                                        >
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-xl-3 mb-sm-2 d-flex align-items-center justify-content-end"
+                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                <button class="btn btn-sm btn-outline-secondary text-center m-auto"
+                                                        id="changepwdBtn2"
+                                                        onclick="verifypwd()"
+                                                        style="text-align: center; margin: 0"
+                                                >预测
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!--                    占位撑起空间-->
-                    <div class="col-sm-8" style="visibility: hidden">
-                    </div>
-                </div>
-                <!--                主图表区域-->
-                <div class="row" style="margin-top: 10px">
-                    <div class="col-lg-12 d-flex grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body" id="main-container">
-                                <div id="main" style="width: 100%;height:500px;"></div>
+
+                        <!--                主图表区域-->
+                        <div class="row flex-grow w-100" style="margin-top: 10px">
+                            <div class="col-8 d-flex grid-margin stretch-card pr-0">
+                                <div class="card pr-0">
+                                    <div class="card-body pr-0" id="main-container">
+                                        <div id="main" style="width: 100%;height:500px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 d-flex grid-margin stretch-card mx-0"
+                                 style="padding-left: 0!important;">
+                                <div class="card">
+                                    <div class="card-body" id="main-container2">
+                                        <div id="main2" style="width: 100%;height:500px;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,20 +243,23 @@
                     <div class="col-xl-7 d-flex grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-flex d3chart" id="3dchart" style="width: 100%;height: 400px">
+                                <div class="d-flex d3chart" id="3dchart"
+                                     style="width: 100%;height: 400px">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html 页脚 -->
             <div id="footer-placeholder">
 
             </div>
-            <!-- partial -->
         </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html 页脚 -->
+
+        <!-- partial -->
+
         {% else %}
         <!--        没登录啥都不显示-->
         <div class="main-panel">
@@ -185,8 +272,9 @@
         {% endif %}
         <!-- main-panel ends -->
     </div>
+</div>
 
-    <!-- page-body-wrapper ends -->
+<!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->
 <!-- base:js -->
@@ -198,6 +286,27 @@
 <script src="../static/js/nav-footer_loader.js"></script>
 <script src="../static/js/index-update.js"></script>
 <script>
+
+    async function bondLength() {
+        const rangeInput = document.getElementById('length-input');
+        const rangeInput2 = document.getElementById('length2-input');
+        const rangeOutput = document.getElementById('len');
+        const rangeOutput2 = document.getElementById('len2');
+        // 监听 input 事件
+        rangeInput.addEventListener('input', function () {
+            // 将 range input 的值更新到 div 元素中
+            rangeOutput.textContent = rangeInput.value;
+        });
+        // 监听 input 事件
+        rangeInput2.addEventListener('input', function () {
+            // 将 range input 的值更新到 div 元素中
+            rangeOutput2.textContent = rangeInput2.value;
+        });
+    }
+
+    bondLength()
+
+
     async function main() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
@@ -236,14 +345,14 @@
                 console.log('测试roundline', roundline)
                 console.log('测试yd15line', yd15line)
 
-                datetime = []
-                pre_yd15 = []
-                pre_round = []
-                round = []
-                yd15 = []
+                let datetime = []
+                let pre_yd15 = []
+                let pre_round = []
+                let round = []
+                let yd15 = []
 
-                mn = 10000000000
-                mx = -10000000000
+                let mn = 10000000000
+                let mx = -10000000000
                 for (let i = 0; i < datetimeline.length; i++) {
                     datetime.push((datetimeline[i]))
                     pre_round.push(Math.round(pre_roundline[i]))
@@ -259,16 +368,17 @@
                     tooltip: {
                         trigger: 'axis',
                         position: function (pt) {
-                            return [pt[0], '10%'];
+                            return [pt[0], pt[1]];
                         }
                     },
                     title: {
                         left: 'left',
-                        text: '供、发电功率及其预测数据'
+                        text: '供、发电功率及其预测数据',
                     },
                     legend: {
                         data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测',],
                         show: true,
+                        itemHeight: 20,
                         top: '6%'
                     },
                     toolbox: {
@@ -281,12 +391,14 @@
                         }
                     },
                     xAxis: {
+                        position: 'left',
                         type: 'category',
                         boundaryGap: false,
                         data: datetime
                     },
                     yAxis: {
-                        min: -1500,
+                        position: 'left',
+                        min: mn,
                         max: mx,
                         type: 'value',
                         boundaryGap: [0, '100%']
