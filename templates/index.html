@@ -13,6 +13,7 @@
     <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
     <!-- endinject -->
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../static/js/jquery.js"></script>
     <script src="../static/js/echarts.js"></script>
@@ -473,9 +474,11 @@
         axios.get(baseurl)
             .then(res => {
                 console.log('测试resdata2', res.data)
-                let datetimeline = Object.entries(res.data)[0][1];
-                let pre_roundline = Object.entries(res.data)[1][1];
-                let pre_yd15line = Object.entries(res.data)[2][1];
+                let datetimeline = Object.entries(res.data)[1][1];
+                let pre_roundline = Object.entries(res.data)[2][1];
+                let pre_yd15line = Object.entries(res.data)[3][1];
+                let roundline = Object.entries(res.data)[0][1];
+                let yd15line = Object.entries(res.data)[4][1];
 
                 console.log('测试datetimeline2', datetimeline)
                 console.log('测试pre_roundline2', pre_roundline)
@@ -484,6 +487,9 @@
                 let datetime = []
                 let pre_yd15 = []
                 let pre_round = []
+                let yd15 = []
+                let round = []
+
 
                 let mn = 10000000000
                 let mx = -10000000000
@@ -491,8 +497,10 @@
                     datetime.push((datetimeline[i]))
                     pre_round.push(Math.round(pre_roundline[i]))
                     pre_yd15.push(Math.round(pre_yd15line[i]))
-                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i])
-                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i])
+                    round.push(Math.round(roundline[i]))
+                    yd15.push(Math.round(yd15line[i]))
+                    mn = Math.min(mn, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
+                    mx = Math.max(mx, pre_roundline[i], pre_yd15line[i], roundline[i], yd15line[i])
                 }
                 console.log('2',mn)
                 console.log('2',mx)
@@ -508,7 +516,7 @@
                         text: '供、发电功率预测数据',
                     },
                     legend: {
-                        data: ['供电功率预测', '发电功率预测',],
+                        data: ['供电功率预测', '发电功率预测', '供电功率', '发电功率'],
                         show: true,
                         itemHeight: 20,
                         top: '6%'
@@ -552,6 +560,14 @@
                     ],
                     series: [
                         {
+                            name: '供电功率预测',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: pre_yd15
+                        },
+                        {
                             name: '发电功率预测',
                             type: 'line',
                             smooth: true,
@@ -560,12 +576,20 @@
                             data: pre_round
                         },
                         {
-                            name: '供电功率预测',
+                            name: '供电功率',
                             type: 'line',
                             smooth: true,
                             symbol: 'none',
                             //areaStyle: {},
-                            data: pre_yd15
+                            data: yd15
+                        },
+                        {
+                            name: '发电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: round
                         }
                     ]
                 };

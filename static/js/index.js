@@ -399,7 +399,6 @@ function preLeftdown(id) {
                 // 让我们的图表调用 resize这个方法
                 myChart.resize();
             });
-
         }).catch(err => {
         console.error('axios请求错误' + err)
     });
@@ -425,7 +424,33 @@ async function update() {
 
     var nowid = document.getElementById('turb-input').value;
 
-    if (nowid === id) {
+    if (nowid !== id) {
+        //图重画
+        id = nowid;
+        preLeftdown(id);
+        preLeftup(id);
+
+        await fetch('/getiddata?id=' + id)
+            .then(res => res.json())
+            .then(res => {
+                console.log('更换id', res)
+                Data.datetime = res.DATATIME
+                Data.actual = res.ACTUAL
+                Data.pre_actual = res.PREACTUAL
+                Data.yd15 = res.YD15
+                Data.pre_yd15 = res.PREYD15
+
+                datetime = Data.datetime.slice(0, N);
+                actual = Data.actual.slice(0, N);
+                pre_actual = Data.pre_actual.slice(0, N);
+                yd15 = Data.yd15.slice(0, N);
+                pre_yd15 = Data.pre_yd15.slice(0, N);
+
+
+            }).catch(err => {
+                console.error('axios请求错误' + err)
+            })
+    } else {
         const lasttime = datetime[N - 1]
         let nowdate = new Date(lasttime);
         // 获取当前时间的毫秒数
@@ -441,54 +466,40 @@ async function update() {
         hour = nowdate.getHours();
         minute = nowdate.getMinutes();
 
-    } else {
-        //图重画
-        id = nowid;
-        preLeftdown(id);
-        preLeftup(id);
-        nowtime = firstdate[parseInt(id) - 11];
-        let nowdate = new Date(nowtime);
-        // 获取年月日时分
-        year = nowdate.getFullYear();
-        month = nowdate.getMonth() + 1;
-        day = nowdate.getDate();
-        hour = nowdate.getHours();
-        minute = nowdate.getMinutes();
+
+        const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
+        console.log(url)
+        await fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                // console.log(res)
+                newoneDATATIME = res.DATATIME
+                newoneACTUAL = res.ACTUAL
+                newonePREACTUAL = res.PREACTUAL
+                newoneYD15 = res.YD15
+                newonePREYD15 = res.PREYD15
+                // console.log('newone', newoneDATATIME)
+
+            }).catch(err => {
+                console.error('axios请求错误' + err)
+            });
+
+
+        datetime = datetime.slice(1, N)
+        datetime.push(newoneDATATIME)
+
+        actual = actual.slice(1, N)
+        actual.push(newoneACTUAL)
+
+        pre_actual = pre_actual.slice(1, N)
+        pre_actual.push(newonePREACTUAL)
+
+        yd15 = yd15.slice(1, N)
+        yd15.push(newoneYD15)
+
+        pre_yd15 = pre_yd15.slice(1, N)
+        pre_yd15.push(newonePREYD15)
     }
-
-
-    const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
-    console.log(url)
-    await fetch(url)
-        .then(res => res.json())
-        .then(res => {
-            // console.log(res)
-            newoneDATATIME = res.DATATIME
-            newoneACTUAL = res.ACTUAL
-            newonePREACTUAL = res.PREACTUAL
-            newoneYD15 = res.YD15
-            newonePREYD15 = res.PREYD15
-            // console.log('newone', newoneDATATIME)
-
-        }).catch(err => {
-            console.error('axios请求错误' + err)
-        });
-
-
-    datetime = datetime.slice(1, N)
-    datetime.push(newoneDATATIME)
-
-    actual = actual.slice(1, N)
-    actual.push(newoneACTUAL)
-
-    pre_actual = pre_actual.slice(1, N)
-    pre_actual.push(newonePREACTUAL)
-
-    yd15 = yd15.slice(1, N)
-    yd15.push(newoneYD15)
-
-    pre_yd15 = pre_yd15.slice(1, N)
-    pre_yd15.push(newonePREYD15)
 
 
 // 2. 指定配置和数据

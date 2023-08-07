@@ -50,31 +50,44 @@ def train(path1, path2):
     df1 = pd.read_csv(path1)
     df2 = pd.read_csv(path2)
 
-    datatimelist = df2[['DATATIME']].values
+    datatimelist = df2['DATATIME'].values
 
     # 预测YD15
-    X_train1 = df1[["WINDSPEED"]]
+    X_train1 = df1[["WINDSPEED", "WINDSPEED2"]]
     y_train1 = df1[["YD15"]]
-    X_test1 = df2[["WINDSPEED"]]
+    X_test1 = df2[["WINDSPEED", "WINDSPEED2"]]
     # gbm
     x_train, x_test, y_train, y_test = train_test_split(X_train1, y_train1, test_size=0.2)
     gbm1 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
     gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
                     callbacks=[early_stopping(stopping_rounds=1000)])
     y_pred15 = gbm1.predict(X_test1)
-    output1 = y_pred15
+    print('y_pred15', y_pred15*0.9)
+    print(df2['PREYD15'].values * 0.1)
+    output1 = df2['PREYD15'].values * 0.85 + y_pred15 * 0.15
+
     # 预测POWER
-    X_train2 = df1[["WINDSPEED"]]
+    X_train2 = df1[["WINDSPEED", "WINDSPEED2"]]
     y_train2 = df1[["ROUND(A.POWER,0)"]]
-    X_test2 = df2[["WINDSPEED"]]
+    X_test2 = df2[["WINDSPEED", "WINDSPEED2"]]
     # gbm
     x_train, x_test, y_train, y_test = train_test_split(X_train2, y_train2, test_size=0.2)
     gbm2 = LGBMRegressor(objective="regression", learning_rate=0.005, n_estimators=1000, n_jobs=-1)
     gbm2 = gbm2.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
                     callbacks=[early_stopping(stopping_rounds=1000)])
     POWER = gbm2.predict(X_test2)
-    output2 = POWER
-    return [datatimelist.tolist(), output1.tolist(), output2.tolist()]
+
+    output2 = POWER * 0.15 + df2['PREACTUAL'].values * 0.85
+
+    print('-------我看看怎么事--------')
+    print(datatimelist.tolist())
+    print(output1.tolist())
+    print(output2.tolist())
+    print(df2['YD15'].values.tolist())
+    print(df2['ACTUAL'].values.tolist())
+
+    return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
+            df2['ACTUAL'].values.tolist()]
 
 
 # 对一个数据集进行预测功率
@@ -181,11 +194,12 @@ def querypowersupply(id):
             result_list[i].append(item[i])
     return result_list
 
+
 # 查询某个id的供发电功率及预测
 def queryiddata(id):
     connection = pool.get_connection()
     cursor = connection.cursor()
-    sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' LIMIT 300;" % id
+    sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' LIMIT 96;" % id
     cursor.execute(sql)
     result = cursor.fetchall()
     cursor.close()
@@ -201,7 +215,7 @@ def queryonedatabyidandtime(id, year, month, day, hour, minute):
     connection = pool.get_connection()
     cursor = connection.cursor()
     sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' and year = '%s' and month = '%s' and day = '%s' and hour = '%s' and minute = '%s';" % (
-    id, year, month, day, hour, minute)
+        id, year, month, day, hour, minute)
     cursor.execute(sql)
     result = cursor.fetchall()
     cursor.close()
@@ -287,20 +301,24 @@ def query_preinput_data(turbid, year, month, day, hour, length):
     following_date = following_date.strftime("%y-%m-%d %H:%M")
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
-    sql = "SELECT DATATIME,WINDSPEED,WINDSPEED2 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
+    sql = "SELECT DATATIME,WINDSPEED,WINDSPEED2,ACTUAL,PREACTUAL,YD15,PREYD15 FROM datatmp WHERE TurbID=%s AND STR_TO_DATE(DATATIME, " \
           "'%%Y-%%m-%%d %%H:%%i') > STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i') AND STR_TO_DATE(DATATIME, '%%Y-%%m-%%d " \
           "%%H:%%i') <= STR_TO_DATE(%s, '%%Y-%%m-%%d %%H:%%i')"
     cursor.execute(sql, (turbid, current_date, following_date))
     # 获取查询结果
     result = cursor.fetchall()
-    result_list = [[], [], []]
+    result_list = [[], [], [], [], [], [], []]
     for item in result:
-        for i in range(3):
+        for i in range(7):
             result_list[i].append(item[i])
     df = pd.DataFrame({
         'DATATIME': result_list[0],
         'WINDSPEED': result_list[1],
         'WINDSPEED2': result_list[2],
+        'ACTUAL': result_list[3],
+        'PREACTUAL': result_list[4],
+        'YD15': result_list[5],
+        'PREYD15': result_list[6]
     })
 
     path = 'userdata/%s/predict.csv' % session.get('username')
@@ -438,7 +456,7 @@ def addUser(username, password):
 
 # 验证用户名密码
 def verify_user(username, password):
-    print('->',username,password)
+    print('->', username, password)
     if username == '':
         return False
     connection = pool.get_connection()
@@ -483,7 +501,7 @@ def getsdk():
     sql = "SELECT sdk,time FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
-    print('->>>',result)
+    print('->>>', result)
 
     if result[0] is not None:
         session['sdk'] = result[0]
@@ -502,7 +520,8 @@ def getsdk():
 
 # _________________________________________________________________________注册登录退出_______________________________________________________________________
 
-pathNoneCheckList = ['/index', '/visual', '/predict', '/offline', '/api', '/admin', '/log_admin', '/personalcenter', '/log']
+pathNoneCheckList = ['/index', '/visual', '/predict', '/offline', '/api', '/admin', '/log_admin', '/personalcenter',
+                     '/log']
 
 
 # 路由安全性过滤与检查
@@ -633,10 +652,13 @@ def train_predict():
         path1 = path + 'train.csv'
         path2 = path + 'predict.csv'
         res_list = train(path1, path2)
+        print('__', res_list)
         return jsonify({
             "DATATIME": res_list[0],
             "PREYD15": res_list[1],
-            "PREACTUAL": res_list[2]
+            "PREACTUAL": res_list[2],
+            'YD15': res_list[3],
+            "ACTUAL": res_list[4]
         })
     else:
         return jsonify({'error': 'error'})
@@ -706,17 +728,19 @@ def getonedatabyidandtime():
         'PREYD15': list[4][0]
     })
 
+
 # 根据id获取不同月份的供电量
 @app.route('/querypowersupply', methods=['GET'])
 def getpowersupply():
     id = request.args.get('id')
-    print('__________>>',id)
+    print('__________>>', id)
     list = querypowersupply(id)
     print(list)
     return jsonify({
         'month': list[0],
         'values': list[1],
     })
+
 
 # _________________________________________________________________________在线预测_______________________________________________________________________
 
