@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>龙源风电功率预测系统油专特供版online</title>
@@ -91,11 +90,10 @@
         <!-- partial -->
         <div class="main-panel">
             <div class="content-wrapper">
-                <div class="row d-flex" >
+                <div class="row d-flex">
                     <div class="col-lg-3 grid-margin  stretch-card" id="left">
                         <div class="card">
                             <div class="card-body">
-
                                 <!--上传数据-->
                                 <button id="uploadBtn" onclick="changeDisplay()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
@@ -129,7 +127,8 @@
                                     function openReport() {
                                         document.getElementById('chart').style.display = 'none'
                                         document.getElementById('buttons').style.display = 'block'
-                                        // $('#report').load('/data_analyze')
+                                        document.getElementById('report1').style.display = 'block'
+                                        $('#report').load('/data_analyze')
 
                                         let iframe = document.getElementById('report1');
                                         iframe.src = "/data_analyze";
@@ -165,6 +164,7 @@
                                         document.getElementById('predictionBtn').addEventListener('click', function () {
                                             changeDisplay()
                                             myChart.dispose();
+                                            myChart.clear();
                                             var aitextarea = document.getElementById('aianswer');
                                             var linechartdom = document.getElementById('linechart');
                                             // 在这里发送请求到后端获取数据并绘图
@@ -260,9 +260,9 @@
                                 </script>
 
                                 <!--下载结果-->
-                                <button id="downloadBtn"  onclick="changeDisplay()"
+                                <button id="downloadBtn" onclick="changeDisplay()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
-                                    <a href="/download_resfile"  onclick="changeDisplay()"
+                                    <a href="/download_resfile" onclick="changeDisplay()"
                                        style="text-decoration: none;color: black"><i
                                             class="my_typcn typcn-download"></i><br>下载结果</a>
                                 </button>
@@ -271,9 +271,8 @@
                     </div>
                     <div class="col-lg-9 grid-margin  stretch-card" id="right">
                         <div class="card">
-                            <div class="card-body w-100"  id="chart">
-                                <!--右边图-->
-                                <div class="mb-3 w-100 " style="height: 70%" id="linechart">
+                            <div class="card-body w-100" id="chart">
+                                <div class="w-100 h-75 mb-3" id="linechart">
                                     <script>
                                         var myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
                                         // 指定图表的配置项和数据
@@ -323,9 +322,9 @@
                                           style="width: 100%;height: 20%;border: none">  Hi，您好，欢迎使用风电功率预测与分析服务。
                                 </textarea>
                             </div>
-                            <div class="row flex-grow">
+                            <div class="row flex-grow" style="width: 100%;height: 35px;display: none">
                                 <div class="col-12 d-flex justify-content-center align-items-center">
-                                    <div id="buttons" style="width: 100%;height: 35px;display: none">
+                                    <div id="buttons">
                                         <span style="margin-left: 30px;font-weight: bold">空缺值填充</span>
                                         <input style="margin-left: 5px" type="checkbox">
                                         <span style="margin-left: 30px;font-weight: bold">离群点修正</span>
@@ -338,8 +337,10 @@
                                             提交
                                         </button>
                                         <script>
-                                            async function openReport1() {
+                                            function openReport1() {
                                                 document.getElementById('chart').style.display = 'none'
+                                                document.getElementById('buttons').style.display = 'block'
+                                                document.getElementById('report1').style.display = 'block'
                                                 // $('#report').load('/data_analyze1')
 
                                                 let iframe = document.getElementById('report1');
@@ -349,10 +350,11 @@
                                             }
                                         </script>
                                     </div>
+                                    <iframe class="card-body" id="report1"
+                                            style="width: 100%;height: 500px;display: none">
+                                    </iframe>
                                 </div>
                             </div>
-                            <iframe class="card-body" id="report1" style="width: 100%;height: 500px;display: none">
-                            </iframe>
                         </div>
                     </div>
                 </div>
@@ -399,7 +401,5 @@
 <script src="../static/js/ajax-mail.js"></script>
 <script src="../static/js/theme.js"></script>
 <script src="../static/js/nav-footer_loader.js"></script>
-<script src="../static/js/echarts.js"></script>
-<script src="../static/js/echarts.min.js"></script>
 </body>
 </html>

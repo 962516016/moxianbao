@@ -555,13 +555,10 @@
                     },
                     dataZoom: [
                         {
-                            type: 'inside',
+                            left: '-2%',
+                            type: 'slider',
                             start: 0,
                             end: 100
-                        },
-                        {
-                            start: 0,
-                            end: 30
                         }
                     ],
                     series: [
@@ -775,10 +772,10 @@
                     // }
                 },
                 viewControl: {//viewControl用于鼠标的旋转，缩放等视角控制。(以下适合用于地球自转等)
-                    // projection: 'orthographic'//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'。
+                    projection: 'perspective',//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'。
                     autoRotate: true,//会有自动旋转查看动画出现,可查看每个维度信息
                     // autoRotateDirection:'ccw',//物体自传的方向。默认是 'cw' 也就是从上往下看是顺时针方向，也可以取 'ccw'，既从上往下看为逆时针方向。
-                    // autoRotateSpeed:12,//物体自传的速度
+                    autoRotateSpeed: 1.5,//物体自传的速度
                     // autoRotateAfterStill:2,//在鼠标静止操作后恢复自动旋转的时间间隔。在开启 autoRotate 后有效。
                     distance: 200,//默认视角距离主体的距离(常用)
                     // alpha:1,//视角绕 x 轴，即上下旋转的角度(与beta一起控制视野成像效果)
