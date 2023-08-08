@@ -21,6 +21,7 @@ from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
 
+# from dialog import *
 from env import GPT_API, DB_CONFIG
 
 app = Flask(__name__)
@@ -872,7 +873,22 @@ def download_resfile():
 
     return send_file(file_path, download_name=file_name, as_attachment=True)
 
+@app.route('/dialog')
+def dialog():
+    username = session.get('username')
+    return render_template('dialogmain.html', username=username)
 
+@app.route('/dialogDev')
+def dialogDev():
+    username = session.get('username')
+    return render_template('dialogDev.html', username=username)
+
+###
+# _________________________________________________________________________离线应用_________________________________________________________________________
+###
+#
+
+###
 # _________________________________________________________________________离线应用_________________________________________________________________________
 
 # 跳转离线应用界面
@@ -1332,6 +1348,7 @@ def navigation():
 def footer():
     username = session.get('username')
     return render_template('footer.html', username=username)
+
 
 
 # ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————

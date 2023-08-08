@@ -95,7 +95,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <!--上传数据-->
-                                <button id="uploadBtn" onclick="changeDisplay()"
+                                <button id="uploadBtn" onclick="linechart()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-upload " style="height: 10%"></i><br>上传数据
                                 </button>
@@ -125,21 +125,26 @@
                                 </button>
                                 <script>
                                     function openReport() {
-                                        document.getElementById('chart').style.display = 'none'
-                                        document.getElementById('buttons').style.display = 'block'
-                                        document.getElementById('report1').style.display = 'block'
-                                        $('#report').load('/data_analyze')
-
+                                        reportDisplay()
                                         let iframe = document.getElementById('report1');
                                         iframe.src = "/data_analyze";
                                         iframe.style.display = 'block'
-                                        iframe.style.border = '0px'
+                                        iframe.style.border = '2px #000'
                                     }
 
-                                    function changeDisplay() {
+                                    function reportDisplay() {
+                                        document.getElementById('chart').style.display = 'none'
+                                        document.getElementById('buttons').style.display = 'block'
+                                        document.getElementById('report1').style.display = 'block'
+                                        document.getElementById('dialog').style.display = 'none'
+                                    }
+
+                                    function linechart() {
                                         document.getElementById('buttons').style.display = 'none'
                                         document.getElementById('report1').style.display = 'none'
                                         document.getElementById('chart').style.display = 'block'
+                                        document.getElementById('dialog').style.display = 'none'
+
                                     }
 
                                     function dialogDisplay() {
@@ -149,7 +154,7 @@
                                         // 预测图
                                         document.getElementById('chart').style.display = 'block'
                                         // AI对话
-                                        document.getElementById()
+                                        document.getElementById('dialog').style.display = 'block'
                                     }
                                 </script>
 
@@ -162,7 +167,7 @@
                                 <script>
                                     function initmychart() {
                                         document.getElementById('predictionBtn').addEventListener('click', function () {
-                                            changeDisplay()
+                                            linechart()
                                             myChart.dispose();
                                             myChart.clear();
                                             var aitextarea = document.getElementById('aianswer');
@@ -245,7 +250,7 @@
                                 </button>
                                 <script>
                                     async function aiAnalyze() {
-                                        changeDisplay()
+                                        dialogDisplay()
                                         var aitextarea = document.getElementById('aianswer');
                                         aitextarea.value = '正在分析...';
                                         let json_data;
@@ -256,16 +261,37 @@
                                                 var ans = json_data.ans;
                                                 aitextarea.value = ans;
                                             })
+                                        let iframe = document.getElementById('dialog');
+                                        iframe.src = "http://127.0.0.1:5000/";
+                                        iframe.style.display = 'block'
+                                        iframe.style.border = '2px #000'
+
+                                    }
+
+                                    async function initDialog(){
+                                        let iframe = document.getElementById('dialog');
+                                        iframe.src = "http://127.0.0.1:5000/";
+                                    }
+                                    function dialogDisplay() {
+                                        document.getElementById('buttons').style.display = 'none'
+                                        document.getElementById('report1').style.display = 'none'
+                                        document.getElementById('chart').style.display = 'none'
+                                        document.getElementById('dialog').style.display = 'block'
                                     }
                                 </script>
 
                                 <!--下载结果-->
-                                <button id="downloadBtn" onclick="changeDisplay()"
+                                <button id="downloadBtn" onclick="linechart()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
-                                    <a href="/download_resfile" onclick="changeDisplay()"
+                                    <a href="/download_resfile" id="fileDownload"
                                        style="text-decoration: none;color: black"><i
                                             class="my_typcn typcn-download"></i><br>下载结果</a>
                                 </button>
+                                <script>
+                                    document.getElementById('downloadBtn').addEventListener('click', function () {
+                                        document.getElementById('fileDownload').click();
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -322,9 +348,12 @@
                                           style="width: 100%;height: 20%;border: none">  Hi，您好，欢迎使用风电功率预测与分析服务。
                                 </textarea>
                             </div>
-                            <div class="row flex-grow" style="width: 100%;height: 35px;display: none">
-                                <div class="col-12 d-flex justify-content-center align-items-center">
-                                    <div id="buttons">
+                            <iframe  id="dialog"
+                                    style="width: 100%;height: 500px;display: none;border: #c4c4c4">
+                            </iframe>
+                            <div class="row flex-grow" id="buttons" style="width: 100%;height: 35px;display: none">
+                                <div class="col-12 mt-4 mb-2 d-flex justify-content-center align-items-center">
+                                    <div>
                                         <span style="margin-left: 30px;font-weight: bold">空缺值填充</span>
                                         <input style="margin-left: 5px" type="checkbox">
                                         <span style="margin-left: 30px;font-weight: bold">离群点修正</span>
@@ -350,8 +379,10 @@
                                             }
                                         </script>
                                     </div>
-                                    <iframe class="card-body" id="report1"
-                                            style="width: 100%;height: 500px;display: none">
+                                </div>
+                                <div class="col-12 d-flex justify-content-center align-items-center">
+                                    <iframe id="report1"
+                                            style="width: 100%;height: 500px;display: none;border: #c4c4c4">
                                     </iframe>
                                 </div>
                             </div>
