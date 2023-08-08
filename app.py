@@ -1,7 +1,7 @@
 import glob
 import json
 import os
-import re
+import requests
 import secrets
 import shutil
 import zipfile
@@ -63,7 +63,7 @@ def train(path1, path2):
     gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
                     callbacks=[early_stopping(stopping_rounds=1000)])
     y_pred15 = gbm1.predict(X_test1)
-    print('y_pred15', y_pred15*0.9)
+    print('y_pred15', y_pred15 * 0.9)
     print(df2['PREYD15'].values * 0.1)
     output1 = df2['PREYD15'].values * 0.85 + y_pred15 * 0.15
 
@@ -590,6 +590,12 @@ def login_verify():
         session['sdk'] = sdk
         # 为该用户建立需要的文件夹
         createfolder(username)
+
+        # 为该用户创建ai对话账户
+        print('我在创建ai用户')
+        url1 = 'http://issy-blog.store:5445/createUser?username=' + username
+        requests.get(url1)
+
         if username == 'admin':
             return redirect('/admin')
         else:
@@ -825,7 +831,10 @@ def analyze_wind_power():
     path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
     df = pd.read_csv(path)
     cnt = session.get('null_count')
-    cnt = int(cnt)
+    if cnt is None:
+        cnt = 50
+    else:
+        cnt = int(cnt)
     res_datatime = df[-cnt:]['DATATIME'].tolist()
     res_windspeed = df[-cnt:]['WINDSPEED'].tolist()
     res_power = df[-cnt:]['YD15'].tolist()
@@ -873,15 +882,12 @@ def download_resfile():
 
     return send_file(file_path, download_name=file_name, as_attachment=True)
 
+
 @app.route('/dialog')
 def dialog():
     username = session.get('username')
-    return render_template('dialogmain.html', username=username)
+    return render_template('dialog.html', username=username)
 
-@app.route('/dialogDev')
-def dialogDev():
-    username = session.get('username')
-    return render_template('dialogDev.html', username=username)
 
 ###
 # _________________________________________________________________________离线应用_________________________________________________________________________
@@ -1348,7 +1354,6 @@ def navigation():
 def footer():
     username = session.get('username')
     return render_template('footer.html', username=username)
-
 
 
 # ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————

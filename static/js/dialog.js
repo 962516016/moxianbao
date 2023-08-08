@@ -245,7 +245,7 @@ function generateUUID() {
 function generateChatInfo(id) {
     return {
         "id": id,
-        "name": "默认对话",
+        "name": "AI对话分析",
         "selected": true,
         "mode": "continuous",
         "memory_summarize": "你是一个AI助手",
@@ -316,7 +316,7 @@ function loadChats() {
                 $(".chat-list").append(newchat);
                 // 将选中的selectedChat添加selected属性
                 $("#" + selectedChatId).addClass("selected");
-                if ($("#" + selectedChatId).data('name') !== '默认对话') {
+                if ($("#" + selectedChatId).data('name') !== 'AI对话分析') {
                     $("#del-btn").html("删除对话");
                 } else {
                     $("#del-btn").html("删除聊天记录");
@@ -396,7 +396,7 @@ $(".chat-list").on('click', '.chat', function () {
                 selectedChatId = id;
                 $(click).addClass("selected");
                 $('.content').empty();
-                if ($("#" + selectedChatId).data('name') !== '默认对话') {
+                if ($("#" + selectedChatId).data('name') !== 'AI对话分析') {
                     $("#del-btn").html("删除对话");
                 } else {
                     $("#del-btn").html("删除聊天记录");
@@ -830,12 +830,12 @@ $("#textarea").keydown(function (e) {
 });
 $('#del-btn').click(function () {
     // 弹窗提醒是否确认删除
-    if (confirm("确认删除所有聊天记录吗？非默认对话时将会直接删除该对话")) {
+    if (confirm("确认删除所有聊天记录吗？非AI对话分析时将会直接删除该对话")) {
         $.get("/deleteHistory", function (data) {
             console.log(data);
         });
         let chat_info = getSelectedChatInfo();
-        if (chat_info.name === "默认对话") {
+        if (chat_info.name === "AI对话分析") {
             messages_of_chats[selectedChatId] = []
         } else {
             delete messages_of_chats[selectedChatId];

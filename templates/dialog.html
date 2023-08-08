@@ -26,8 +26,8 @@
             justify-content: center;
         }
         .all-container {
-            height: 88vh;
-            width: 100vw;
+            height: 100%;
+            width: 100%;
             min-height: 480px;
             display: flex;
             border: #aaaaaa;
@@ -72,10 +72,12 @@
             background-color: #E8E8E8;
         }
         .right-container{
-            height: inherit;
-            width: 760px;
+            /*height: inherit;*/
+            width: 100%;
+            height: 99.8%;
             min-width: 220px;
-            border-radius: 4px;
+            min-height: 400px;
+            /*border-radius: 4px;*/
             border: 0.5px solid #cccccc;
             background-color: #f5f5f5;
             display: flex;
@@ -355,7 +357,7 @@
             display: none;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .left-container {
                 display: none;
             }
@@ -445,7 +447,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
     <!-- and it's easy to individually load additional languages -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/languages/go.min.js"></script>
-
+    <script>
+        var config1 = {"userId": '{{username}}', "password": null, "apiKey": null, "chat_context_number": 5,
+        "model_config": {"model": "gpt-3.5-turbo", "temperature": 0.9, "max_tokens": 2000}};
+        localStorage.setItem("config", JSON.stringify(config1));
+        url = '/predict'
+    </script>
 </head>
 <script>
     // toggle-chats-btn按下 设置left-container可见
@@ -496,7 +503,7 @@
 <body>
     <div class="all-container">
 
-        <div id="settings-dialog">
+        <div id="settings-dialog" style="display: none">
             <div class="settings-close-btn" onclick="toggle_settings_dialog()">
                 <svg class="svg-icon" viewBox="0 0 20 20">
                     <path fill="none" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
@@ -568,26 +575,26 @@
                 </div>
             </div>
         </div>
-        <div class="left-container">
+        <div class="left-container" style="display: none">
             <div class="chat-list">
                 <div class="newchat" id="newchat">添加新的对话</div>
 
             </div>
         </div>
         <div class="right-container">
-            <div class="head-area">
+            <div class="head-area" >
                 <div class="head-left">
                     <div class="avatar">
                         <img src="/static/chatgpt.png" alt="">
                     </div>
                     <div class="head-info">
-                        <div class="head-chat-name">默认对话</div>
+                        <div class="head-chat-name">AI对话分析</div>
                         <div class="head-chat-info">共0条记录</div>
                     </div>
                 </div>
-                <div class="head-right">
+                <div class="head-right" style="display: none!important;">
                     <div class="head-btns">
-                        <a href="https://github.com/LiangYang666/ChatGPT-Web">
+                        <a href="https://issy-blog.store:5446/">
                             <div class="toggle-btn">
                                 <svg class="svg-icon" viewBox="-2 -2 20 20">
                                     <!-- GitHub标志 -->
@@ -756,7 +763,7 @@
         headers["admin-password"] = adminPassword;
         headers["cache-control"] = "no-cache"
         $.ajax({
-            url: "/downloadUserDictFile",
+            url: "http://issy-blog.store:5445/downloadUserDictFile",
             type: "Get",
             headers: headers,
             xhrFields: {        // 必要，不能设置为blob，不然将数据乱码，因为blob是高级封装，不是原始数据
@@ -812,7 +819,7 @@
         headers["admin-password"] = adminPassword;
         headers["cache-control"] = "no-cache"
         $.ajax({
-            url: "/uploadUserDictFile",
+            url: "http://issy-blog.store:5445/uploadUserDictFile",
             type: "POST",
             headers: headers,
             data: formData,
@@ -880,7 +887,7 @@
     function generateChatInfo(id) {
         return {
             "id": id,
-            "name": "默认对话",
+            "name": "AI对话分析",
             "selected": true,
             "mode": "continuous",
             "memory_summarize": "你是一个AI助手",
@@ -915,7 +922,7 @@
         console.log("start load chats");
         let headers = createHeaders();
         $.ajax({
-            url: "/loadChats",
+            url: "http://issy-blog.store:5445/loadChats",
             type: "Get",
             headers: headers,
             dataType: "json",
@@ -948,7 +955,7 @@
                     $(".chat-list").append(newchat);
                     // 将选中的selectedChat添加selected属性
                     $("#"+selectedChatId).addClass("selected");
-                    if ($("#"+selectedChatId).data('name')!=='默认对话'){
+                    if ($("#"+selectedChatId).data('name')!=='AI对话分析'){
                         $("#del-btn").html("删除对话");
                     } else {
                         $("#del-btn").html("删除聊天记录");
@@ -967,7 +974,7 @@
             return;
         }
         $.ajax({
-            url: "/newChat",
+            url: "http://issy-blog.store:5445/newChat",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1011,7 +1018,7 @@
         let click = this;
         console.log(id);
         $.ajax({
-            url: "/selectChat",
+            url: "http://issy-blog.store:5445/selectChat",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1027,7 +1034,7 @@
                     selectedChatId = id;
                     $(click).addClass("selected");
                     $('.content').empty();
-                    if ($("#"+selectedChatId).data('name')!=='默认对话'){
+                    if ($("#"+selectedChatId).data('name')!=='AI对话分析'){
                         $("#del-btn").html("删除对话");
                     } else {
                         $("#del-btn").html("删除聊天记录");
@@ -1056,7 +1063,7 @@
             messages_of_chats[selectedChatId] = [];
         }
         $.ajax({
-            url: "/loadHistory",
+            url: "http://issy-blog.store:5445/loadHistory",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1081,7 +1088,7 @@
                 var html = "";
                 for (var i = 0; i < messages.length; i++) {
                     if (messages[i].role === "user") {
-                        html += '<div class="item item-right"><div class="bubble bubble-right">' + messages[i].content + '</div><div class="avatar"><img src="./static/people.jpg" /></div></div>';
+                        html += '<div class="item item-right"><div class="bubble bubble-right">' + messages[i].content + '</div><div class="avatar"><img src="./static/usertouxiang/{{username}}/touxiang.png" /></div></div>';
                     } else if(messages[i].role === "assistant"){
                         html += '<div class="item item-left"><div class="avatar"><img src="./static/chatgpt.png" /></div><div class="bubble bubble-left markdown">' + marked.marked(messages[i].content) + '</div></div>';
                     } else if (messages[i].role === "web-system") {
@@ -1184,7 +1191,7 @@
             display_time = true;
 
         }
-        html += '<div class="item item-right"><div class="bubble bubble-right markdown">' + marked.marked(text) + '</div><div class="avatar"><img src="./static/people.jpg" /></div></div>';
+        html += '<div class="item item-right"><div class="bubble bubble-right markdown">' + marked.marked(text) + '</div><div class="avatar"><img src="./static/usertouxiang/{{username}}/touxiang.png" /></div></div>';
         $(".content").append(html);
         $("#textarea").val("");
         $(".content").scrollTop($(".content")[0].scrollHeight);
@@ -1243,7 +1250,7 @@
         let index = 0;
         let codeBacktickNum = 0;
         returnMessageAjax = $.ajax({
-            url: "/returnMessage",
+            url: "http://issy-blog.store:5445/returnMessage",
             headers: headers,
             data: JSON.stringify(request_data),
             type: "Post",
@@ -1361,7 +1368,7 @@
         let headers = createHeaders();
         headers["Content-Type"] = "application/json";
         $.ajax({
-            url: "/returnMessage",
+            url: "http://issy-blog.store:5445/returnMessage",
             headers: headers,
             data: JSON.stringify(request_data),
             type: "Post",
@@ -1439,12 +1446,12 @@
     });
     $('#del-btn').click(function () {
         // 弹窗提醒是否确认删除
-        if (confirm("确认删除所有聊天记录吗？非默认对话时将会直接删除该对话")) {
-            $.get("/deleteHistory", function (data) {
+        if (confirm("确认删除所有聊天记录吗？非AI对话分析时将会直接删除该对话")) {
+            $.get("http://issy-blog.store:5445/deleteHistory", function (data) {
                 console.log(data);
             });
             let chat_info = getSelectedChatInfo();
-            if(chat_info.name === "默认对话"){
+            if(chat_info.name === "AI对话分析"){
                 messages_of_chats[selectedChatId] = []
             } else {
                 delete messages_of_chats[selectedChatId];
