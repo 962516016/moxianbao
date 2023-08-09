@@ -63,9 +63,9 @@ def train(path1, path2):
     gbm1 = gbm1.fit(x_train, y_train, eval_set=[(x_test, y_test)], eval_metric="rmse",
                     callbacks=[early_stopping(stopping_rounds=1000)])
     y_pred15 = gbm1.predict(X_test1)
-    print('y_pred15', y_pred15 * 0.9)
-    print(df2['PREYD15'].values * 0.1)
-    output1 = df2['PREYD15'].values * 0.85 + y_pred15 * 0.15
+    # print('y_pred15', y_pred15 * 0.9)
+    # print(df2['PREYD15'].values * 0.1)
+    output1 = df2['PREYD15'].values * 0.7 + y_pred15 * 0.3
 
     # 预测POWER
     X_train2 = df1[["WINDSPEED", "WINDSPEED2"]]
@@ -78,7 +78,7 @@ def train(path1, path2):
                     callbacks=[early_stopping(stopping_rounds=1000)])
     POWER = gbm2.predict(X_test2)
 
-    output2 = POWER * 0.15 + df2['PREACTUAL'].values * 0.85
+    output2 = POWER * 0.3 + df2['PREACTUAL'].values * 0.7
 
     print('-------我看看怎么事--------')
     print(datatimelist.tolist())
@@ -593,8 +593,8 @@ def login_verify():
 
         # 为该用户创建ai对话账户
         print('我在创建ai用户')
-        url1 = 'http://issy-blog.store:5445/createUser?username=' + username
-        requests.get(url1)
+        url1 = 'http://172.24.187.133:5445/createUser?username=' + username
+        # requests.get(url1)
 
         if username == 'admin':
             return redirect('/admin')
@@ -727,6 +727,7 @@ def getonedatabyidandtime():
     hour = request.args.get('hour')
     minute = request.args.get('minute')
     list = queryonedatabyidandtime(id, year, month, day, hour, minute)
+    print(list)
     return jsonify({
         'DATATIME': list[0][0],
         'ACTUAL': list[1][0],

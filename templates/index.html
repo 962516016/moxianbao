@@ -366,9 +366,7 @@
                 var option = {
                     tooltip: {
                         trigger: 'axis',
-                        position: function (pt) {
-                            return [pt[0], pt[1]];
-                        }
+                        position: 'left'
                     },
                     title: {
                         left: 'left',
@@ -399,7 +397,7 @@
                         boundaryGap: false,
                         data: datetime,
                         axisLabel: {
-                            align: 'right' // 将标签对齐方式设置为右对齐
+                            align: 'left' // 将标签对齐方式设置为右对齐
                         }
                     },
                     yAxis: {
@@ -509,9 +507,7 @@
                 var option = {
                     tooltip: {
                         trigger: 'axis',
-                        position: function (pt) {
-                            return [pt[0], pt[1]];
-                        }
+                        position: 'left'
                     },
                     title: {
                         left: 'left',
@@ -827,6 +823,21 @@
 
     d3chart()
 
+    window.addEventListener('resize', function () {
+
+        // 调用resize方法，使图表自适应页面尺寸
+        var tmpmain = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+        tmpmain.resize();
+
+        var tmpmain2 = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
+        tmpmain2.resize();
+
+        var tmprose = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
+        tmprose.resize();
+
+        var tmp3dchart = echarts.init(document.getElementById('3dchart'));
+        tmp3dchart.resize();
+    });
 
 </script>
 </body>

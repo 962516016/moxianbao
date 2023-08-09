@@ -54,33 +54,6 @@
     </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div class="settings-panel" id="theme-settings">
-                <i class="settings-close typcn typcn-delete-outline"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options" id="sidebar-light-theme">
-                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
-                    Light
-                </div>
-                <div class="sidebar-bg-options selected" id="sidebar-dark-theme">
-                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
-                    Dark
-                </div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles primary"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default border"></div>
-                </div>
-            </div>
-        </div>
-        <!-- partial -->
-        <!-- partial:partials/_sidebar.html -->
         <div id="nav-placeholder">
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
 
@@ -175,7 +148,8 @@
                                                     var power = json_data.PRE_POWER;
                                                     var option = {
                                                         tooltip: {
-                                                            trigger: 'axis'
+                                                            trigger: 'axis',
+                                                            position: 'left'
                                                         },
                                                         legend: {
                                                             data: ['发电功率预测', '供电功率预测']
@@ -226,9 +200,9 @@
 
                                     initmychart()
 
-                                    function updatedata() {
-
-                                    }
+                                    window.addEventListener('resize', function () {
+                                        echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'}).resize();
+                                    });
 
                                 </script>
 
@@ -288,16 +262,17 @@
                         <div class="card">
                             <div class="card-body w-100 p-1" id="chartContainer">
                                 <div class="row w-100 d-flex align-items-center justify-content-center"
-                                    style="height: 500px;">
+                                     style="height: 500px;">
                                     <div class="col-12 d-flex justify-content-center align-items-center"
-                                        style="width: 100%;height: 70%">
+                                         style="width: 100%;height: 70%">
                                         <div class=" w-100 h-100" id="linechart">
                                             <script>
                                                 var myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
                                                 // 指定图表的配置项和数据
                                                 var option = {
                                                     tooltip: {
-                                                        trigger: 'axis'
+                                                        trigger: 'axis',
+                                                        position: 'left'
                                                     },
                                                     legend: {
                                                         data: ['示例曲线1', '示例曲线2']
@@ -335,11 +310,17 @@
                                                     ]
                                                 };
                                                 myChart.setOption(option)
+
+                                                window.addEventListener('resize', function () {
+                                                    myChart.resize();
+                                                });
+
+
                                             </script>
                                         </div>
                                     </div>
                                     <div class="col-12 d-flex justify-content-center align-items-center"
-                                        style="width: 100%;height: 15%">
+                                         style="width: 100%;height: 15%">
                                         <textarea class="text-center" id="aianswer" readonly
                                                   style="width: 100%;height: 100%;border: none">  Hi，您好，欢迎使用风电功率预测与分析服务。
                                         </textarea>

@@ -13,7 +13,7 @@
     <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<!--    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>-->
+    <!--    <script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>-->
     <script src="../static/js/echarts.js"></script>
     <script src="../static/js/jquery.js"></script>
 </head>
@@ -65,7 +65,7 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="row">
-                    <div class="col-sm-6 col-xl-6 d-flex stretch-card">
+                    <div class="col-lg-6 grid-margin  stretch-card">
                         <div class="card">
                             <div class="card-body">
                                 <div>
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-6 d-flex grid-margin stretch-card">
+                    <div class="col-lg-6 grid-margin  stretch-card">
                         <div class="card">
                             <div class="card-body" style="min-height: 500px">
                                 <h4 class="card-title">用户操作使用分析</h4>
@@ -176,10 +176,11 @@
                                                                 // 指定图表的配置项和数据
                                                                 option = {
                                                                     tooltip: {
-                                                                        trigger: 'item'
+                                                                        trigger: 'item',
+                                                                        position: 'left'
                                                                     },
                                                                     legend: {
-                                                                        top: '5%',
+                                                                        top: '0%',
                                                                         left: 'center'
                                                                     },
                                                                     series: [
@@ -187,6 +188,7 @@
                                                                             name: '功能调用次数',
                                                                             type: 'pie',
                                                                             radius: ['40%', '70%'],
+                                                                            center: ['50%', '60%'],
                                                                             avoidLabelOverlap: false,
                                                                             itemStyle: {
                                                                                 borderRadius: 10,
@@ -212,9 +214,6 @@
                                                                     ]
                                                                 };
                                                                 apiCountChart.setOption(option)
-                                                                window.onresize = function () {
-                                                                    apiCountChart.resize();
-                                                                }
                                                             })
                                                             .catch(err => {
                                                                 console.error('axios请求错误' + err)
@@ -238,14 +237,28 @@
                                                     var myChart = echarts.init(chartDom);
                                                     const url = '/get_timeapicount?' + 'username={{username}}'
 
+                                                    // 获取标签元素
+                                                    var labelElement = document.getElementById('timechart'); // 替换'labelId'为你实际标签的ID
+
+                                                    // 获取标签元素的位置和尺寸信息
+                                                    var labelRect = labelElement.getBoundingClientRect();
+
+                                                    // 获取标签元素的宽度和高度
+                                                    var labelWidth = labelRect.width;
+                                                    var labelHeight = labelRect.height;
+
+                                                    var cellSize = [labelWidth / 7.5, labelHeight / 6.0];
+
+
+                                                    var daydata;
+
                                                     function timechart() {
                                                         var option;
                                                         // This example requires ECharts v5.4.0 or later
-                                                        const cellSize = [65, 55];
 
                                                         axios.get(url)
                                                             .then(res => {
-                                                                const daydata = res.data.daydata;
+                                                                daydata = res.data.daydata;
                                                                 console.log(daydata)
 
                                                                 function getVirtualData() {
@@ -286,7 +299,7 @@
                                                                                 value: daydata[d][6]
                                                                             }
                                                                         ];
-                                                                        var tmp_r = 20
+                                                                        var tmp_r = Math.min(cellSize[0], cellSize[1]) / 2.1
                                                                         if (daydata[d][0] + daydata[d][1] + daydata[d][2] + daydata[d][3] + daydata[d][4] + daydata[d][5] == 0) {
                                                                             tmp_r = 0
                                                                         }
@@ -301,6 +314,8 @@
                                                                 }
 
                                                                 function getLabelData() {
+
+
                                                                     const date = +echarts.time.parse('2023-08-01');
                                                                     const end = +echarts.time.parse('2023-09-01');
                                                                     const dayTime = 3600 * 24 * 1000;
@@ -309,7 +324,7 @@
                                                                     for (let time = date; time < end; time += dayTime) {
                                                                         data.push([
                                                                             echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
-                                                                            daydata[d][0]+daydata[d][1]+daydata[d][2]+daydata[d][3]+daydata[d][4]+daydata[d][5]
+                                                                            daydata[d][0] + daydata[d][1] + daydata[d][2] + daydata[d][3] + daydata[d][4] + daydata[d][5]
                                                                         ]);
                                                                         d++;
                                                                     }
@@ -337,7 +352,7 @@
                                                                 option = {
                                                                     tooltip: {},
                                                                     legend: {
-                                                                        data: ['Work', 'Entertainment', 'Sleep'],
+                                                                        data: [],
                                                                         bottom: 2000
                                                                     },
                                                                     calendar: {
@@ -352,7 +367,7 @@
                                                                         dayLabel: {
                                                                             margin: 5,
                                                                             firstDay: 1,
-                                                                            nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                                                                            nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六', '周日']
                                                                         },
                                                                         monthLabel: {
                                                                             show: false
@@ -388,6 +403,162 @@
                                                     }
 
                                                     timechart();
+
+                                                    window.addEventListener('resize', function () {
+
+                                                        // 获取标签元素
+                                                        var labelElement = document.getElementById('timechart'); // 替换'labelId'为你实际标签的ID
+
+                                                        // 获取标签元素的位置和尺寸信息
+                                                        var labelRect = labelElement.getBoundingClientRect();
+
+                                                        // 获取标签元素的宽度和高度
+                                                        var labelWidth = labelRect.width;
+                                                        var labelHeight = labelRect.height;
+
+
+                                                        cellSize = [labelWidth / 7.5, labelHeight / 6.0];
+
+                                                        var tmptimechart = echarts.init(document.getElementById('timechart'));
+
+
+                                                        function getVirtualData() {
+                                                            const date = +echarts.time.parse('2023-08-01');
+                                                            const end = +echarts.time.parse('2023-09-01');
+                                                            const dayTime = 3600 * 24 * 1000;
+                                                            const data = [];
+                                                            let d = 0;
+                                                            for (let time = date; time < end; time += dayTime) {
+                                                                const day = echarts.time.format(time, '{yyyy}-{MM}-{dd}', false);
+                                                                const pieData = [
+                                                                    {
+                                                                        name: '上传数据',
+                                                                        value: daydata[d][0],
+                                                                    },
+                                                                    {
+                                                                        name: '数据分析',
+                                                                        value: daydata[d][1]
+                                                                    },
+                                                                    {
+                                                                        name: '预测功率',
+                                                                        value: daydata[d][2]
+                                                                    },
+                                                                    {
+                                                                        name: 'AI分析',
+                                                                        value: daydata[d][3]
+                                                                    },
+                                                                    {
+                                                                        name: '下载结果',
+                                                                        value: daydata[d][4]
+                                                                    },
+                                                                    {
+                                                                        name: '上传模型',
+                                                                        value: daydata[d][5]
+                                                                    },
+                                                                    {
+                                                                        name: 'API调用',
+                                                                        value: daydata[d][6]
+                                                                    }
+                                                                ];
+                                                                var tmp_r = Math.min(cellSize[0], cellSize[1]) / 2.1
+                                                                if (daydata[d][0] + daydata[d][1] + daydata[d][2] + daydata[d][3] + daydata[d][4] + daydata[d][5] == 0) {
+                                                                    tmp_r = 0
+                                                                }
+                                                                data.push({
+                                                                    date: day,
+                                                                    pieData: pieData,
+                                                                    radius: tmp_r
+                                                                });
+                                                                d++;
+                                                            }
+                                                            return data;
+                                                        }
+
+                                                        function getLabelData() {
+                                                            const date = +echarts.time.parse('2023-08-01');
+                                                            const end = +echarts.time.parse('2023-09-01');
+                                                            const dayTime = 3600 * 24 * 1000;
+                                                            const data = [];
+                                                            let d = 0;
+                                                            for (let time = date; time < end; time += dayTime) {
+                                                                data.push([
+                                                                    echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                                    daydata[d][0] + daydata[d][1] + daydata[d][2] + daydata[d][3] + daydata[d][4] + daydata[d][5]
+                                                                ]);
+                                                                d++;
+                                                            }
+                                                            return data;
+                                                        }
+
+                                                        const labelData = getLabelData()
+
+                                                        console.log(labelData)
+                                                        const pData = getVirtualData();
+                                                        const pieSeries = pData.map(function (item) {
+                                                            return {
+                                                                type: 'pie',
+                                                                center: item.date,
+                                                                radius: item.radius,
+                                                                coordinateSystem: 'calendar',
+                                                                label: {
+                                                                    show: false,
+                                                                    formatter: '{c}',
+                                                                    position: 'inside'
+                                                                },
+                                                                data: item.pieData
+                                                            };
+                                                        });
+                                                        option = {
+                                                            tooltip: {},
+                                                            legend: {
+                                                                data: [],
+                                                                bottom: 2000
+                                                            },
+                                                            calendar: {
+                                                                top: 'middle',
+                                                                left: 'center',
+                                                                orient: 'vertical',
+                                                                cellSize: cellSize,
+                                                                yearLabel: {
+                                                                    show: false,
+                                                                    fontSize: 30
+                                                                },
+                                                                dayLabel: {
+                                                                    margin: 5,
+                                                                    firstDay: 1,
+                                                                    nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                                                                },
+                                                                monthLabel: {
+                                                                    show: false
+                                                                },
+                                                                range: ['2023-08']
+                                                            },
+                                                            series: [
+                                                                {
+                                                                    id: 'label',
+                                                                    type: 'scatter',
+                                                                    coordinateSystem: 'calendar',
+                                                                    symbolSize: 0,
+                                                                    label: {
+                                                                        show: true,
+                                                                        formatter: function (params) {
+                                                                            return echarts.time.format(params.value[0], '{dd}', false);
+                                                                        },
+                                                                        offset: [-cellSize[0] / 2 + 10, -cellSize[1] / 2 + 10],
+                                                                        fontSize: 14
+                                                                    },
+                                                                    data: labelData
+                                                                },
+                                                                ...pieSeries
+                                                            ]
+                                                        };
+                                                        tmptimechart.setOption(option);
+                                                        tmptimechart.resize();
+
+                                                        var tmpapicountchart = echarts.init(document.getElementById('api-count-chart'));
+                                                        tmpapicountchart.resize();
+
+                                                    });
 
                                                 </script>
                                             </div>

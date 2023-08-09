@@ -763,7 +763,7 @@
         headers["admin-password"] = adminPassword;
         headers["cache-control"] = "no-cache"
         $.ajax({
-            url: "http://issy-blog.store:5445/downloadUserDictFile",
+            url: "http://172.24.187.133:5445/downloadUserDictFile",
             type: "Get",
             headers: headers,
             xhrFields: {        // 必要，不能设置为blob，不然将数据乱码，因为blob是高级封装，不是原始数据
@@ -819,7 +819,7 @@
         headers["admin-password"] = adminPassword;
         headers["cache-control"] = "no-cache"
         $.ajax({
-            url: "http://issy-blog.store:5445/uploadUserDictFile",
+            url: "http://172.24.187.133:5445/uploadUserDictFile",
             type: "POST",
             headers: headers,
             data: formData,
@@ -922,7 +922,7 @@
         console.log("start load chats");
         let headers = createHeaders();
         $.ajax({
-            url: "http://issy-blog.store:5445/loadChats",
+            url: "http://172.24.187.133:5445/loadChats",
             type: "Get",
             headers: headers,
             dataType: "json",
@@ -974,7 +974,7 @@
             return;
         }
         $.ajax({
-            url: "http://issy-blog.store:5445/newChat",
+            url: "http://172.24.187.133:5445/newChat",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1018,7 +1018,7 @@
         let click = this;
         console.log(id);
         $.ajax({
-            url: "http://issy-blog.store:5445/selectChat",
+            url: "http://172.24.187.133:5445/selectChat",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1063,7 +1063,7 @@
             messages_of_chats[selectedChatId] = [];
         }
         $.ajax({
-            url: "http://issy-blog.store:5445/loadHistory",
+            url: "http://172.24.187.133:5445/loadHistory",
             type: "Get",
             headers: createHeaders(),
             dataType: "json",
@@ -1250,7 +1250,7 @@
         let index = 0;
         let codeBacktickNum = 0;
         returnMessageAjax = $.ajax({
-            url: "http://issy-blog.store:5445/returnMessage",
+            url: "http://172.24.187.133:5445/returnMessage",
             headers: headers,
             data: JSON.stringify(request_data),
             type: "Post",
@@ -1368,7 +1368,7 @@
         let headers = createHeaders();
         headers["Content-Type"] = "application/json";
         $.ajax({
-            url: "http://issy-blog.store:5445/returnMessage",
+            url: "http://172.24.187.133:5445/returnMessage",
             headers: headers,
             data: JSON.stringify(request_data),
             type: "Post",
@@ -1447,7 +1447,7 @@
     $('#del-btn').click(function () {
         // 弹窗提醒是否确认删除
         if (confirm("确认删除所有聊天记录吗？非AI对话分析时将会直接删除该对话")) {
-            $.get("http://issy-blog.store:5445/deleteHistory", function (data) {
+            $.get("http://172.24.187.133:5445/deleteHistory", function (data) {
                 console.log(data);
             });
             let chat_info = getSelectedChatInfo();

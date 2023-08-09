@@ -3,184 +3,151 @@
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" id="viewport" name="viewport">
     <title>风电数据综合分析展示平台</title>
     <link href="../favicon.ico" rel="shortcut icon"/>
     <link href="../static/css/index.css" rel="stylesheet"/>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
-        !function () {
-            var viewport = document.getElementById('viewport');
-            var dw = null;
-            var screenChange = document.getElementById('screen-change');
 
-            function a() {
-                if (document.body.clientHeight > document.body.clientWidth) {
-                    dw = 750;        //页面的高度
-                    screenChange.classList.remove('h');
-                    screenChange.classList.add('w');
-                } else if (document.body.clientHeight < document.body.clientWidth) {
-                    dw = 1334;        //页面的宽度
-                }
-                viewport.setAttribute('content', 'width=' + dw + ', user-scalable=no')
-            }
-
-            a();
-            window.addEventListener("orientationchange", function () {
-                if (window.orientation == 0) {
-                    screenChange.classList.remove('h');
-                    screenChange.classList.add('w');
-                    dw = 750;        //页面的高度
-                    viewport.setAttribute('content', 'width=' + dw + ', user-scalable=no')
-                } else if (window.orientation == 90) {
-                    screenChange.classList.remove('w');
-                    screenChange.classList.add('h');
-                    dw = 1334;        //页面的宽度
-                    viewport.setAttribute('content', 'width=' + dw + ', user-scalable=no')
-                }
-            }, false);
-        }(window);
-    </script>
 </head>
 
-<body class="h" id="screen-change">
-<div>
-    <header>
-        <label for="turb-input" style="width: 100%">
-            <span style="font-weight: bold;color: white">请选择风场： </span>
-            <select class="input timeinput" id="turb-input" onchange="visualchange()"
-                    style="background-color: #0A133E;color: white;border: none">
-                <option>11</option>
-                <option>12</option>
-                <option selected>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-            </select>
-        </label>
-        <h1>风 电 数 据 综 合 分 析 展 示 平 台</h1>
+<body>
+<header>
+    <label for="turb-input" style="width: 12%">
+        <span style="font-weight: bold;color: white;font-size: 13px">请选择风场： </span>
+        <select class="input timeinput" id="turb-input" onchange="visualchange()"
+                style="background-color: #0A133E;color: white;border: none">
+            <option>11</option>
+            <option>12</option>
+            <option selected>13</option>
+            <option>14</option>
+            <option>15</option>
+            <option>16</option>
+            <option>17</option>
+            <option>18</option>
+            <option>19</option>
+            <option>20</option>
+        </select>
+    </label>
+    <h1>风 电 数 据 综 合 分 析 展 示 平 台</h1>
+    <div class="showTime"></div>
+    <script>
+        time()
+        var t = null;
+        t = setTimeout(time, 1000); //開始运行
+        function time() {
+            // clearTimeout(t); //清除定时器
+            // dt = new Date();
+            // var y = dt.getFullYear();
+            // var mt = dt.getMonth() + 1;
+            // var day = dt.getDate();
+            // var h = dt.getHours(); //获取时
+            // var m = dt.getMinutes(); //获取分
+            // var s = dt.getSeconds(); //获取秒
+            // var old_str = document.querySelector(".showTime").innerHTML
+            document.querySelector(".showTime").innerHTML =
+                // old_str.endsWith('{{username}}')+
+                "{% if username %}" +
+                "<a href='/' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>欢迎您</a>，{{username}}，" +
+                "{% else %} " +
+                "<a href='/' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>您尚未登录</a>，" +
+                "{% endif %}" +
+                "<a href='/index' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>点此返回主页</a>"
 
-        <div class="showTime"></div>
-        <script>
-            time()
-            var t = null;
-            t = setTimeout(time, 1000); //開始运行
-            function time() {
-                clearTimeout(t); //清除定时器
-                dt = new Date();
-                var y = dt.getFullYear();
-                var mt = dt.getMonth() + 1;
-                var day = dt.getDate();
-                var h = dt.getHours(); //获取时
-                var m = dt.getMinutes(); //获取分
-                var s = dt.getSeconds(); //获取秒
-                var old_str = document.querySelector(".showTime").innerHTML
-                document.querySelector(".showTime").innerHTML =
-                    // old_str.endsWith('{{username}}')+
-                    "{% if username %}" +
-                    "<a href='/index' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>欢迎您</a>,{{username}}" +
-                    "{% else %} " +
-                    "<a href='/index' style='text-decoration: none; color: rgba(255, 255, 255, 0.7)'>您尚未登录</a>," +
-                    "{% endif %}" +
-                    "当前时间：" +
-                    y +
-                    "年" +
-                    mt +
-                    "月" +
-                    day +
-                    "日-" +
-                    h +
-                    "时" +
-                    m +
-                    "分" +
-                    s +
-                    "秒";
-                t = setTimeout(time, 1000); //设定定时器，循环运行
-            }
-        </script>
-    </header>
+                // "当前时间：" +
+                // y +
+                // "年" +
+                // mt +
+                // "月" +
+                // day +
+                // "日-" +
+                // h +
+                // "时" +
+                // m +
+                // "分" +
+                // s +
+                // "秒";
+            // t = setTimeout(time, 1000); //设定定时器，循环运行
+        }
+    </script>
+</header>
 
-    <section class="mainbox">
-        {% if username %}
-        <div class="column">
-            <div class="panel bar">
-                <h2>
-                    <span id="year">2020</span>年 <span id="leftupid">13</span>号风场各月份风场累计供电量
-                    <span style="font-size: 10px;display: none">
-                    <a href="javascript:;" id="2020">2020</a>
-                    <a href="javascript:;" id="2021">2021</a>
-                    <a href="javascript:;" id="2022">2022</a>
+<section class="mainbox">
+    {% if username %}
+    <div class="column" id="left">
+        <div class="panel bar">
+            <h2>
+                <span id="year">2020</span>年 <span id="leftupid">13</span>号风场各月份风场累计供电量
+                <span style="font-size: 10px;display: none">
+                    <a id="2020" href="javascript:;">2020</a>
+                    <a id="2021" href="javascript:;">2021</a>
+                    <a id="2022" href="javascript:;">2022</a>
                 </span>
-                </h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
+            </h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel line">
+            <h2>风场 - <span id="leftmiddleid">13</span> <span style="font-weight: bold">发电功率实时预测</span></h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie1">
+            <h2>风场 - <span id="leftdownid">13</span> <span style="font-weight: bold">风向统计</span></h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+    <div class="column" id="middle">
+        <div class="no">
+            <div class="no-hd">
+                <ul>
+                    <li id="yd15">136080275</li>
+                    <li id="pre_yd15">137281894</li>
+                </ul>
             </div>
-            <div class="panel line">
-                <h2>风场 - <span id="leftmiddleid">13</span> <span style="font-weight: bold">发电功率实时预测</span>
-                </h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
-            </div>
-            <div class="panel pie1">
-                <h2>风场 - <span id="leftdownid">13</span> <span style="font-weight: bold">风向统计</span></h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
+            <div class="no-bd">
+                <ul>
+                    <li>全风场累计供电量</li>
+                    <li>全风场累计发电量</li>
+                </ul>
             </div>
         </div>
-        <div class="column">
-            <div class="no">
-                <div class="no-hd">
-                    <ul>
-                        <li id="yd15">136080275</li>
-                        <li id="pre_yd15">137281894</li>
-                    </ul>
-                </div>
-                <div class="no-bd">
-                    <ul>
-                        <li>全风场累计供电量</li>
-                        <li>全风场累计发电量</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="map">
-                <div class="chart"></div>
-                <div class="map1"></div>
-                <div class="map2"></div>
-                <div class="map3"></div>
-            </div>
+        <div class="map">
+            <div class="chart"></div>
+            <div class="map1"></div>
+            <div class="map2"></div>
+            <div class="map3"></div>
         </div>
-        <div class="column">
-            <div class="panel bar1">
-                <h2>风场累计供电量</h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
-            </div>
-            <div class="panel line1">
-                <h2>风场 - <span id="rightmiddleid">13</span> <span style="font-weight: bold">供电功率实时预测</span>
-                </h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
-            </div>
-            <div class="panel pie">
-                <h2>风场地区分布</h2>
-                <div class="chart"></div>
-                <div class="panel-footer"></div>
-            </div>
+    </div>
+    <div class="column" id="right">
+        <div class="panel bar1">
+            <h2>风场累计供电量</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
         </div>
-        {% else %}
-        <div class="column position-relative">
+        <div class="panel line1">
+            <h2>风场 - <span id="rightmiddleid">13</span> <span style="font-weight: bold">供电功率实时预测</span></h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie">
+            <h2>风场地区分布</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+     <style>
+
+    </style>
+
+    {% else %}
+    <div class="column position-relative">
         <span class="position-absolute " style="top: 50%;left: 50%;transform: translate(-50%, -50%)">
             <a href="/" style="font-size: 40px">请登录</a>
         </span>
-        </div>
-        {% endif %}
-    </section>
-</div>
-</body>
+    </div>
+    {% endif %}
+</section>
 <script>
     function visualchange() {
         var id = document.getElementById('turb-input').value;
@@ -197,27 +164,6 @@
 <script src="../static/js/china.js"></script>
 <script src="../static/js/myMap.js"></script>
 
-<style>
-    #screen-change {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        overflow: hidden;
-        z-index: 10
-    }
 
-    #screen-change.w {
-        height: 100vw;
-        width: 100vh;
-        transform: translate(-50%, -50%) rotate(90deg);
-        -webkit-transform: translate(-50%, -50%) rotate(90deg)
-    }
-
-    #screen-change.h {
-        height: 100vh;
-        width: 100vw;
-        transform: translate(-50%, -50%);
-        -webkit-transform: translate(-50%, -50%)
-    }
-</style>
+</body>
 </html>
