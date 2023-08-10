@@ -109,10 +109,11 @@ def upload_predict(data):
     data[-null_count:] = data_new
     path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
     data.to_csv(path, index=False)
+
     return jsonify({
         'DATATIME': data_new['DATATIME'].values.tolist(),
-        'PRE_POWER': data_new['ROUND(A.POWER,0)'].values.tolist(),
-        'PRE_YD15': data_new['YD15'].values.tolist()
+        'PRE_POWER': np.round(data_new['ROUND(A.POWER,0)'].values, decimals=2).tolist(),
+        'PRE_YD15': np.round(data_new['YD15'].values, decimals=2).tolist()
     })
 
 

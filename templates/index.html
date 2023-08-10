@@ -698,6 +698,7 @@
                 text: "发电量数据可视化"
             },
             tooltip: {
+                position: 'left',
                 formatter: function (params) {
                     // 获取 x 值和 y 值
                     var xValue = ym[params.data.value[0]];
@@ -829,8 +830,20 @@
         var tmpmain = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
         tmpmain.resize();
 
+        function setopbyid(id) {
+            echarts.init(document.getElementById(id), null, {renderer: 'svg'}).setOption({
+                tooltip: {
+                    position: ['50%','50%']
+                }
+            })
+        }
+
+        setopbyid('main');
+
+
         var tmpmain2 = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
         tmpmain2.resize();
+        setopbyid('main2');
 
         var tmprose = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
         tmprose.resize();

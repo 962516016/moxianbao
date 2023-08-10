@@ -200,9 +200,6 @@
 
                                     initmychart()
 
-                                    window.addEventListener('resize', function () {
-                                        echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'}).resize();
-                                    });
 
                                 </script>
 
@@ -312,6 +309,11 @@
                                                 myChart.setOption(option)
 
                                                 window.addEventListener('resize', function () {
+                                                    myChart.setOption({
+                                                        tooltip: {
+                                                            position: ['45%', '50%']
+                                                        }
+                                                    })
                                                     myChart.resize();
                                                 });
 
