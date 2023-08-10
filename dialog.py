@@ -6,6 +6,7 @@ import urllib.parse
 
 import requests
 from flask import Flask, render_template, request, session, send_file, make_response
+from flask_cors import CORS
 import os
 import uuid
 from LRU_cache import LRUCache
@@ -15,6 +16,7 @@ import asyncio
 import yaml
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = os.urandom(24)
 
 with open("D:\Documents\Study\软件杯\AI对话\ChatGPT-Web-main\ChatGPT-Web-main\config.yaml", "r", encoding="utf-8") as f:
