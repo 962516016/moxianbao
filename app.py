@@ -93,15 +93,22 @@ def train(path1, path2):
 
     output2 = POWER * 0.3 + df2['PREACTUAL'].values * 0.7
 
-    print('-------我看看怎么事--------')
-    print(datatimelist.tolist())
-    print(output1.tolist())
-    print(output2.tolist())
-    print(df2['YD15'].values.tolist())
-    print(df2['ACTUAL'].values.tolist())
 
     return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
+
+
+
+def train2(path1, path2):
+    df2 = pd.read_csv(path2)
+    datatimelist = df2['DATATIME'].values
+    return [datatimelist.tolist(), df2['YD15'].values.tolist(),
+            df2['ACTUAL'].values.tolist()]
+
+
+
+
+
 
 
 # 对一个数据集进行预测功率
@@ -685,7 +692,7 @@ def train_predict():
         return jsonify({'error': 'error'})
 
 @app.route('/train_predict2', methods=['GET'])
-def train_predict():
+def train_predict2():
     # 获取前端传递的查询参数
     turbid = request.args.get('turbid')
     year = request.args.get('year')
@@ -700,14 +707,12 @@ def train_predict():
         path = "userdata/%s/" % session.get('username')
         path1 = path + 'train.csv'
         path2 = path + 'predict.csv'
-        res_list = train(path1, path2)
+        res_list = train2(path1, path2)
         print('__', res_list)
         return jsonify({
             "DATATIME": res_list[0],
-            "PREYD15": res_list[1],
-            "PREACTUAL": res_list[2],
-            'YD15': res_list[3],
-            "ACTUAL": res_list[4]
+            'YD15': res_list[1],
+            "ACTUAL": res_list[2]
         })
     else:
         return jsonify({'error': 'error'})
@@ -954,7 +959,7 @@ def offline():
 # 下载离线应用安装包
 @app.route('/download_offine_soft')
 def download_offine_soft():
-    file_path = './offline_soft/龙源电力功率预测系统offline安装包.msi'  # 文件在服务器上的路径
+    file_path = './offline_soft/风电功率预测系统油专特供版offline.msi'  # 文件在服务器上的路径
     return send_file(file_path, as_attachment=True)
 
 
