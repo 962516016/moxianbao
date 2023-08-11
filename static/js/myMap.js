@@ -1,6 +1,6 @@
 (function() {
   // 1. 实例化对象
-  var myChart = echarts.init(document.querySelector(".map .chart"));
+  var myChart = echarts.init(document.querySelector(".map .chart"),null, {renderer: 'svg'});
   // 2. 指定配置和数据
   // 2. 指定配置和数据
   var geoCoordMap = {

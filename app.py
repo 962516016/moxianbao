@@ -20,6 +20,7 @@ from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
+import socket
 
 # from dialog import *
 from env import GPT_API, DB_CONFIG
@@ -45,6 +46,18 @@ pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=5, **DB_CONFIG)
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
 
+def get_host_ip():
+    """
+    查询本机ip地址
+    :return: ip
+    """
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+        return ip
 
 # 对两个csv文件进行训练和预测
 def train(path1, path2):
@@ -594,8 +607,8 @@ def login_verify():
 
         # 为该用户创建ai对话账户
         print('我在创建ai用户')
-        url1 = 'http://172.24.187.133:5445/createUser?username=' + username
-        # requests.get(url1)
+        url1 = 'http://'+get_host_ip()+':5445/createUser?username=' + username
+        requests.get(url1)
 
         if username == 'admin':
             return redirect('/admin')
@@ -644,6 +657,34 @@ def predict_value():
 
 
 @app.route('/train_predict', methods=['GET'])
+def train_predict():
+    # 获取前端传递的查询参数
+    turbid = request.args.get('turbid')
+    year = request.args.get('year')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    hour = request.args.get('hour')
+    length = request.args.get('length')
+
+    flg = query_preinput_data(turbid, year, month, day, hour, length)
+
+    if flg:
+        path = "userdata/%s/" % session.get('username')
+        path1 = path + 'train.csv'
+        path2 = path + 'predict.csv'
+        res_list = train(path1, path2)
+        print('__', res_list)
+        return jsonify({
+            "DATATIME": res_list[0],
+            "PREYD15": res_list[1],
+            "PREACTUAL": res_list[2],
+            'YD15': res_list[3],
+            "ACTUAL": res_list[4]
+        })
+    else:
+        return jsonify({'error': 'error'})
+
+@app.route('/train_predict2', methods=['GET'])
 def train_predict():
     # 获取前端传递的查询参数
     turbid = request.args.get('turbid')
@@ -888,7 +929,8 @@ def download_resfile():
 @app.route('/dialog')
 def dialog():
     username = session.get('username')
-    return render_template('dialog.html', username=username)
+    print('测试dialog获取ip', 'http://'+get_host_ip()+":5445/")
+    return render_template('dialog.html', username=username, baseURL='http://'+get_host_ip()+":5445/")
 
 
 ###
@@ -1344,6 +1386,23 @@ static_list = [
 
 ]
 
+# _________________________________________________________________________大屏_________________________________________________________________________
+
+@app.route('/sum_by_turbid', methods=['GET'])
+def sum_by_turbid():
+    connection = pool.get_connection()  # 从连接池获取连接
+    cursor = connection.cursor()
+
+    try:
+        # 执行查询语句
+        cursor.execute("SELECT turbid, SUM(yd15) AS sum_yd15 FROM longyuan GROUP BY turbid")
+        result = cursor.fetchall()
+
+        # 返回 JSON 格式的结果
+        return jsonify(result)
+    finally:
+        cursor.close()
+        # pool.release(connection)  # 将连接释放回连接池
 
 # _________________________________________________________________________导航栏foot_________________________________________________________________________
 @app.route('/navigation.html')

@@ -81,7 +81,7 @@ function preLeftup(id) {
     let data2021 = [];
     let data2022 = [];
 
-    var myChart = echarts.init(document.querySelector(".bar .chart"));
+    var myChart = echarts.init(document.querySelector(".bar .chart"),null, {renderer: 'svg'});
 
     const url = '/querypowersupply?id=' + id
     fetch(url)
@@ -228,7 +228,7 @@ setInterval(async function () {
 // 发电功率实时预测 - 左中
 function preActual() {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".line .chart"));
+    var myChart = echarts.init(document.querySelector(".line .chart"),null, {renderer: 'svg'});
 
     // 2. 指定配置和数据
     var option = {
@@ -332,7 +332,7 @@ function preLeftdown(id) {
                 winddirection.push(parseFloat(res.direction[i]))
             }
             // 1. 实例化对象
-            var myChart = echarts.init(document.querySelector(".pie1  .chart"));
+            var myChart = echarts.init(document.querySelector(".pie1  .chart"),null, {renderer: 'svg'});
             // 2. 指定配置项和数据
             var option = {
                 legend: {
@@ -408,8 +408,8 @@ function preLeftdown(id) {
 
 // 刷新数据的函数 - 左中 + 右中
 async function update() {
-    var myChart = echarts.init(document.querySelector(".line .chart"));
-    var myChart1 = echarts.init(document.querySelector(".line1 .chart"));
+    var myChart = echarts.init(document.querySelector(".line .chart"),null, {renderer: 'svg'});
+    var myChart1 = echarts.init(document.querySelector(".line1 .chart"),null, {renderer: 'svg'});
 
     let newoneDATATIME;
     let newonePREACTUAL;
@@ -770,7 +770,25 @@ setInterval(function () {
 // 风场累计供电量 - 右上
 (async function () {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".bar1 .chart"));
+    var myChart = echarts.init(document.querySelector(".bar1 .chart"),null, {renderer: 'svg'});
+
+    const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
+        console.log(url)
+        await fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                // console.log(res)
+                newoneDATATIME = res.DATATIME
+                newoneACTUAL = res.ACTUAL
+                newonePREACTUAL = res.PREACTUAL
+                newoneYD15 = res.YD15
+                newonePREYD15 = res.PREYD15
+                // console.log('newone', newoneDATATIME)
+
+            }).catch(err => {
+                console.error('axios请求错误' + err)
+            });
+
 
     var data = [11, 7, 19, 12, 51];
     var titlename = [];
@@ -886,7 +904,7 @@ setInterval(function () {
 // 供电功率实时预测 - 右中
 function preYd15() {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".line1 .chart"));
+    var myChart = echarts.init(document.querySelector(".line1 .chart"),null, {renderer: 'svg'});
 
     option = {
         tooltip: {
@@ -1062,7 +1080,7 @@ function preYd15() {
 // 风场地区分布 - 右下
 (async function () {
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".pie .chart"));
+    var myChart = echarts.init(document.querySelector(".pie .chart"),null, {renderer: 'svg'});
 
     option = {
         tooltip: {
