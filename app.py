@@ -59,6 +59,7 @@ def get_host_ip():
         s.close()
         return ip
 
+
 # 对两个csv文件进行训练和预测
 def train(path1, path2):
     df1 = pd.read_csv(path1)
@@ -93,10 +94,8 @@ def train(path1, path2):
 
     output2 = POWER * 0.3 + df2['PREACTUAL'].values * 0.7
 
-
     return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
-
 
 
 def train2(path1, path2):
@@ -104,11 +103,6 @@ def train2(path1, path2):
     datatimelist = df2['DATATIME'].values
     return [datatimelist.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
-
-
-
-
-
 
 
 # 对一个数据集进行预测功率
@@ -493,6 +487,7 @@ def verify_user(username, password):
     cursor.close()
     connection.close()
     # 根据查询结果返回验证结果
+    print("测试0801", result)
     if result:
         return True
     else:
@@ -614,7 +609,7 @@ def login_verify():
 
         # 为该用户创建ai对话账户
         print('我在创建ai用户')
-        url1 = 'http://'+get_host_ip()+':5445/createUser?username=' + username
+        url1 = 'http://' + get_host_ip() + ':5445/createUser?username=' + username
         requests.get(url1)
 
         if username == 'admin':
@@ -690,6 +685,7 @@ def train_predict():
         })
     else:
         return jsonify({'error': 'error'})
+
 
 @app.route('/train_predict2', methods=['GET'])
 def train_predict2():
@@ -774,7 +770,7 @@ def getonedatabyidandtime():
     hour = request.args.get('hour')
     minute = request.args.get('minute')
     list = queryonedatabyidandtime(id, year, month, day, hour, minute)
-    print(list)
+    # print(list)
     return jsonify({
         'DATATIME': list[0][0],
         'ACTUAL': list[1][0],
@@ -934,8 +930,8 @@ def download_resfile():
 @app.route('/dialog')
 def dialog():
     username = session.get('username')
-    print('测试dialog获取ip', 'http://'+get_host_ip()+":5445/")
-    return render_template('dialog.html', username=username, baseURL='http://'+get_host_ip()+":5445/")
+    print('测试dialog获取ip', 'http://' + get_host_ip() + ":5445/")
+    return render_template('dialog.html', username=username, baseURL='http://' + get_host_ip() + ":5445/")
 
 
 ###
@@ -1391,6 +1387,7 @@ static_list = [
 
 ]
 
+
 # _________________________________________________________________________大屏_________________________________________________________________________
 
 @app.route('/sum_by_turbid', methods=['GET'])
@@ -1400,14 +1397,17 @@ def sum_by_turbid():
 
     try:
         # 执行查询语句
-        cursor.execute("SELECT turbid, SUM(yd15) AS sum_yd15 FROM longyuan GROUP BY turbid")
+        cursor.execute("SELECT turbid, SUM(yd15) AS sum_yd15 FROM datatmp GROUP BY TurbID")
         result = cursor.fetchall()
+        resDict = {item[0]: item[1] for item in result}
+        print('sum:', resDict)
 
         # 返回 JSON 格式的结果
-        return jsonify(result)
+        return jsonify(resDict)
     finally:
         cursor.close()
         # pool.release(connection)  # 将连接释放回连接池
+
 
 # _________________________________________________________________________导航栏foot_________________________________________________________________________
 @app.route('/navigation.html')
