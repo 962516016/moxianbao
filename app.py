@@ -13,7 +13,7 @@ import matplotx
 import numpy as np
 import openai
 import pandas as pd
-import pymysqlpool
+import pymysql
 from flask import Flask, jsonify, request, send_file, render_template, session, redirect
 from flask import url_for
 from flask_cors import CORS
@@ -23,7 +23,7 @@ from sklearn.model_selection import train_test_split
 import socket
 
 # from dialog import *
-from env import GPT_API, DB_CONFIG
+from env import GPT_API, DB_CONFIG, connection
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -41,8 +41,9 @@ api_list = {
 }
 # _________________________________________________________________________数据库连接_________________________________________________________________________
 # 创建 pymysqlpool 连接池
-pool = pymysqlpool.ConnectionPool(size=5, pre_create_num=5, **DB_CONFIG)
-
+def get_connection():
+    connection = pymysql.connect(host='localhost', port=3306, user='root', password='ldb20011226', db='longyuan')
+    return connection
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
 
@@ -58,6 +59,48 @@ def get_host_ip():
     finally:
         s.close()
         return ip
+
+
+def yd15addmodel(df):
+    folder_path = './usingmodels'
+    file_names = os.listdir(folder_path)
+    cnt_yd15 = 0
+    output = None
+    for file_name in file_names:
+        if file_name == 'model1.pkl' or file_name == 'model2.pkl' or file_name[0] == 'a':
+            continue
+        else:
+            cnt_yd15 = cnt_yd15 + 1
+            modelpath = folder_path + '/' + file_name
+            tmpmodel = joblib.load(modelpath)
+            if output is None:
+                output = tmpmodel.predict(df[["WINDSPEED", "WINDSPEED2"]].values)
+            else:
+                output = output + tmpmodel.predict(df[["WINDSPEED", "WINDSPEED2"]].values)
+    if output is None:
+        return None
+    return output * 0.2 / cnt_yd15
+
+
+def actualaddmodel(df):
+    folder_path = './usingmodels'
+    file_names = os.listdir(folder_path)
+    cnt_actual = 0
+    output = None
+    for file_name in file_names:
+        if file_name == 'model1.pkl' or file_name == 'model2.pkl' or file_name[0] == 'y':
+            continue
+        else:
+            cnt_actual = cnt_actual + 1
+            modelpath = folder_path + '/' + file_name
+            tmpmodel = joblib.load(modelpath)
+            if output is None:
+                output = tmpmodel.predict(df[["WINDSPEED", "WINDSPEED2"]].values)
+            else:
+                output = output + tmpmodel.predict(df[["WINDSPEED", "WINDSPEED2"]].values)
+    if output is None:
+        return None
+    return output * 0.2 / cnt_actual
 
 
 # 对两个csv文件进行训练和预测
@@ -80,6 +123,10 @@ def train(path1, path2):
     # print('y_pred15', y_pred15 * 0.9)
     # print(df2['PREYD15'].values * 0.1)
     output1 = df2['PREYD15'].values * 0.7 + y_pred15 * 0.3
+    output1_new = yd15addmodel(X_test1)
+    if output1_new is not None:
+        output1 = output1 * 0.8 + output1_new
+
 
     # 预测POWER
     X_train2 = df1[["WINDSPEED", "WINDSPEED2"]]
@@ -93,6 +140,10 @@ def train(path1, path2):
     POWER = gbm2.predict(X_test2)
 
     output2 = POWER * 0.3 + df2['PREACTUAL'].values * 0.7
+    output2_new = yd15addmodel(X_test1)
+    if output2_new is not None:
+        output2 = output2 * 0.8 + output2_new
+
 
     return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
@@ -118,8 +169,20 @@ def upload_predict(data):
     train = df[["WINDSPEED", "WINDSPEED2"]]
     output1 = model1.predict(train.values)
     output2 = model2.predict(train.values)
-    data_new['YD15'] = output1
-    data_new['ROUND(A.POWER,0)'] = output2
+
+    output1_new = yd15addmodel(train)
+    output2_new = actualaddmodel(train)
+
+
+    if output1_new is None:
+        data_new['YD15'] = output1
+    else:
+        data_new['YD15'] = output1 * 0.8 + output1_new
+
+    if output2_new is None:
+        data_new['ROUND(A.POWER,0)'] = output2
+    else:
+        data_new['ROUND(A.POWER,0)'] = output2 * 0.8 + output2_new
     data[-null_count:] = data_new
     path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
     data.to_csv(path, index=False)
@@ -197,7 +260,7 @@ def get_file_paths(directory):
 
 # 查询供电量
 def querypowersupply(id):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "select month,value from powersupply where TurbID = '%s';" % id
     cursor.execute(sql)
@@ -213,7 +276,7 @@ def querypowersupply(id):
 
 # 查询某个id的供发电功率及预测
 def queryiddata(id):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' LIMIT 96;" % id
     cursor.execute(sql)
@@ -228,7 +291,7 @@ def queryiddata(id):
 
 
 def queryonedatabyidandtime(id, year, month, day, hour, minute):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "select DATATIME,ACTUAL,PREACTUAL,YD15,PREYD15 from datatmp where TurbID = '%s' and year = '%s' and month = '%s' and day = '%s' and hour = '%s' and minute = '%s';" % (
         id, year, month, day, hour, minute)
@@ -245,7 +308,7 @@ def queryonedatabyidandtime(id, year, month, day, hour, minute):
 
 # 给密钥到期时间增加time个月份
 def addsdktimemonth(username, time):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "UPDATE usertable SET time = DATE_ADD(time, INTERVAL %s MONTH) WHERE username = '%s';" % (time, username)
     print(sql)
@@ -262,7 +325,7 @@ def addsdktimemonth(username, time):
 
 # 查询密钥对应的用户名
 def query_sdk_username(sdk):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "select username from usertable where sdk = '%s';" % sdk
     cursor.execute(sql)
@@ -277,7 +340,7 @@ def query_sdk_username(sdk):
 
 # 主图数据查询
 def query_pre_data(turbid, year, month, day, hour, length):
-    connection = pool.get_connection()
+    connection = get_connection()
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
     previous_date = current_date - timedelta(days=int(length))
     current_date = current_date.strftime("%y-%m-%d %H:%M")
@@ -310,7 +373,7 @@ def query_pre_data(turbid, year, month, day, hour, length):
 
 
 def query_preinput_data(turbid, year, month, day, hour, length):
-    connection = pool.get_connection()
+    connection = get_connection()
     current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
     following_date = current_date + timedelta(hours=int(length))
     current_date = current_date.strftime("%y-%m-%d %H:%M")
@@ -350,7 +413,7 @@ def query_preinput_data(turbid, year, month, day, hour, length):
 # 验证用户名密码
 def sqlverifypassword(password):
     username = session.get('username')
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "SELECT * FROM usertable WHERE username=%s AND password=%s"
     cursor.execute(sql, (username, password))
@@ -366,7 +429,7 @@ def sqlverifypassword(password):
 # 修改用户表中用户密码
 def sqlchangepassword(password):
     username = session['username']
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "UPDATE usertable SET password='%s' WHERE username='%s';" % (password, username)
     cursor.execute(sql)
@@ -383,7 +446,7 @@ def sqlchangepassword(password):
 
 # 查询风向数据
 def query_winddirection_data(turbid):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "SELECT * FROM winddirection WHERE TurbID=%s"
     cursor.execute(sql, turbid)
@@ -399,7 +462,7 @@ def query_apicount_data(username, api):
         sql = "SELECT COUNT(*) FROM log WHERE api='%s'" % api
     else:
         sql = "SELECT COUNT(*) FROM log WHERE username='%s' and api='%s'" % (username, api)
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -424,7 +487,7 @@ def query_timeapicount_data(username, year, month, day):
     else:
         sql = "SELECT api,COUNT(*) AS count FROM log WHERE username='%s' and operate_time LIKE '%s' GROUP BY api" % (
             username, date)
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -446,7 +509,7 @@ def query_apilist_data(username):
         sql = "SELECT username,operate_time,api,note FROM log ORDER BY operate_time desc "
     else:
         sql = "SELECT username,operate_time,api,note FROM log WHERE username='%s' ORDER BY operate_time desc " % username
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -457,7 +520,7 @@ def query_apilist_data(username):
 
 # 新增用户（注册）
 def addUser(username, password):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = 'INSERT IGNORE INTO usertable (username,password) VALUES (%s,%s)'
     cursor.execute(sql, (username, password))
@@ -475,12 +538,14 @@ def verify_user(username, password):
     print('->', username, password)
     if username == '':
         return False
-    connection = pool.get_connection()
+    connection = pymysql.connect(host='localhost', port=3306, user='root', password='ldb20011226', db='longyuan')
+
     # 创建游标对象
     cursor = connection.cursor()
     # 执行查询语句
-    sql = "SELECT * FROM usertable WHERE username = %s AND password = %s"
-    cursor.execute(sql, (username, password))
+    sql = "SELECT password FROM usertable WHERE username = '%s'" % username
+    print(sql)
+    cursor.execute(sql)
     # 获取查询结果
     result = cursor.fetchone()
     # 关闭游标和连接
@@ -488,7 +553,8 @@ def verify_user(username, password):
     connection.close()
     # 根据查询结果返回验证结果
     print("测试0801", result)
-    if result:
+    print('login->', result)
+    if result[0] == password:
         return True
     else:
         return False
@@ -496,7 +562,7 @@ def verify_user(username, password):
 
 # 添加日志
 def addlog(username, operate_time, api, note=''):
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     sql = "INSERT INTO log (username, operate_time, api, note) VALUES (%s,%s,%s,%s);"
     cursor.execute(sql, (username, operate_time, api, note))
@@ -510,25 +576,32 @@ def addlog(username, operate_time, api, note=''):
     return False
 
 
-# 查询当前用户的sdk
-def getsdk():
+# 更新当前用户的sdk
+def updatesdk():
     username = session.get('username')
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
-    sql = "SELECT sdk,time FROM usertable WHERE username='%s'" % username
+    sql = "SELECT sdk FROM usertable WHERE username='%s'" % username
     cursor.execute(sql)
     result = cursor.fetchone()
-    print('->>>', result)
 
-    if result[0] is not None:
-        session['sdk'] = result[0]
-    else:
-        if 'sdk' in session:
-            del session['sdk']
+    if result is not None:
+        if result[0] is not None:
+            session['sdk'] = result[0]
 
-    if result[1] is not None:
-        session['sdktime'] = result[1].strftime("%Y年%m月%d日 %H:%M:%S")
-        print('当前密钥到期时间为', session['sdktime'])
+
+def updatesdktime():
+    username = session.get('username')
+    connection = get_connection()
+    cursor = connection.cursor()
+    sql = "SELECT time FROM usertable WHERE username='%s'" % username
+    cursor.execute(sql)
+    result = cursor.fetchone()
+
+    if result is not None:
+        if result[0] is not None:
+
+            session['sdktime'] = result[0].strftime("%Y年%m月%d日 %H:%M:%S")
 
     cursor.close()
     connection.close()
@@ -600,10 +673,9 @@ def login_verify():
     flg = verify_user(username, password)
     if flg:
         session['username'] = username
-        sdk = getsdk()
-        print(username)
-        print(sdk)
-        session['sdk'] = sdk
+        updatesdk()
+        updatesdktime()
+
         # 为该用户建立需要的文件夹
         createfolder(username)
 
@@ -615,7 +687,7 @@ def login_verify():
         if username == 'admin':
             return redirect('/admin')
         else:
-            return render_template("index.html", username=username, sdk=sdk)
+            return render_template("index.html", username=username, sdk=session.get('sdk'))
     elif password == '':
         error = '密码不能为空'
         # redirect('/login')
@@ -964,7 +1036,7 @@ def download_offine_soft():
 def newsdkoffline():
     sdk = secrets.token_hex(16).__str__()
     username = session.get('username')
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     time = datetime.now() + timedelta(days=31)
     time = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -998,7 +1070,7 @@ def to_api():
 def newsdkapi():
     sdk = secrets.token_hex(16).__str__()
     username = session.get('username')
-    connection = pool.get_connection()
+    connection = get_connection()
     cursor = connection.cursor()
     time = datetime.now() + timedelta(days=31)
     time = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -1014,6 +1086,7 @@ def newsdkapi():
         sdk = None
     print('申请sdk测试', sdk)
     session['sdk'] = sdk
+    session['sdktime'] = time
     # jsonify({'sdk': sdk})
     return redirect('/api')
 
@@ -1319,7 +1392,7 @@ def sdktimeadd():
     username = session.get('username')
     flg = addsdktimemonth(username, time)
     if flg:
-        getsdk()
+        updatesdktime()
         return jsonify({
             "result": 'success'})
     else:
@@ -1392,7 +1465,7 @@ static_list = [
 
 @app.route('/sum_by_turbid', methods=['GET'])
 def sum_by_turbid():
-    connection = pool.get_connection()  # 从连接池获取连接
+    connection = get_connection()  # 从连接池获取连接
     cursor = connection.cursor()
 
     try:
@@ -1406,7 +1479,7 @@ def sum_by_turbid():
         return jsonify(resDict)
     finally:
         cursor.close()
-        # pool.release(connection)  # 将连接释放回连接池
+        # release(connection)  # 将连接释放回连接池
 
 
 # _________________________________________________________________________导航栏foot_________________________________________________________________________

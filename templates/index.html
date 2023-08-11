@@ -584,6 +584,8 @@
         // 使用刚指定的配置项和数据显示图表。
     }
 
+    main2init()
+
     async function main2() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
@@ -738,14 +740,14 @@
         // 使用刚指定的配置项和数据显示图表。
     }
 
-    let access = 0
-    if(access === 0){
-        access = 1
-        main2init()
-    }
-    else{
-        main2()
-    }
+    // let access = 0
+    // if(access === 0){
+    //     access = 1
+    //     main2init()
+    // }
+    // else{
+    //     main2()
+    // }
 
 
     async function rose() {
