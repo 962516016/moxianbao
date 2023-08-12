@@ -39,11 +39,14 @@ api_list = {
     'getmodel': '5',
     'api': '6'
 }
+
+
 # _________________________________________________________________________数据库连接_________________________________________________________________________
 # 创建 pymysqlpool 连接池
 def get_connection():
     connection = pymysql.connect(host='localhost', port=3306, user='root', password='ldb20011226', db='longyuan')
     return connection
+
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
 
@@ -127,7 +130,6 @@ def train(path1, path2):
     if output1_new is not None:
         output1 = output1 * 0.8 + output1_new
 
-
     # 预测POWER
     X_train2 = df1[["WINDSPEED", "WINDSPEED2"]]
     y_train2 = df1[["ROUND(A.POWER,0)"]]
@@ -143,7 +145,6 @@ def train(path1, path2):
     output2_new = yd15addmodel(X_test1)
     if output2_new is not None:
         output2 = output2 * 0.8 + output2_new
-
 
     return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
@@ -172,7 +173,6 @@ def upload_predict(data):
 
     output1_new = yd15addmodel(train)
     output2_new = actualaddmodel(train)
-
 
     if output1_new is None:
         data_new['YD15'] = output1
@@ -600,7 +600,6 @@ def updatesdktime():
 
     if result is not None:
         if result[0] is not None:
-
             session['sdktime'] = result[0].strftime("%Y年%m月%d日 %H:%M:%S")
 
     cursor.close()
@@ -941,42 +940,59 @@ def analyze_wind_power():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['gptapi_analyze'], note="AI分析")
     # 编辑prompt
-    openai.api_key = GPT_API
-    openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
+    # openai.api_key = GPT_API
+    # openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
     # send a ChatCompletion request to GPT
     path = 'userdata/%s/当前结果文件/tmp.csv' % session.get('username')
-    df = pd.read_csv(path)
-    cnt = session.get('null_count')
-    if cnt is None:
-        cnt = 50
-    else:
-        cnt = int(cnt)
-    res_datatime = df[-cnt:]['DATATIME'].tolist()
-    res_windspeed = df[-cnt:]['WINDSPEED'].tolist()
-    res_power = df[-cnt:]['YD15'].tolist()
-    messages = [
-        {"role": "system",
-         "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
-                    "程语言来解析数据。你对风电数据非常熟悉，包括功率、风速与时间的关系。你的职责是分析这些数据，并提供关于可能原因和" +
-                    "潜在风险的解释。作为数据分析师，你会仔细研究风电数据中功率、风速和时间之间的关系。你会运用统计方法分析数据的趋势和" +
-                    "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在" +
-                    "分析风电数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"},
-        {"role": "user",
-         "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的风速列，" + to_string(res_windspeed,
-                                                                                                       1) + "这是对应的功率列，" + to_string(
-             res_power, 1) +
-                    "请结合时间分析一下风速对于功率的影响。"
-                    "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
-    ]
-    response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo-0301',
-        messages=messages,
-        temperature=0,
-    )
-    print(messages)
+
+    try:
+        df = pd.read_csv(path)
+        # 在这里处理文件读取成功后的逻辑
+        cnt = session.get('null_count')
+        if cnt is None:
+            cnt = 50
+        else:
+            cnt = int(cnt)
+        res_datatime = df[-cnt:]['DATATIME'].tolist()
+        res_windspeed = df[-cnt:]['WINDSPEED'].tolist()
+        res_power = df[-cnt:]['YD15'].tolist()
+
+        return jsonify({
+            'datatime': to_string(res_datatime, 0),
+            'windspeed': to_string(res_windspeed, 1),
+            'power': to_string(res_power, 1)
+        })
+    except FileNotFoundError:
+        # 文件不存在的处理逻辑
+        return jsonify({
+            'error': 'error'
+        })
+
+
+
+    # messages = [
+    #     {"role": "system",
+    #      "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
+    #                 "程语言来解析数据。你对风电数据非常熟悉，包括功率、风速与时间的关系。你的职责是分析这些数据，并提供关于可能原因和" +
+    #                 "潜在风险的解释。作为数据分析师，你会仔细研究风电数据中功率、风速和时间之间的关系。你会运用统计方法分析数据的趋势和" +
+    #                 "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在" +
+    #                 "分析风电数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"},
+    #     {"role": "user",
+    #      "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的风速列，" + to_string(res_windspeed,
+    #                                                                                                    1) + "这是对应的功率列，" + to_string(
+    #          res_power, 1) +
+    #                 "请结合时间分析一下风速对于功率的影响。"
+    #                 "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，一段话直接说明白，不用画图"},
+    # ]
+    # response = openai.ChatCompletion.create(
+    #     model='gpt-3.5-turbo-0301',
+    #     messages=messages,
+    #     temperature=0,
+    # )
+    # print(messages)
     # 获取助手角色的回答
-    assistant_response = response['choices'][0]['message']['content']
-    return jsonify({'ans': assistant_response})
+    # assistant_response = response['choices'][0]['message']['content']
+
 
 
 # 下载结果文件

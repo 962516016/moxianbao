@@ -211,15 +211,15 @@
                                 <script>
                                     async function aiAnalyze() {
                                         dialogDisplay()
-                                        var aitextarea = document.getElementById('aianswer');
-                                        aitextarea.value = '正在分析...';
+                                        // var aitextarea = document.getElementById('aianswer');
+                                        // aitextarea.value = '正在分析...';
                                         let json_data;
                                         fetch('/gptapi_analyze')
                                             .then(response => response.json())
                                             .then(data => {
                                                 json_data = data;
                                                 var ans = json_data.ans;
-                                                aitextarea.value = ans;
+                                                // aitextarea.value = ans;
                                             })
                                         let iframe = document.getElementById('dialog');
                                         // iframe.src = "https://issy.store";

@@ -24,8 +24,7 @@ let pre_yd15 = [];
 const N = 96;
 let start = 1;
 let end = N;
-const seconds = (Data.yd15.length - N);
-console.log('起始', N, '个点', '循环用时', seconds, '秒');
+
 
 let year_i = 0;
 let year_list = ['2020', '2021', '2022']
@@ -760,10 +759,25 @@ async function update() {
 
 // 每秒执行1次刷新数据的函数 - 中上 - 全风场累计供电量+全风场累计发电量
 setInterval(function () {
-    const yd15_dom = document.getElementById('yd15');
-    const pre_yd15_dom = document.getElementById('pre_yd15');
-    yd15_dom.innerHTML = String(sum_yd15[end - N]);
-    pre_yd15_dom.innerHTML = String(sum_pre_yd15[end - N]);
+    // const yd15_dom = document.getElementById('yd15');
+    // const pre_yd15_dom = document.getElementById('pre_yd15');
+    // yd15_dom.innerHTML = String(sum_yd15[end - N]);
+    // pre_yd15_dom.innerHTML = String(sum_pre_yd15[end - N]);
+    const datetime_dom = document.getElementById('datetime');
+    currentDate = new Date();
+
+    year = currentDate.getFullYear();  // 获取当前年份
+    month = ('0' + (currentDate.getMonth() + 1)).slice(-2);  // 获取当前月份，并补零
+    day = ('0' + currentDate.getDate()).slice(-2);  // 获取当前日期，并补零
+    hours = ('0' + currentDate.getHours()).slice(-2);  // 获取当前小时，并补零
+    minutes = ('0' + currentDate.getMinutes()).slice(-2);  // 获取当前分钟，并补零
+    seconds = ('0' + currentDate.getSeconds()).slice(-2);  // 获取当前秒数，并补零
+
+    formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+
+    console.log(formattedDate);  // 输出格式化后的日期和时间
+
+    datetime_dom.innerHTML = formattedDate
 }, 1000);
 
 
@@ -793,7 +807,7 @@ setInterval(function () {
     await fetch(sumURL)
         .then(res => res.json())
         .then(res => {
-            for(let i = 11; i <= 20; i++) {
+            for (let i = 11; i <= 20; i++) {
 
             }
         }).catch(err => {

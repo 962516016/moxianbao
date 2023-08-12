@@ -277,10 +277,10 @@
     tooltip: {
       trigger: "item",
       formatter: function(params, ticket, callback) {
-        if (params.seriesType == "effectScatter") {
+        if (params.seriesType === "effectScatter") {
           return "场区：" + params.data.name + "" ;
           // + params.data.value[2]
-        } else if (params.seriesType == "lines") {
+        } else if (params.seriesType === "lines") {
           return (
             params.data.fromName +
             ">" +
