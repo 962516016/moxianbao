@@ -419,7 +419,7 @@ def query_range(turbid, year, month, day, hour, length):
     following_date = following_date.strftime("%y-%m-%d %H:%M")
     cursor = connection.cursor()
     # 使用 SQL 查询语句从数据库中获取满足条件的数据
-    sql = "e
+
     cursor.execute(sql, (turbid, current_date, following_date))
     # 获取查询结果
     result = cursor.fetchall()
