@@ -575,7 +575,7 @@ def verify_user(username, password):
     print('->', username, password)
     if username == '':
         return False
-    connection = pymysql.connect(host='localhost', port=3306, user='root', password='ldb20011226', db='longyuan')
+    connection = get_connection()
 
     # 创建游标对象
     cursor = connection.cursor()
