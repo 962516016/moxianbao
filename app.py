@@ -1009,7 +1009,11 @@ def data_analysis1():
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    return render_template('report_new.html')
+    return render_template('report_new.html', i18n=jsonify({
+        'test':'66666666666',
+        'test2':6666666677777766666666,
+
+    }))
 
 
 # 对上传的文件进行预测并返回（功率预测）
