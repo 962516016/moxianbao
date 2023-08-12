@@ -10,6 +10,7 @@
     <link href="../static/css/style.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../static/js/jquery.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>
 </head>
 
 <body>
@@ -54,7 +55,7 @@
         {% if username %}
         <div class="main-panel">
             <div class="content-wrapper">
-                <div class="row">
+                <div class="row flex-grow" style="height: 55%!important;">
                     <div class="col-lg-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
@@ -68,12 +69,14 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="model_table1">
                                         <thead>
-                                        <tr>
-                                            <th>模型名称</th>
-                                            <th>选择</th>
-                                        </tr>
+                                            <tr>
+                                                <th>模型名称</th>
+                                                <th>选择</th>
+                                            </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody id="left">
+
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -89,13 +92,15 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="model_table2">
                                         <thead>
-                                        <tr>
-                                            <th>模型名称</th>
-                                        </tr>
+                                            <tr>
+                                                <th>模型名称</th>
+                                                <th>选择</th>
+                                            </tr>
                                         </thead>
-                                        <tbody></tbody>
-                                    </table>
+                                        <tbody>
 
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -152,6 +157,8 @@
                     var row = document.createElement('tr');
                     var cell1 = document.createElement('td');
                     cell1.textContent = fileName;
+                    cell1.draggable = true; // 设置元素可拖动
+                    cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
                     var cell2 = document.createElement('td');
                     var checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
@@ -163,13 +170,15 @@
                 for (var i = 0; i < fileNames2.length; i++) {
                     var fileName = fileNames2[i];
                     var row = document.createElement('tr');
-                    var cell = document.createElement('td');
-                    cell.textContent = fileName;
+                    var cell1 = document.createElement('td');
+                    cell1.textContent = fileName;
+                    cell1.draggable = true; // 设置元素可拖动
+                    cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
                     var cell2 = document.createElement('td');
                     var checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     cell2.appendChild(checkbox);
-                    row.appendChild(cell);
+                    row.appendChild(cell1);
                     row.appendChild(cell2);
 
                     tableBody2.appendChild(row);
@@ -179,6 +188,29 @@
                 console.error('axios请求错误' + err)
             })
     }
+
+    // 拖动开始时触发
+    function dragStart(event) {
+        event.dataTransfer.setData('text/plain', event.target.textContent); // 存储拖动的数据
+    }
+
+    // 元素在可放置区域上拖动时触发
+    function dragOver(event) {
+        event.preventDefault();
+    }
+
+    // 元素在可放置区域上释放时触发
+    function drop(event) {
+        event.preventDefault();
+        var data = event.dataTransfer.getData('text/plain'); // 获取拖动的数据
+        event.target.textContent = data; // 将数据添加到目标元素
+    }
+
+    var droppableElements = document.querySelectorAll('.droppable');
+    droppableElements.forEach(function (element) {
+        element.addEventListener('dragover', dragOver);
+        element.addEventListener('drop', drop);
+    });
 
     function addmodels() {
         // 获取提交按钮元素

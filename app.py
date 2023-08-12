@@ -23,7 +23,7 @@ from sklearn.model_selection import train_test_split
 import socket
 
 # from dialog import *
-from env import GPT_API, DB_CONFIG, connection
+from env import GPT_API, DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -39,11 +39,15 @@ api_list = {
     'getmodel': '5',
     'api': '6'
 }
+
+
 # _________________________________________________________________________数据库连接_________________________________________________________________________
 # 创建 pymysqlpool 连接池
 def get_connection():
-    connection = pymysql.connect(host='localhost', port=3306, user='root', password='ldb20011226', db='longyuan')
+    connection = pymysql.connect(host=DB_CONFIG['host'], port=DB_CONFIG['port'], user=DB_CONFIG['user'],
+                                 password=DB_CONFIG['pasword'], db=DB_CONFIG['database'])
     return connection
+
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
 
@@ -127,7 +131,6 @@ def train(path1, path2):
     if output1_new is not None:
         output1 = output1 * 0.8 + output1_new
 
-
     # 预测POWER
     X_train2 = df1[["WINDSPEED", "WINDSPEED2"]]
     y_train2 = df1[["ROUND(A.POWER,0)"]]
@@ -143,7 +146,6 @@ def train(path1, path2):
     output2_new = yd15addmodel(X_test1)
     if output2_new is not None:
         output2 = output2 * 0.8 + output2_new
-
 
     return [datatimelist.tolist(), output1.tolist(), output2.tolist(), df2['YD15'].values.tolist(),
             df2['ACTUAL'].values.tolist()]
@@ -172,7 +174,6 @@ def upload_predict(data):
 
     output1_new = yd15addmodel(train)
     output2_new = actualaddmodel(train)
-
 
     if output1_new is None:
         data_new['YD15'] = output1
@@ -410,6 +411,42 @@ def query_preinput_data(turbid, year, month, day, hour, length):
     return False
 
 
+def query_range(turbid, year, month, day, hour, length):
+    connection = get_connection()
+    current_date = datetime(int(year), int(month), int(day), int(hour), 0, 0)
+    following_date = current_date + timedelta(hours=int(length))
+    current_date = current_date.strftime("%y-%m-%d %H:%M")
+    following_date = following_date.strftime("%y-%m-%d %H:%M")
+    cursor = connection.cursor()
+    # 使用 SQL 查询语句从数据库中获取满足条件的数据
+    sql = "e
+    cursor.execute(sql, (turbid, current_date, following_date))
+    # 获取查询结果
+    result = cursor.fetchall()
+    result_list = [[], [], [], [], [], [], []]
+    for item in result:
+        for i in range(7):
+            result_list[i].append(item[i])
+    df = pd.DataFrame({
+        'DATATIME': result_list[0],
+        'WINDSPEED': result_list[1],
+        'WINDSPEED2': result_list[2],
+        'ACTUAL': result_list[3],
+        'PREACTUAL': result_list[4],
+        'YD15': result_list[5],
+        'PREYD15': result_list[6]
+    })
+
+    path = 'userdata/%s/predict.csv' % session.get('username')
+    df.to_csv(path, index=False)
+    # 关闭连接
+    cursor.close()
+    connection.close()
+    if result:
+        return True
+    return False
+
+
 # 验证用户名密码
 def sqlverifypassword(password):
     username = session.get('username')
@@ -600,7 +637,6 @@ def updatesdktime():
 
     if result is not None:
         if result[0] is not None:
-
             session['sdktime'] = result[0].strftime("%Y年%m月%d日 %H:%M:%S")
 
     cursor.close()
@@ -732,6 +768,35 @@ def predict_value():
 
 @app.route('/train_predict', methods=['GET'])
 def train_predict():
+    # 获取前端传递的查询参数
+    turbid = request.args.get('turbid')
+    year = request.args.get('year')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    hour = request.args.get('hour')
+    length = request.args.get('length')
+
+    flg = query_preinput_data(turbid, year, month, day, hour, length)
+
+    if flg:
+        path = "userdata/%s/" % session.get('username')
+        path1 = path + 'train.csv'
+        path2 = path + 'predict.csv'
+        res_list = train(path1, path2)
+        print('__', res_list)
+        return jsonify({
+            "DATATIME": res_list[0],
+            "PREYD15": res_list[1],
+            "PREACTUAL": res_list[2],
+            'YD15': res_list[3],
+            "ACTUAL": res_list[4]
+        })
+    else:
+        return jsonify({'error': 'error'})
+
+
+@app.route('/rangeAccess', methods=['GET'])
+def range_access():
     # 获取前端传递的查询参数
     turbid = request.args.get('turbid')
     year = request.args.get('year')

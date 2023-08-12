@@ -453,6 +453,133 @@
 
     main()
 
+    async function main2init0() {
+        // 基于准备好的dom，初始化echarts实例
+        let chartdom = document.getElementById('main2')
+        chartdom.innerHTML = ''
+
+        var myChart = echarts.init(chartdom, null, {renderer: 'svg'});
+        myChart.clear()
+        myChart.dispose()
+        myChart = echarts.init(chartdom, null, {renderer: 'svg'});
+
+        var input = document.getElementById('time-input');
+        var dateinput = input.value.split('T')[0].split('-')
+        var timeinput = input.value.split('T')[1].split(':')
+
+        var turbinput = document.getElementById('turb-input').value;
+        var lengthinput2 = document.getElementById('length2-input').value;
+
+        let turbid = turbinput;
+        let year = dateinput[0];
+        let month = dateinput[1];
+        let day = dateinput[2];
+        let hour = timeinput[0];
+        let length2 = lengthinput2;// 单位小时
+
+        // /train_predict?
+        const baseurl = '/train_predict?' + 'turbid=' + turbid + '&&year=' + year +
+            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
+        console.log('测试ssy2:', baseurl);
+
+        // GET请求
+        axios.get(baseurl)
+            .then(res => {
+                console.log('测试resdata2', res.data)
+                let datetimeline = Object.entries(res.data)[1][1];
+                let pre_roundline = Object.entries(res.data)[2][1];
+                let pre_yd15line = Object.entries(res.data)[3][1];
+                let roundline = Object.entries(res.data)[0][1];
+                let yd15line = Object.entries(res.data)[4][1];
+
+                console.log('测试datetimeline2', datetimeline)
+                console.log('测试pre_roundline2', pre_roundline)
+                console.log('测试pre_yd15line2', pre_yd15line)
+
+                let datetime = []
+                let pre_yd15 = []
+                let pre_round = []
+                let yd15 = []
+                let round = []
+
+                for (let i = 0; i < datetimeline.length; i++) {
+                    datetime.push((datetimeline[i]))
+                    pre_round.push(Math.round(pre_roundline[i]))
+                    pre_yd15.push(Math.round(pre_yd15line[i]))
+                    round.push(Math.round(roundline[i]))
+                    yd15.push(Math.round(yd15line[i]))
+                }
+                console.log('2', mn)
+                console.log('2', mx)
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        position: 'left'
+                    },
+                    title: {
+                        left: 'left',
+                        text: '供、发电功率预测数据',
+                    },
+                    legend: {
+                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测'],
+                        show: true,
+                        itemHeight: 20,
+                        top: '6%'
+                    },
+                    grid: {
+                        left: 0,
+                        right: '20%'
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                // yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        position: 'right',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: datetime,
+                        // inverse: true
+                        axisLabel: {
+                            align: 'left' // 将标签对齐方式设置为右对齐
+                        }
+                    },
+                    yAxis: {
+                        position: 'right',
+                        min: Math.round(mn * 1.1),
+                        max: Math.round(mx * 1.1),
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [
+                        {
+                            left: '-2%',
+                            type: 'slider',
+                            start: 0,
+                            end: 100
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+                // const container = document.getElementById()
+                window.onresize = function () {
+                    myChart.resize();
+                }
+
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+        // 使用刚指定的配置项和数据显示图表。
+    }
+
+    main2init0()
+
 
     async function main2init() {
         // 基于准备好的dom，初始化echarts实例
@@ -740,15 +867,7 @@
         // 使用刚指定的配置项和数据显示图表。
     }
 
-    // let access = 0
-    // if(access === 0){
-    //     access = 1
-    //     main2init()
-    // }
-    // else{
-    //     main2()
-    // }
-
+    main2init()
 
     async function rose() {
         var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
