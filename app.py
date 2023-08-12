@@ -50,6 +50,33 @@ def get_connection():
 
 
 # _________________________________________________________________________功能性函数_________________________________________________________________________
+# 原有模型的预测准确度
+def res_predict(df_path, model_path):
+    df = pd.read_csv(df_path)
+    model = joblib.load(model_path)
+    output = model.predict(df[['WINDSPEED', 'WINDSPEED2']])
+    return output
+
+
+origin_model_resYD15 = res_predict('模型相似度检测/test.csv', 'usingmodels/model1.pkl')
+origin_model_resPOWER = res_predict('模型相似度检测/test.csv', 'usingmodels/model2.pkl')
+
+
+def getMAE(ndarray1, ndarray2):
+    diff = np.abs(ndarray1 - ndarray2)
+    mae = np.mean(diff)
+    return mae
+
+
+# 得到相似度
+def getSimilarity(a):
+    if a > 2000:
+        a = 2000
+    a = 2000 - a
+    a = a / 2000
+    a = a * 0.4 + 0.5
+    return a
+
 
 def get_host_ip():
     """
@@ -1034,8 +1061,6 @@ def analyze_wind_power():
             'error': 'error'
         })
 
-
-
     # messages = [
     #     {"role": "system",
     #      "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
@@ -1058,7 +1083,6 @@ def analyze_wind_power():
     # print(messages)
     # 获取助手角色的回答
     # assistant_response = response['choices'][0]['message']['content']
-
 
 
 # 下载结果文件
@@ -1521,14 +1545,39 @@ def download_history_csv():
 @app.route('/getmodel', methods=['POST'])
 def get_model():
     file = request.files['file']
+    file.save('模型相似度检测/tmp.pkl')  # 保存到指定位置
+    model = joblib.load('模型相似度检测/tmp.pkl')
+    df = pd.read_csv('模型相似度检测/test.csv')
+    output = model.predict(df[['WINDSPEED','WINDSPEED2']])
+    # print(output)
     cnt = count_files_in_folder('./getmodels')
     if cnt % 2 == 0:
         tmp = int(cnt / 2)
-        file_name = "yd15_" + str(tmp + 1) + ".pkl"
+        mae = getMAE(output, origin_model_resYD15)
+        s = getSimilarity(mae)
+        s = round(s * 100, 0)
+        s = int(s)
+        file_name = "yd15_" + str(tmp + 1) + '_' + str(s) + ".pkl"
     else:
         tmp = int(cnt / 2)
-        file_name = "actualpower_" + str(tmp + 1) + ".pkl"
-    file.save('./getmodels/' + file_name)  # 保存到指定位置
+        mae = getMAE(output, origin_model_resPOWER)
+        s = getSimilarity(mae)
+        s = round(s * 100, 0)
+        s = int(s)
+        file_name = "actualpower_" + str(tmp + 1) + '_' + str(s) + ".pkl"
+
+    # 源文件路径
+    source_folder = '模型相似度检测'
+    source_file = 'tmp.pkl'
+    source_path = os.path.join(source_folder, source_file)
+
+    # 目标文件夹路径
+    target_folder = 'getmodels'
+    target_file = file_name
+    target_path = os.path.join(target_folder, target_file)
+
+    # 剪切文件并修改名称
+    shutil.copyfile(source_path, target_path)
     return '文件上传成功！'
 
 
