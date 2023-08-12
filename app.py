@@ -45,7 +45,7 @@ api_list = {
 # 创建 pymysqlpool 连接池
 def get_connection():
     connection = pymysql.connect(host=DB_CONFIG['host'], port=DB_CONFIG['port'], user=DB_CONFIG['user'],
-                                 password=DB_CONFIG['pasword'], db=DB_CONFIG['database'])
+                                 password=DB_CONFIG['password'], db=DB_CONFIG['database'])
     return connection
 
 

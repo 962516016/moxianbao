@@ -12,110 +12,129 @@
 </head>
 
 <body>
-<div class="container-scroller h-100 d-flex justify-content-center align-items-center flex-column" style="background-color: #e8eff9;height: 90vh;overflow: auto;">
-    <div class="d-flex align-items-center auth px-0 justify-content-center align-items-center" style="height: 100%">
-        <div class="row w-100 mx-0 d-flex justify-content-center align-items-center"
-             style="height: 90%!important;">
-            <div class="col-lg-6 m-auto justify-content-center align-items-center d-flex">
-                <img id="animation"
-                     style="width: 60%;height: 100%;">
-                <!--                    <div style="width: 100%;height: 100%;" ></div>-->
-                <script>
-                    var animationDiv = document.getElementById("animation");
-                    var frameIndex = 0;
-                    var totalFrames = 30;
-                    var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
-                    var images = []; // 存储图片对象的数组
-
-                    // 预加载所有图片
-                    for (var i = 1; i <= totalFrames; i++) {
-                        var img = new Image();
-                        img.src = "static/picture/gif/glyc" + i + ".png";
-                        images.push(img);
-                    }
-
-                    // 播放动画
-                    function playAnimation() {
-                        animationDiv.src = images[frameIndex].src;
-                        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
-                        frameIndex++;
-                        if (frameIndex >= totalFrames) {
-                            frameIndex = 0;
-                        }
-
-                        setTimeout(playAnimation, animationSpeed);
-                    }
-
-                    // 开始播放动画
-                    playAnimation();
-                </script>
-            </div>
-            <div class="col-lg-6 mx-auto mt-3 mb-3 mr-auto justify-content-center align-items-center d-flex">
-                <div class="auth-form-light text-left py-5 px-4 px-sm-5 min-vw-50">
-                    <div class="text-center navbar-brand-wrapper d-flex align-items-start justify-content-start">
-                        <a class="navbar-brand brand-logo" href=""><img alt="logo" src="../static/picture/logo.svg"></a>
-                    </div>
-                    <h4>欢迎使用风电功率预测系统油专特供版online</h4>
-                    <h5 class="font-weight-light">请登录</h5>
-                    {% if error %}
-                    <p style="color: red;">{{ error }}</p>
-                    {% endif %}
-                    <form action="/index" class="pt-3" id="login-form" method="POST">
-                        <div class="form-group">
-                            {% if username %}
-                            <input class="form-control form-control-lg" id="username" name="username"
-                                   placeholder="用户名" type="text" value="{{username}}">
-                            {% else %}
-                            <input class="form-control form-control-lg" id="username" name="username"
-                                   placeholder="用户名" type="text">
-                            {% endif %}
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control form-control-lg" id="password" name="password" placeholder="密码"
-                                   type="password">
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                                    onclick="submitdiy()" value="登录">登录
-                            </button>
-                        </div>
-                        <div class="my-2 d-flex justify-content-between align-items-center">
-                            <a class="auth-link text-primary" href="#">忘记密码？</a>
-                        </div>
-                        <div class="text-center mt-4 font-weight-light">
-                            还没有账号？<a class="text-primary" href="/register">注册</a>
-                        </div>
-                    </form>
-
+<div class="container-scroller  "
+     style="background-color: #e8eff9;height: 100vh;padding: 0!important;margin:0!important;overflow: auto">
+    <div class="main-panel d-flex align-items-center justify-content-between"
+         style="padding: 0!important;margin: 0!important;height: 100%!important;width: 100%!important;">
+        <div class="d-flex align-items-center auth p-0 mt-4 justify-content-center align-items-center"
+             style="height: auto">
+            <div class="row w-100 h-100 m-0 p-0 d-flex justify-content-center align-items-center">
+                <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
+                    <img id="animation"
+                         style="width: 80%;height: 80%;">
+                    <!--                    <div style="width: 100%;height: 100%;" ></div>-->
                     <script>
-                        function submitdiy() {
-                            var username = document.getElementById('username').value()
-                            var form = document.getElementById('login-form');
-                            // if(username!=='admin'){
-                            //     form.setAttribute('action', '/index?username=' + username)
-                            // console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
-                            // form.submit()
-                            // }
+                        var animationDiv = document.getElementById("animation");
+                        var frameIndex = 0;
+                        var totalFrames = 30;
+                        var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
+                        var images = []; // 存储图片对象的数组
 
-                            form.setAttribute('action', '/index?username=' + username)
-                            console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
-                            form.submit()
+                        // 预加载所有图片
+                        for (var i = 1; i <= totalFrames; i++) {
+                            var img = new Image();
+                            img.src = "static/picture/gif/glyc" + i + ".png";
+                            images.push(img);
                         }
+
+                        // 播放动画
+                        function playAnimation() {
+                            animationDiv.src = images[frameIndex].src;
+                            // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
+                            frameIndex++;
+                            if (frameIndex >= totalFrames) {
+                                frameIndex = 0;
+                            }
+
+                            setTimeout(playAnimation, animationSpeed);
+                        }
+
+                        // 开始播放动画
+                        playAnimation();
                     </script>
                 </div>
+                <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
+                    <div class="auth-form-light text-left py-5 px-4 px-sm-5 min-vw-50">
+                        <div class="text-center navbar-brand-wrapper d-flex align-items-start justify-content-start">
+                            <a class="navbar-brand brand-logo" href=""><img alt="logo" src="../static/picture/logo.svg"></a>
+                        </div>
+                        <h4>欢迎使用风电功率预测系统油专特供版online</h4>
+                        <h5 class="font-weight-light">请登录</h5>
+                        {% if error %}
+                        <p style="color: red;">{{ error }}</p>
+                        {% endif %}
+                        <form action="/index" class="pt-3" id="login-form" method="POST">
+                            <div class="form-group">
+                                {% if username %}
+                                <input class="form-control form-control-lg" id="username" name="username"
+                                       placeholder="用户名" type="text" value="{{username}}">
+                                {% else %}
+                                <input class="form-control form-control-lg" id="username" name="username"
+                                       placeholder="用户名" type="text">
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control form-control-lg" id="password" name="password"
+                                       placeholder="密码"
+                                       type="password">
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                                        onclick="submitdiy()" value="登录">登录
+                                </button>
+                            </div>
+                            <div class="my-2 d-flex justify-content-between align-items-center">
+                                <a class="auth-link text-primary" href="#">忘记密码？</a>
+                            </div>
+                            <div class="text-center mt-4 font-weight-light">
+                                还没有账号？<a class="text-primary" href="/register">注册</a>
+                            </div>
+                        </form>
+
+
+                        <script>
+                            function submitdiy() {
+                                var username = document.getElementById('username').value()
+                                var form = document.getElementById('login-form');
+                                // if(username!=='admin'){
+                                //     form.setAttribute('action', '/index?username=' + username)
+                                // console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
+                                // form.submit()
+                                // }
+
+                                form.setAttribute('action', '/index?username=' + username)
+                                console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
+                                form.submit()
+                            }
+                        </script>
+                    </div>
+                </div>
             </div>
+            <!-- page-body-wrapper ends -->
+        </div>
+
+        <div class="d-flex justify-content-center align-items-end" id="footer-placeholder"
+             style="height: 10%!important;">
+            <footer class="footer" style="padding: 12px!important;font-size: 15px!important;">
+                <div class="d-flex justify-content-center align-items-center">
+                  <span class="text-center d-block d-inline-block">
+                      Copyright &copy; 2023.
+                      <span style="font-weight: bold;font-style: italic">油专之旅</span>
+                      All rights reserved.
+                      <!--                  <a href="https://sc.chinaz.com/moban/" target="_blank">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>-->
+                  </span>
+                </div>
+            </footer>
+
         </div>
 
     </div>
-    <!-- page-body-wrapper ends -->
-    <div class="flex-grow-1 d-flex justify-content-center align-items-end" id="footer-placeholder"
-     style="height: 3%!important;">
 
 </div>
-</div>
+
 
 <script src="../static/js/jquery.js"></script>
-<script src="../static/js/nav-footer_loader.js"></script>
+<!--<script src="../static/js/nav-footer_loader.js"></script>-->
 <script src="../static/js/vendor.bundle.base.js"></script>
 <script src="../static/js/off-canvas.js"></script>
 <script src="../static/js/hoverable-collapse.js"></script>
