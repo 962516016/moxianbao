@@ -169,7 +169,7 @@
                     cell2.appendChild(checkbox);
 
                     var cell3 = document.createElement('td');
-                    cell3.textContent = fileName.slice(-6, -4);
+                    cell3.textContent = fileName.slice(-9, -7)+'.'+fileName.slice(-7, -4);
                     cell3.draggable = true; // 设置元素可拖动
                     cell3.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
 
