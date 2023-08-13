@@ -11,6 +11,7 @@ async function main_update() {
 }
 
 async function main2_update() {
+    main_update()
     await main2()
 }
 
@@ -35,9 +36,9 @@ async function turb_update() {
     let timeDom = document.getElementById('time-input');
     let turbDom = document.getElementById('turb-input')
     let turbId = turbDom.value;
-    console.log('pre-endTime[turbId]',timeDom.value)
+    console.log('pre-endTime[turbId]', timeDom.value)
     timeDom.value = endTime[turbId]
-    console.log('post-endTime[turbId]',timeDom.value)
+    console.log('post-endTime[turbId]', timeDom.value)
 }
 
 async function time_update() {
@@ -47,3 +48,22 @@ async function time_update() {
 async function length_update() {
 
 }
+
+async function bondLength() {
+    const rangeInput = document.getElementById('length-input');
+    const rangeInput2 = document.getElementById('length2-input');
+    const rangeOutput = document.getElementById('len');
+    const rangeOutput2 = document.getElementById('len2');
+    // 监听 input 事件
+    rangeInput.addEventListener('input', function () {
+        // 将 range input 的值更新到 div 元素中
+        rangeOutput.textContent = rangeInput.value;
+    });
+    // 监听 input 事件
+    rangeInput2.addEventListener('input', function () {
+        // 将 range input 的值更新到 div 元素中
+        rangeOutput2.textContent = rangeInput2.value;
+    });
+}
+
+bondLength().then()

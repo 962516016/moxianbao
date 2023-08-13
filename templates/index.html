@@ -155,7 +155,7 @@
                                                 </label>
                                             </div>
                                             <div class="col-xl-2 mb-sm-2 d-flex align-items-center justify-content-center"
-                                                 style="padding-right: 0!important;padding-left: 0!important;">
+                                                 style="padding-right: 0!important;padding-left: 0!important;display: none!important;">
                                                 <button class="btn btn-sm btn-outline-secondary text-start m-auto"
                                                         id="changepwdBtn"
                                                         onclick="selectChange();"
@@ -292,24 +292,7 @@
 <script src="../static/js/index-update.js"></script>
 <script>
 
-    async function bondLength() {
-        const rangeInput = document.getElementById('length-input');
-        const rangeInput2 = document.getElementById('length2-input');
-        const rangeOutput = document.getElementById('len');
-        const rangeOutput2 = document.getElementById('len2');
-        // 监听 input 事件
-        rangeInput.addEventListener('input', function () {
-            // 将 range input 的值更新到 div 元素中
-            rangeOutput.textContent = rangeInput.value;
-        });
-        // 监听 input 事件
-        rangeInput2.addEventListener('input', function () {
-            // 将 range input 的值更新到 div 元素中
-            rangeOutput2.textContent = rangeInput2.value;
-        });
-    }
 
-    bondLength()
 
     let mn = 10000000000
     let mx = -10000000000
@@ -318,6 +301,7 @@
     async function main() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -336,6 +320,9 @@
         const baseurl = '/predict_value?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length
         console.log('测试ssy:', baseurl);
+        // (async function (){
+        //     myChart.hideLoading();
+        // })();
 
         // GET请求
         axios.get(baseurl)
@@ -437,7 +424,7 @@
                     ]
                 };
                 myChart.setOption(option);
-                myChart.showLoading();
+                // myChart.hideLoading();
                 // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
@@ -474,34 +461,28 @@
         let length2 = lengthinput2;// 单位小时
 
         // /train_predict?
-        const baseurl = '/train_predict?' + 'turbid=' + turbid + '&&year=' + year +
+        const baseurl = '/train_predict2?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
         console.log('测试ssy2:', baseurl);
 
         // GET请求
         axios.get(baseurl)
             .then(res => {
-                console.log('测试resdata2', res.data)
-                let datetimeline = Object.entries(res.data)[1][1];
-                let pre_roundline = Object.entries(res.data)[2][1];
-                let pre_yd15line = Object.entries(res.data)[3][1];
-                let roundline = Object.entries(res.data)[0][1];
-                let yd15line = Object.entries(res.data)[4][1];
+                console.log('测试resdata-main2init0', res.data)
+                let datetimeline = Object.entries(res.data)[0][1];
+                let roundline = Object.entries(res.data)[1][1];
+                let yd15line = Object.entries(res.data)[2][1];
 
                 console.log('测试datetimeline2', datetimeline)
-                console.log('测试pre_roundline2', pre_roundline)
-                console.log('测试pre_yd15line2', pre_yd15line)
+                console.log('测试roundline2', roundline)
+                console.log('测试yd15line2', yd15line)
 
                 let datetime = []
-                let pre_yd15 = []
-                let pre_round = []
                 let yd15 = []
                 let round = []
 
                 for (let i = 0; i < datetimeline.length; i++) {
                     datetime.push((datetimeline[i]))
-                    pre_round.push(Math.round(pre_roundline[i]))
-                    pre_yd15.push(Math.round(pre_yd15line[i]))
                     round.push(Math.round(roundline[i]))
                     yd15.push(Math.round(yd15line[i]))
                 }
@@ -597,19 +578,19 @@
         // /train_predict?
         const baseurl = '/train_predict2?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
-        console.log('测试ssy2:', baseurl);
+        console.log('测试ssy-main2init:', baseurl);
 
         // GET请求
         axios.get(baseurl)
             .then(res => {
                 myChart.setOption({series: [{data: []}]})
                 myChart.resize()
-                console.log('测试resdata2', res.data)
+                console.log('测试resdata-main2init', res.data)
                 let datetimeline = Object.entries(res.data)[1][1];
                 let roundline = Object.entries(res.data)[0][1];
                 let yd15line = Object.entries(res.data)[2][1];
 
-                console.log('测试datetimeline2', datetimeline)
+                console.log('测试datetimeline-main2init', datetimeline)
 
                 let datetime = []
                 let yd15 = []
@@ -623,96 +604,68 @@
                 console.log('2', mn)
                 console.log('2', mx)
 
-                // var option = {
-                //     tooltip: {
-                //         trigger: 'axis',
-                //         position: 'left'
-                //     },
-                //     title: {
-                //         left: 'left',
-                //         text: '供、发电功率预测数据',
-                //     },
-                //     legend: {
-                //         data: ['供电功率', '发电功率'],
-                //         show: true,
-                //         itemHeight: 20,
-                //         top: '6%'
-                //     },
-                //     grid: {
-                //         left: 0,
-                //         right: '20%'
-                //     },
-                //     toolbox: {
-                //         feature: {
-                //             dataZoom: {
-                //                 // yAxisIndex: 'none'
-                //             },
-                //             restore: {},
-                //             saveAsImage: {}
-                //         }
-                //     },
-                //     xAxis: {
-                //         position: 'right',
-                //         type: 'category',
-                //         boundaryGap: false,
-                //         data: datetime,
-                //         // inverse: true
-                //         axisLabel: {
-                //             align: 'left' // 将标签对齐方式设置为右对齐
-                //         }
-                //     },
-                //     yAxis: {
-                //         position: 'right',
-                //         min: Math.round(mn * 1.1),
-                //         max: Math.round(mx * 1.1),
-                //         type: 'value',
-                //         boundaryGap: [0, '100%']
-                //     },
-                //     dataZoom: [
-                //         {
-                //             left: '-2%',
-                //             type: 'slider',
-                //             start: 0,
-                //             end: 100
-                //         }
-                //     ],
-                //     series: [
-                //         {
-                //             name: '供电功率',
-                //             type: 'line',
-                //             smooth: true,
-                //             symbol: 'none',
-                //             //areaStyle: {},
-                //             data: yd15
-                //         },
-                //         {
-                //             name: '发电功率',
-                //             type: 'line',
-                //             smooth: true,
-                //             symbol: 'none',
-                //             //areaStyle: {},
-                //             data: round
-                //         },
-                //     ]
-                // };
-                option = myChart.getOption()
-                console.log('option是', option)
-                if (option.series === null) {
-                    option.series = []
-                    option.legend = {
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        position: 'left'
+                    },
+                    title: {
+                        left: 'left',
+                        text: '供、发电功率预测数据',
+                    },
+                    legend: {
                         data: ['供电功率', '发电功率'],
                         show: true,
                         itemHeight: 20,
                         top: '6%'
-                    }
-                    option.series.append([{
-                        name: '供电功率',
-                        type: 'line',
-                        smooth: true,
-                        symbol: 'none',
-                        //areaStyle: {},
-                        data: yd15
                     },
+                    grid: {
+                        left: 0,
+                        right: '20%'
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                // yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        position: 'right',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: datetime,
+                        // inverse: true
+                        axisLabel: {
+                            align: 'left' // 将标签对齐方式设置为右对齐
+                        }
+                    },
+                    yAxis: {
+                        position: 'right',
+                        min: Math.round(mn * 1.1),
+                        max: Math.round(mx * 1.1),
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [
+                        {
+                            left: '-2%',
+                            type: 'slider',
+                            start: 0,
+                            end: 100
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '供电功率',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            //areaStyle: {},
+                            data: yd15
+                        },
                         {
                             name: '发电功率',
                             type: 'line',
@@ -720,14 +673,42 @@
                             symbol: 'none',
                             //areaStyle: {},
                             data: round
-                        }],)
-                } else {
-                    option.series[0].data = yd15
-                    option.series[1].data = round
-                }
-                option.series.splice(2, 2)
+                        },
+                    ]
+                };
+                // option = myChart.getOption()
+                // console.log('option是', option)
+                // if (option.series === null) {
+                //     option.series = []
+                //     option.legend = {
+                //         data: ['供电功率', '发电功率'],
+                //         show: true,
+                //         itemHeight: 20,
+                //         top: '6%'
+                //     }
+                //     option.series.append([{
+                //         name: '供电功率',
+                //         type: 'line',
+                //         smooth: true,
+                //         symbol: 'none',
+                //         //areaStyle: {},
+                //         data: yd15
+                //     },
+                //         {
+                //             name: '发电功率',
+                //             type: 'line',
+                //             smooth: true,
+                //             symbol: 'none',
+                //             //areaStyle: {},
+                //             data: round
+                //         }],)
+                // } else {
+                //     option.series[0].data = yd15
+                //     option.series[1].data = round
+                // }
+                // option.series.splice(2, 2)
                 myChart.setOption(option);
-                myChart.resize()
+                // myChart.resize()
                 // myChart.showLoading();
 
                 // const container = document.getElementById()
@@ -747,7 +728,7 @@
     async function main2() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
-        myChart.showLoading();
+        // myChart.showLoading();
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -766,22 +747,21 @@
         // /train_predict?
         const baseurl = '/train_predict?' + 'turbid=' + turbid + '&&year=' + year +
             '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
-        console.log('测试ssy2:', baseurl);
+        console.log('测试ssy-main2:', baseurl);
 
         // GET请求
-        fetch(baseurl)
+        axios.get(baseurl)
             .then(res => {
-
-                console.log('测试resdata2', res.data)
+                console.log('测试resdata-main2', res.data)
                 let datetimeline = Object.entries(res.data)[1][1];
                 let pre_roundline = Object.entries(res.data)[2][1];
                 let pre_yd15line = Object.entries(res.data)[3][1];
                 let roundline = Object.entries(res.data)[0][1];
                 let yd15line = Object.entries(res.data)[4][1];
 
-                console.log('测试datetimeline2', datetimeline)
-                console.log('测试pre_roundline2', pre_roundline)
-                console.log('测试pre_yd15line2', pre_yd15line)
+                console.log('测试datetimeline-main2', datetimeline)
+                console.log('测试pre_roundline-main2', pre_roundline)
+                console.log('测试pre_yd15line-main2', pre_yd15line)
 
                 let datetime = []
                 let pre_yd15 = []
@@ -884,20 +864,17 @@
                     ]
                 };
 
-
                 myChart.setOption(option);
-                myChart.hideLoading();
-                myChart.resize();/
+                // myChart.hideLoading();
+                // myChart.resize();
                 // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
                 }
-
             })
             .catch(err => {
                 console.error('axios请求错误' + err)
             })
-
         // 使用刚指定的配置项和数据显示图表。
     }
 
