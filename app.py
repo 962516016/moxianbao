@@ -6,7 +6,7 @@ import secrets
 import shutil
 import zipfile
 from datetime import datetime, timedelta
-
+import KNN_FillNaN, DataDeduplication, Resample, IQR_OutlierCorrection, Normal
 import joblib
 import matplotlib.pyplot as plt
 import matplotx
@@ -22,6 +22,7 @@ from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
 import socket
 
+import env
 # from dialog import *
 from env import GPT_API, DB_CONFIG
 
@@ -1010,8 +1011,8 @@ def data_analysis1():
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
     return render_template('report_new.html', i18n=jsonify({
-        'test':'66666666666',
-        'test2':6666666677777766666666,
+        'test': '66666666666',
+        'test2': 6666666677777766666666,
 
     }))
 
@@ -1201,28 +1202,26 @@ def newsdkapi():
     return redirect('/api')
 
 
-# _________________________________________________________________________longyuan龙源API_______________________________________________________________________
+# _________________________________________________________________________windpower风电API_______________________________________________________________________
 
-@app.route('/longyuanapi', methods=['POST'])
+@app.route('/windpowerapisavepredictfile', methods=['POST'])
 def api_predict():
     # 检查是否有文件上传
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'})
-
     # 检查身份验证头部中是否包含正确的密钥
     if 'Authorization' not in request.headers or query_sdk_username(request.headers['Authorization']) == 'false':
         return jsonify({'error': '您的密钥未被授权，请更换密钥'})
     else:
         addlog(username=query_sdk_username(request.headers['Authorization']),
                operate_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), api=api_list['api'], note='API调用')
-        return jsonify({'success': '密钥验证成功...'})
+
     file = request.files['file']
     # 检查文件类型是否为CSV
     if file.filename.endswith('.csv'):
-
-        show = request.headers['show']
+        show = request.headers['figure']
         train = request.headers['train']
-        output = request.headers['output']
+        output = request.headers['file']
 
         # 保存上传的文件
         file.save(file.filename)
@@ -1318,6 +1317,106 @@ def api_predict():
                 for file in files_to_compress:
                     zipf.write(file)
             return send_file(zip_file_path, as_attachment=True)
+
+
+@app.route('/windpowerapiprocessingdata', methods=['POST'])
+def api_processingdata():
+    # 检查是否有文件上传
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'})
+    # 检查身份验证头部中是否包含正确的密钥
+    if 'Authorization' not in request.headers or query_sdk_username(request.headers['Authorization']) == 'false':
+        return jsonify({'error': '您的密钥未被授权，请更换密钥'})
+    else:
+        addlog(username=query_sdk_username(request.headers['Authorization']),
+               operate_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), api=api_list['api'], note='API调用')
+
+    file = request.files['file']
+    # 检查文件类型是否为CSV
+    if file.filename.endswith('.csv'):
+        fill = request.headers['fill']
+        outlier = request.headers['outlier']
+        normal = request.headers['normal']
+        resample = request.headers['resample']
+        deduplication = request.headers['deduplication']
+
+        # 保存上传的文件
+        file.save(file.filename)
+        # 读取CSV文件
+        df = pd.read_csv(file.filename)
+
+        if fill == 'True':
+            df = KNN_FillNaN.getcsv(df)
+        if outlier == 'True':
+            df = IQR_OutlierCorrection.getcsv(df)
+        if resample == 'True':
+            df = Resample.getcsv(df)
+        if deduplication == 'True':
+            df = DataDeduplication.getcsv(df)
+        if normal == 'True':
+            df = Normal.getcsv(df)
+
+        df.to_csv('processed_dataset.csv', index=False)
+        return send_file('processed_dataset.csv', as_attachment=True)
+
+
+@app.route('/windpowerapiaianalysis', methods=['POST'])
+def api_aianalysis():
+    # 检查是否有文件上传
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'})
+    # 检查身份验证头部中是否包含正确的密钥
+    if 'Authorization' not in request.headers or query_sdk_username(request.headers['Authorization']) == 'false':
+        return jsonify({'error': '您的密钥未被授权，请更换密钥'})
+    else:
+        addlog(username=query_sdk_username(request.headers['Authorization']),
+               operate_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), api=api_list['api'], note='API调用')
+
+    file = request.files['file']
+    # 检查文件类型是否为CSV
+    if file.filename.endswith('.csv'):
+        ai = request.headers['ai']
+
+        # 保存上传的文件
+        file.save(file.filename)
+        # 读取CSV文件
+        df = pd.read_csv(file.filename)
+
+        if ai == 'True':
+            res_datatime = df[-172:]['DATATIME'].tolist()
+            res_windspeed = df[-172:]['WINDSPEED'].tolist()
+            res_power = df[-172:]['YD15'].tolist()
+
+
+            # 编辑prompt
+            openai.api_key = env.GPT_API
+            openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
+            # send a ChatCompletion request to GPT
+            messages = [
+                {"role": "system",
+                 "content": "我希望你扮演一个数据分析师的角色。作为数据分析师，你有深厚的数学和统计知识，并且擅长使用各种数据分析工具和编" +
+                            "程语言来解析数据。你对风电数据非常熟悉，包括功率、风速与时间的关系。你的职责是分析这些数据，并提供关于可能原因和" +
+                            "潜在风险的解释。作为数据分析师，你会仔细研究风电数据中功率、风速和时间之间的关系。你会运用统计方法分析数据的趋势和" +
+                            "模式，以确定功率和风速之间的关联程度。你会考虑不同的时间段和季节对风电发电量的影响，并尝试找出任何异常或异常行为。在" +
+                            "分析风电数据时，你会注意到一些可能的原因和潜在的风险。作为数据分析师，你的职责还包括向相关团队和管理层提供分析结果和建议。"},
+                {"role": "user",
+                 "content": "这是一列时间序列，" + to_string(res_datatime, 0) + "这是对应的风速列，" + to_string(
+                     res_windspeed,
+                     1) + "这是对应的功率列，" + to_string(
+                     res_power, 1) + "请结合时间分析一下风速对于功率的影响。"
+                                     "我需要你结合风速的变化，分析功率的变化情况，给出分析结果，比如某个时间到另一个时间内，风速发生了什么变化，功率又有什么变化，并分析原因，分析的透彻到底，大约200个汉字，一段话直接说明白，不用画图"},
+            ]
+            response = openai.ChatCompletion.create(
+                model='gpt-3.5-turbo-0301',
+                messages=messages,
+                temperature=0,
+            )
+            print(messages)
+            # 获取助手角色的回答
+            assistant_response = response['choices'][0]['message']['content']
+        return jsonify({
+            'ans': assistant_response
+        })
 
 
 # _________________________________________________________________________管理员管理模型界面_______________________________________________________________________
@@ -1552,21 +1651,21 @@ def get_model():
     file.save('模型相似度检测/tmp.pkl')  # 保存到指定位置
     model = joblib.load('模型相似度检测/tmp.pkl')
     df = pd.read_csv('模型相似度检测/test.csv')
-    output = model.predict(df[['WINDSPEED','WINDSPEED2']])
+    output = model.predict(df[['WINDSPEED', 'WINDSPEED2']])
     # print(output)
     cnt = count_files_in_folder('./getmodels')
     if cnt % 2 == 0:
         tmp = int(cnt / 2)
         mae = getMAE(output, origin_model_resYD15)
         s = getSimilarity(mae)
-        s = round(s * 100, 0)
+        s = round(s * 100000, 0)
         s = int(s)
         file_name = "yd15_" + str(tmp + 1) + '_' + str(s) + ".pkl"
     else:
         tmp = int(cnt / 2)
         mae = getMAE(output, origin_model_resPOWER)
         s = getSimilarity(mae)
-        s = round(s * 100, 0)
+        s = round(s * 100000, 0)
         s = int(s)
         file_name = "actualpower_" + str(tmp + 1) + '_' + str(s) + ".pkl"
 
