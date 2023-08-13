@@ -337,7 +337,7 @@ function preLeftdown(id) {
                 legend: {
                     top: "90%",
                     itemWidth: 10,
-                    itemHeight: 10,
+                    itemHeight: 8,
                     textStyle: {
                         color: "rgba(255,255,255,.5)",
                         fontSize: "12"
@@ -346,6 +346,9 @@ function preLeftdown(id) {
                 tooltip: {
                     trigger: "item",
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                grid: {
+                    top: '10%'
                 },
                 // 注意颜色写的位置
                 color: [
@@ -364,7 +367,7 @@ function preLeftdown(id) {
                         type: "pie",
                         // 如果radius是百分比则必须加引号
                         radius: ["10%", "70%"],
-                        center: ["50%", "42%"],
+                        center: ["50%", "45%"],
                         roseType: "radius",
                         data: [
                             {value: winddirection[0], name: "正北"},
@@ -383,9 +386,9 @@ function preLeftdown(id) {
                         // 修饰引导线样式
                         labelLine: {
                             // 连接到图形的线长度
-                            length: 10,
+                            length: 8,
                             // 连接到文字的线长度
-                            length2: 10
+                            length2: 8
                         }
                     }
                 ]
@@ -786,25 +789,25 @@ setInterval(function () {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".bar1 .chart"), null, {renderer: 'svg'});
 
-    const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
-    console.log(url)
-    await fetch(url)
-        .then(res => res.json())
-        .then(res => {
-            // console.log(res)
-            newoneDATATIME = res.DATATIME
-            newoneACTUAL = res.ACTUAL
-            newonePREACTUAL = res.PREACTUAL
-            newoneYD15 = res.YD15
-            newonePREYD15 = res.PREYD15
-            // console.log('newone', newoneDATATIME)
-        }).catch(err => {
-            console.error('axios请求错误' + err)
-        });
+    // const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
+    // console.log(url)
+    // await fetch(url)
+    //     .then(res => res.json())
+    //     .then(res => {
+    //         // console.log(res)
+    //         newoneDATATIME = res.DATATIME
+    //         newoneACTUAL = res.ACTUAL
+    //         newonePREACTUAL = res.PREACTUAL
+    //         newoneYD15 = res.YD15
+    //         newonePREYD15 = res.PREYD15
+    //         // console.log('newone', newoneDATATIME)
+    //     }).catch(err => {
+    //         console.error('axios请求错误' + err)
+    //     });
 
-    var data = [11, 7, 19, 12, 51];
+
     const sumURL = '/sum_by_turbid'
-    await fetch(sumURL)
+    fetch(sumURL)
         .then(res => res.json())
         .then(res => {
             for (let i = 11; i <= 20; i++) {
@@ -813,6 +816,7 @@ setInterval(function () {
         }).catch(err => {
             console.error('sumByTurb请求错误' + err)
         })
+    var data = [11, 7, 19, 12, 51];
     var titlename = [];
     var valdata = ['2.8M', '2.0M', '4.8M', '3.1M', '13M'];
     var myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6"];

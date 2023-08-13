@@ -71,6 +71,7 @@
                                         <thead>
                                             <tr>
                                                 <th>模型名称</th>
+                                                <th>相似度</th>
                                                 <th>选择</th>
                                             </tr>
                                         </thead>
@@ -94,6 +95,7 @@
                                         <thead>
                                             <tr>
                                                 <th>模型名称</th>
+                                                <th>相似度</th>
                                                 <th>选择</th>
                                             </tr>
                                         </thead>
@@ -156,28 +158,44 @@
                     var fileName = fileNames1[i];
                     var row = document.createElement('tr');
                     var cell1 = document.createElement('td');
-                    cell1.textContent = fileName;
+                    cell1.textContent = fileName.slice(0, -7) + '.pkl';
+
                     cell1.draggable = true; // 设置元素可拖动
                     cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
+
                     var cell2 = document.createElement('td');
                     var checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     cell2.appendChild(checkbox);
+
+                    var cell3 = document.createElement('td');
+                    cell3.textContent = fileName.slice(-6, -4);
+                    cell3.draggable = true; // 设置元素可拖动
+                    cell3.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
+
                     row.appendChild(cell1);
+                    row.appendChild(cell3);
                     row.appendChild(cell2);
                     tableBody1.appendChild(row);
                 }
                 for (var i = 0; i < fileNames2.length; i++) {
                     var fileName = fileNames2[i];
                     var row = document.createElement('tr');
+
                     var cell1 = document.createElement('td');
                     cell1.textContent = fileName;
                     cell1.draggable = true; // 设置元素可拖动
                     cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
+
                     var cell2 = document.createElement('td');
                     var checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     cell2.appendChild(checkbox);
+
+                    var cell3 = document.createElement('td');
+                    checkbox.type = 'checkbox';
+                    cell3.appendChild(checkbox);
+
                     row.appendChild(cell1);
                     row.appendChild(cell2);
 

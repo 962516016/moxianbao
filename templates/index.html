@@ -256,7 +256,7 @@
                     </div>
                 </div>
             </div>
-            <div id="footer-placeholder" >
+            <div id="footer-placeholder">
 
             </div>
         </div>
@@ -370,8 +370,10 @@
                         position: 'left'
                     },
                     title: {
-                        left: 'left',
-                        text: '供、发电功率数据',
+                        textStyle: {
+                            align: 'center',
+                        },
+                        text: '功率数据',
                     },
                     legend: {
                         data: ['供电功率', '发电功率',],
@@ -385,10 +387,6 @@
                     },
                     toolbox: {
                         feature: {
-                            dataZoom: {
-                                // yAxisIndex: 'none'
-                            },
-                            restore: {},
                             saveAsImage: {}
                         }
                     },
@@ -439,6 +437,7 @@
                     ]
                 };
                 myChart.setOption(option);
+                myChart.showLoading();
                 // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
@@ -459,9 +458,6 @@
         chartdom.innerHTML = ''
 
         var myChart = echarts.init(chartdom, null, {renderer: 'svg'});
-        myChart.clear()
-        myChart.dispose()
-        myChart = echarts.init(chartdom, null, {renderer: 'svg'});
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -506,120 +502,6 @@
                     datetime.push((datetimeline[i]))
                     pre_round.push(Math.round(pre_roundline[i]))
                     pre_yd15.push(Math.round(pre_yd15line[i]))
-                    round.push(Math.round(roundline[i]))
-                    yd15.push(Math.round(yd15line[i]))
-                }
-                console.log('2', mn)
-                console.log('2', mx)
-                var option = {
-                    tooltip: {
-                        trigger: 'axis',
-                        position: 'left'
-                    },
-                    title: {
-                        left: 'left',
-                        text: '供、发电功率预测数据',
-                    },
-                    legend: {
-                        data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测'],
-                        show: true,
-                        itemHeight: 20,
-                        top: '6%'
-                    },
-                    grid: {
-                        left: 0,
-                        right: '20%'
-                    },
-                    toolbox: {
-                        feature: {
-                            dataZoom: {
-                                // yAxisIndex: 'none'
-                            },
-                            restore: {},
-                            saveAsImage: {}
-                        }
-                    },
-                    xAxis: {
-                        position: 'right',
-                        type: 'category',
-                        boundaryGap: false,
-                        data: datetime,
-                        // inverse: true
-                        axisLabel: {
-                            align: 'left' // 将标签对齐方式设置为右对齐
-                        }
-                    },
-                    yAxis: {
-                        position: 'right',
-                        min: Math.round(mn * 1.1),
-                        max: Math.round(mx * 1.1),
-                        type: 'value',
-                        boundaryGap: [0, '100%']
-                    },
-                    dataZoom: [
-                        {
-                            left: '-2%',
-                            type: 'slider',
-                            start: 0,
-                            end: 100
-                        }
-                    ]
-                };
-                myChart.setOption(option);
-                // const container = document.getElementById()
-                window.onresize = function () {
-                    myChart.resize();
-                }
-
-            })
-            .catch(err => {
-                console.error('axios请求错误' + err)
-            })
-        // 使用刚指定的配置项和数据显示图表。
-    }
-
-    main2init0()
-
-
-    async function main2init() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
-
-        var input = document.getElementById('time-input');
-        var dateinput = input.value.split('T')[0].split('-')
-        var timeinput = input.value.split('T')[1].split(':')
-
-        var turbinput = document.getElementById('turb-input').value;
-        var lengthinput2 = document.getElementById('length2-input').value;
-
-        let turbid = turbinput;
-        let year = dateinput[0];
-        let month = dateinput[1];
-        let day = dateinput[2];
-        let hour = timeinput[0];
-        let length2 = lengthinput2;// 单位小时
-
-        // /train_predict?
-        const baseurl = '/train_predict2?' + 'turbid=' + turbid + '&&year=' + year +
-            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
-        console.log('测试ssy2:', baseurl);
-
-        // GET请求
-        axios.get(baseurl)
-            .then(res => {
-                console.log('测试resdata2', res.data)
-                let datetimeline = Object.entries(res.data)[1][1];
-                let roundline = Object.entries(res.data)[0][1];
-                let yd15line = Object.entries(res.data)[2][1];
-
-                console.log('测试datetimeline2', datetimeline)
-
-                let datetime = []
-                let yd15 = []
-                let round = []
-
-                for (let i = 0; i < datetimeline.length; i++) {
-                    datetime.push((datetimeline[i]))
                     round.push(Math.round(roundline[i]))
                     yd15.push(Math.round(yd15line[i]))
                 }
@@ -646,10 +528,6 @@
                     },
                     toolbox: {
                         feature: {
-                            dataZoom: {
-                                // yAxisIndex: 'none'
-                            },
-                            restore: {},
                             saveAsImage: {}
                         }
                     },
@@ -657,7 +535,7 @@
                         position: 'right',
                         type: 'category',
                         boundaryGap: false,
-                        data: datetime,
+                        // data: datetime,
                         // inverse: true
                         axisLabel: {
                             align: 'left' // 将标签对齐方式设置为右对齐
@@ -665,8 +543,8 @@
                     },
                     yAxis: {
                         position: 'right',
-                        min: Math.round(mn * 1.1),
-                        max: Math.round(mx * 1.1),
+                        // min: Math.round(mn * 1.1),
+                        // max: Math.round(mx * 1.1),
                         type: 'value',
                         boundaryGap: [0, '100%']
                     },
@@ -677,16 +555,164 @@
                             start: 0,
                             end: 100
                         }
-                    ],
-                    series: [
-                        {
-                            name: '供电功率',
-                            type: 'line',
-                            smooth: true,
-                            symbol: 'none',
-                            //areaStyle: {},
-                            data: yd15
-                        },
+                    ]
+                };
+                myChart.setOption(option);
+                // myChart.showLoading();
+                // const container = document.getElementById()
+                window.onresize = function () {
+                    myChart.resize();
+                }
+
+            })
+            .catch(err => {
+                console.error('axios请求错误' + err)
+            })
+        // 使用刚指定的配置项和数据显示图表。
+    }
+
+    main2init0()
+
+
+    async function main2init() {
+        // 基于准备好的dom，初始化echarts实例
+        let mydom = document.getElementById('main2');
+        var myChart = echarts.init(mydom, null, {renderer: 'svg'});
+
+
+        var input = document.getElementById('time-input');
+        var dateinput = input.value.split('T')[0].split('-')
+        var timeinput = input.value.split('T')[1].split(':')
+
+        var turbinput = document.getElementById('turb-input').value;
+        var lengthinput2 = document.getElementById('length2-input').value;
+
+        let turbid = turbinput;
+        let year = dateinput[0];
+        let month = dateinput[1];
+        let day = dateinput[2];
+        let hour = timeinput[0];
+        let length2 = lengthinput2;// 单位小时
+
+        // /train_predict?
+        const baseurl = '/train_predict2?' + 'turbid=' + turbid + '&&year=' + year +
+            '&&month=' + month + '&&day=' + day + '&&hour=' + hour + '&&length=' + length2
+        console.log('测试ssy2:', baseurl);
+
+        // GET请求
+        axios.get(baseurl)
+            .then(res => {
+                myChart.setOption({series: [{data: []}]})
+                myChart.resize()
+                console.log('测试resdata2', res.data)
+                let datetimeline = Object.entries(res.data)[1][1];
+                let roundline = Object.entries(res.data)[0][1];
+                let yd15line = Object.entries(res.data)[2][1];
+
+                console.log('测试datetimeline2', datetimeline)
+
+                let datetime = []
+                let yd15 = []
+                let round = []
+
+                for (let i = 0; i < datetimeline.length; i++) {
+                    datetime.push((datetimeline[i]))
+                    round.push(Math.round(roundline[i]))
+                    yd15.push(Math.round(yd15line[i]))
+                }
+                console.log('2', mn)
+                console.log('2', mx)
+
+                // var option = {
+                //     tooltip: {
+                //         trigger: 'axis',
+                //         position: 'left'
+                //     },
+                //     title: {
+                //         left: 'left',
+                //         text: '供、发电功率预测数据',
+                //     },
+                //     legend: {
+                //         data: ['供电功率', '发电功率'],
+                //         show: true,
+                //         itemHeight: 20,
+                //         top: '6%'
+                //     },
+                //     grid: {
+                //         left: 0,
+                //         right: '20%'
+                //     },
+                //     toolbox: {
+                //         feature: {
+                //             dataZoom: {
+                //                 // yAxisIndex: 'none'
+                //             },
+                //             restore: {},
+                //             saveAsImage: {}
+                //         }
+                //     },
+                //     xAxis: {
+                //         position: 'right',
+                //         type: 'category',
+                //         boundaryGap: false,
+                //         data: datetime,
+                //         // inverse: true
+                //         axisLabel: {
+                //             align: 'left' // 将标签对齐方式设置为右对齐
+                //         }
+                //     },
+                //     yAxis: {
+                //         position: 'right',
+                //         min: Math.round(mn * 1.1),
+                //         max: Math.round(mx * 1.1),
+                //         type: 'value',
+                //         boundaryGap: [0, '100%']
+                //     },
+                //     dataZoom: [
+                //         {
+                //             left: '-2%',
+                //             type: 'slider',
+                //             start: 0,
+                //             end: 100
+                //         }
+                //     ],
+                //     series: [
+                //         {
+                //             name: '供电功率',
+                //             type: 'line',
+                //             smooth: true,
+                //             symbol: 'none',
+                //             //areaStyle: {},
+                //             data: yd15
+                //         },
+                //         {
+                //             name: '发电功率',
+                //             type: 'line',
+                //             smooth: true,
+                //             symbol: 'none',
+                //             //areaStyle: {},
+                //             data: round
+                //         },
+                //     ]
+                // };
+                option = myChart.getOption()
+                console.log('option是', option)
+                if (option.series === null) {
+                    option.series = []
+                    option.legend = {
+                        data: ['供电功率', '发电功率'],
+                        show: true,
+                        itemHeight: 20,
+                        top: '6%'
+                    }
+                    option.series.append([{
+                        name: '供电功率',
+                        type: 'line',
+                        smooth: true,
+                        symbol: 'none',
+                        //areaStyle: {},
+                        data: yd15
+                    },
                         {
                             name: '发电功率',
                             type: 'line',
@@ -694,11 +720,16 @@
                             symbol: 'none',
                             //areaStyle: {},
                             data: round
-                        }
-
-                    ]
-                };
+                        }],)
+                } else {
+                    option.series[0].data = yd15
+                    option.series[1].data = round
+                }
+                option.series.splice(2, 2)
                 myChart.setOption(option);
+                myChart.resize()
+                // myChart.showLoading();
+
                 // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
@@ -716,6 +747,7 @@
     async function main2() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
+        myChart.showLoading();
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -737,8 +769,9 @@
         console.log('测试ssy2:', baseurl);
 
         // GET请求
-        axios.get(baseurl)
+        fetch(baseurl)
             .then(res => {
+
                 console.log('测试resdata2', res.data)
                 let datetimeline = Object.entries(res.data)[1][1];
                 let pre_roundline = Object.entries(res.data)[2][1];
@@ -786,10 +819,6 @@
                     },
                     toolbox: {
                         feature: {
-                            dataZoom: {
-                                // yAxisIndex: 'none'
-                            },
-                            restore: {},
                             saveAsImage: {}
                         }
                     },
@@ -854,7 +883,11 @@
 
                     ]
                 };
+
+
                 myChart.setOption(option);
+                myChart.hideLoading();
+                myChart.resize();/
                 // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
@@ -864,10 +897,10 @@
             .catch(err => {
                 console.error('axios请求错误' + err)
             })
+
         // 使用刚指定的配置项和数据显示图表。
     }
 
-    main2init()
 
     async function rose() {
         var roseChart = echarts.init(document.getElementById('rosechart'), null, {renderer: 'svg'});
@@ -894,6 +927,10 @@
                         top: 'bottom',
                         data: []
                     },
+                    grid: {
+                        left: '10%',
+                        right: '10%'
+                    },
                     tooltip: {
                         trigger: 'item',
                         formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -911,7 +948,7 @@
                         {
                             name: '风向统计玫瑰图',
                             type: 'pie',
-                            radius: [40, 100],
+                            radius: [30, 80],
                             center: ['50%', '50%'],
                             roseType: 'area',
                             itemStyle: {

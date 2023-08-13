@@ -1632,4 +1632,5 @@ myport = 5446
 report_port = 40000
 
 if __name__ == '__main__':
+    # print(render_template('footer.html').__str__())
     app.run(debug=True, host=myhost, port=myport)

@@ -7,6 +7,7 @@ async function selectChange() {
 
 async function main_update() {
     await main()
+    await main2init()
 }
 
 async function main2_update() {
