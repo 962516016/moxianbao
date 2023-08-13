@@ -11,7 +11,7 @@ async function main_update() {
 }
 
 async function main2_update() {
-    main_update()
+    await main()
     await main2()
 }
 
