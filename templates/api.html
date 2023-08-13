@@ -100,9 +100,13 @@
                         <h2 class="title_2">简介</h2>
                         <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
                             本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com或luodaobin2001@gmail.com联系我们，或进入<a
-                                    href="https://github.com/962516016/longyuanpower">API主页</a>交流。
+                                    href="https://github.com/962516016/windpower_upc">API主页</a>交流。
                         </h3>
                         <h2 class="title_2">参数详情</h2>
+                        <h3 class="title_3">SDK客户端主要包括processing_data、save_predict_file、ai_analysis三大模块，分别用于数据分析和预处理、模型训练预测及可视化、AI智能分析。
+                        </h3>
+                        <h3 class="title_3">processing_data模块
+                        </h3>
                         <table class="api_table">
                             <tr style="background: lightgray">
                                 <td>参数名称</td>
@@ -111,14 +115,68 @@
                                 <td>说明</td>
                             </tr>
                             <tr>
-                                <td>show</td>
+                                <td>csv_file</td>
                                 <td>是</td>
+                                <td>str</td>
+                                <td>通过该参数选择数据集路径</td>
+                            </tr>
+                            <tr>
+                                <td>fill</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否对0值进行重新填充</td>
+                            </tr>
+                            <tr>
+                                <td>deduplication</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否进行数据去重</td>
+                            </tr>
+                            <tr>
+                                <td>outlier</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否对离群点检测并修正</td>
+                            </tr>
+                            <tr>
+                                <td>normal</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否对数据进行归一化处理</td>
+                            </tr>
+                            <tr>
+                                <td>resample</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否对缺失时间点的数据进行重采样</td>
+                            </tr>
+                        </table>
+                        </h3>
+                        <h3 class="title_3">save_predict_file模块
+                        </h3>
+                        <table class="api_table">
+                            <tr style="background: lightgray">
+                                <td>参数名称</td>
+                                <td>是否必选</td>
+                                <td>类型</td>
+                                <td>说明</td>
+                            </tr>
+
+                            <tr>
+                                <td>csv_file</td>
+                                <td>是</td>
+                                <td>str</td>
+                                <td>通过该参数选择数据集路径</td>
+                            </tr>
+                            <tr>
+                                <td>figure</td>
+                                <td>否</td>
                                 <td>bool</td>
                                 <td>通过该参数选择是否导出可视化图片</td>
                             </tr>
                             <tr>
-                                <td>output</td>
-                                <td>是</td>
+                                <td>file</td>
+                                <td>否</td>
                                 <td>bool</td>
                                 <td>通过该参数选择是否导出预测后的表格文件</td>
                             </tr>
@@ -129,6 +187,29 @@
                                 <td>通过该参数选择训练并预测/预训练模型直接预测</td>
                             </tr>
                         </table>
+                        </h3>
+                        <h3 class="title_3">ai_analysis模块
+                        </h3>
+                        <table class="api_table">
+                            <tr style="background: lightgray">
+                                <td>参数名称</td>
+                                <td>是否必选</td>
+                                <td>类型</td>
+                                <td>说明</td>
+                            </tr>
+                            <tr>
+                                <td>csv_file</td>
+                                <td>是</td>
+                                <td>str</td>
+                                <td>通过该参数选择数据集路径</td>
+                            </tr>
+                            <tr>
+                                <td>ai</td>
+                                <td>否</td>
+                                <td>bool</td>
+                                <td>通过该参数选择是否对结果进行AI智能分析</td>
+                            </tr>
+                        </table>
                         <h2 class="title_2">快速入门</h2>
 
                         <h3 class="title_2_5">风电功率预测与分析服务</h3>
@@ -136,29 +217,35 @@
 
                         <pre class="pre"><code class="code"
                         >├── README.md
-├── longyuanpower                   //SDK目录
+├── windpower_upc                   //SDK目录
 │   ├── __init__.py                       //导出类
-│   ├── longyuanpower.py        //lypower基类
+│   ├── windpower_upc.py        //windpower基类
 │   └── LICENSE                         //开源许可协议
 └── setup.py                               //setuptools安装
 </code></pre>
                         <h3 class="title_2_5">安装 Python SDK</h3>
                         <h3 class="title_3">安装使用Python SDK有如下方式：<br>
-                            ●如果已安装pip，执行pip install longyuanpower即可。<br>
+                            ●如果已安装pip，执行pip install windpower_upc即可。<br>
                             ●如果已安装setuptools，执行python setup.py install即可。</h3>
                         <h3 class="title_2_5">使用方法简介</h3>
-                        <h3 class="title_3">longyuanpower是风电功率预测与分析的Python
+                        <h3 class="title_3">windpowerapi是风电功率预测与分析的Python
                             SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的交互方法。
-                            参考如下代码<br>新建一个longyuanpower.py：
+                            参考如下代码<br>新建一个windpowerapi.py：
                         </h3>
-                        <pre class="pre"><code class="code">from longyuanpower import longyuanapi
-API_URL = 'http://172.24.187.133:5446/longyuanapi'
-API_KEY = '你的 Api Key'
-SHOW = True
-OUTPUT = True
-TRAIN= True
-filepath = '你的 文档路径'
-longyuanapi(api_url, api_key, show, output, train).savepredictfile(filepath)
+                        <pre class="pre"><code class="code">import windpower_upc as wp
+
+api_url = 'http://localhost:5446/windpowerapi'
+api_key = 'your API_KEY'
+filepath = '数据集路径'
+api = wp.windpowerapi(api_url, api_key)
+
+# 对数据集进行预测并保存结果文件
+api.savepredictfile(filepath, figure=False, file=True, train=False)
+api.savepredictfile(filepath, figure=True, file=False, train=False)
+# 对数据集进行预测并保存处理后的结果文件
+api.processingdata(filepath, fill=True, outlier=True, normal=False, resample=True, deduplication=True)
+# 对预测的数据集进行AI分析
+api.aianalysis(csv_file='predictions.csv', ai=True)
 </code></pre>
                         <h3 class="title_3">
                             在上面代码中，API_KEY是系统分配给用户的，为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
