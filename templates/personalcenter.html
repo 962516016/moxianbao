@@ -145,6 +145,31 @@
                                                         </button>
 
                                                         <script>
+                                                            function copySpanToClipboard() {
+                                                                // 创建一个临时的<textarea>元素
+                                                                var tempTextarea = document.createElement('textarea');
+
+                                                                // 获取要复制的<span>元素
+                                                                var spanElement = document.getElementById('sdkspan');
+
+                                                                // 将<span>元素的内容赋值给<textarea>元素
+                                                                tempTextarea.value = spanElement.textContent;
+
+                                                                // 将<textarea>元素添加到文档中
+                                                                document.body.appendChild(tempTextarea);
+
+                                                                // 选中<textarea>元素的内容
+                                                                tempTextarea.select();
+
+                                                                // 复制选中的内容到剪贴板
+                                                                document.execCommand('copy');
+
+                                                                // 清除选中的内容和删除临时的<textarea>元素
+                                                                window.getSelection().removeAllRanges();
+                                                                document.body.removeChild(tempTextarea);
+
+                                                            }
+
                                                             function checksdk() {
                                                                 let password = prompt("请输入登录密码以校验身份:");
                                                                 if (password != null && password !== "") {
@@ -153,6 +178,10 @@
                                                                     axios.post('/verifypassword', data)
                                                                         .then(res => {
                                                                             document.getElementById("sdkspan").innerHTML = res.data;
+                                                                            if(res.data[res.data.length-1]!=='!'){
+                                                                                copySpanToClipboard();
+                                                                                alert('已复制到剪贴板');
+                                                                            }
                                                                         })
                                                                         .catch(err => {
                                                                             console.log(err)

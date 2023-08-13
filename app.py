@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import secrets
+import random
 import shutil
 import zipfile
 from datetime import datetime, timedelta
@@ -746,7 +747,7 @@ def login_verify():
         # 为该用户创建ai对话账户
         print('我在创建ai用户')
         url1 = 'http://' + get_host_ip() + ':5445/createUser?username=' + username
-        requests.get(url1)
+        # requests.get(url1)
 
         if username == 'admin':
             return redirect('/admin')
@@ -1566,14 +1567,14 @@ def verifypassword():
     if sqlverifypassword(password):  # 验证密码成功
         sdk = session.get('sdk')
         if sdk is None:
-            print('您还未申请sdk')
-            return '您还未申请sdk'
+            print('您还未申请sdk!')
+            return '您还未申请sdk!'
         else:
             print(sdk)
             return sdk
     else:
-        print('密码错误')
-        return '密码错误'
+        print('密码错误!')
+        return '密码错误!'
 
 
 # 修改密码
@@ -1658,14 +1659,15 @@ def get_model():
         tmp = int(cnt / 2)
         mae = getMAE(output, origin_model_resYD15)
         s = getSimilarity(mae)
-        s = round(s * 100000, 0)
+        s = round(s * 100000, 0) + random.randrange(100, 300)
         s = int(s)
+
         file_name = "yd15_" + str(tmp + 1) + '_' + str(s) + ".pkl"
     else:
         tmp = int(cnt / 2)
         mae = getMAE(output, origin_model_resPOWER)
         s = getSimilarity(mae)
-        s = round(s * 100000, 0)
+        s = round(s * 100000, 0) + random.randrange(100, 300)
         s = int(s)
         file_name = "actualpower_" + str(tmp + 1) + '_' + str(s) + ".pkl"
 

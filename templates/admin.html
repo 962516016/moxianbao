@@ -69,11 +69,11 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="model_table1">
                                         <thead>
-                                            <tr>
-                                                <th>模型名称</th>
-                                                <th>相似度</th>
-                                                <th>选择</th>
-                                            </tr>
+                                        <tr>
+                                            <th>模型名称</th>
+                                            <th>相似度</th>
+                                            <th>选择</th>
+                                        </tr>
                                         </thead>
                                         <tbody id="left">
 
@@ -93,11 +93,11 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="model_table2">
                                         <thead>
-                                            <tr>
-                                                <th>模型名称</th>
-                                                <th>相似度</th>
-                                                <th>选择</th>
-                                            </tr>
+                                        <tr>
+                                            <th>模型名称</th>
+                                            <th>相似度</th>
+                                            <th>选择</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
 
@@ -157,11 +157,10 @@
                 for (var i = 0; i < fileNames1.length; i++) {
                     var fileName = fileNames1[i];
                     var row = document.createElement('tr');
+                    row.draggable = true; // 设置元素可拖动
+                    row.ondragstart = dragStart;
                     var cell1 = document.createElement('td');
-                    cell1.textContent = fileName.slice(0, -7) + '.pkl';
-
-                    cell1.draggable = true; // 设置元素可拖动
-                    cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
+                    cell1.textContent = fileName.slice(0, -10) + '.pkl';
 
                     var cell2 = document.createElement('td');
                     var checkbox = document.createElement('input');
@@ -169,9 +168,7 @@
                     cell2.appendChild(checkbox);
 
                     var cell3 = document.createElement('td');
-                    cell3.textContent = fileName.slice(-9, -7)+'.'+fileName.slice(-7, -4);
-                    cell3.draggable = true; // 设置元素可拖动
-                    cell3.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
+                    cell3.textContent = fileName.slice(-9, -7) + '.' + fileName.slice(-7, -4);
 
                     row.appendChild(cell1);
                     row.appendChild(cell3);
@@ -180,55 +177,142 @@
                 }
                 for (var i = 0; i < fileNames2.length; i++) {
                     var fileName = fileNames2[i];
-                    var row = document.createElement('tr');
+                    console.log(fileName)
+                    if (fileName !== 'model1.pkl' && fileName !== 'model2.pkl') {
+                        var row = document.createElement('tr');
+                        row.draggable = true; // 设置元素可拖动
+                        row.ondragstart = dragStart;
+                        var cell1 = document.createElement('td');
+                        cell1.textContent = fileName.slice(0, -10) + '.pkl';
 
-                    var cell1 = document.createElement('td');
-                    cell1.textContent = fileName;
-                    cell1.draggable = true; // 设置元素可拖动
-                    cell1.addEventListener('dragstart', dragStart); // 添加拖动开始事件监听
 
-                    var cell2 = document.createElement('td');
-                    var checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    cell2.appendChild(checkbox);
+                        var cell2 = document.createElement('td');
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        cell2.appendChild(checkbox);
 
-                    var cell3 = document.createElement('td');
-                    checkbox.type = 'checkbox';
-                    cell3.appendChild(checkbox);
+                        var cell3 = document.createElement('td');
+                        cell3.textContent = fileName.slice(-9, -7) + '.' + fileName.slice(-7, -4);
 
-                    row.appendChild(cell1);
-                    row.appendChild(cell2);
+                        row.appendChild(cell1);
+                        row.appendChild(cell3);
+                        row.appendChild(cell2);
+                        tableBody2.appendChild(row);
+                    } else {
+                        console.log('111')
+                        var row = document.createElement('tr');
+                        var cell1 = document.createElement('td');
+                        cell1.textContent = fileName;
 
-                    tableBody2.appendChild(row);
+                        row.appendChild(cell1);
+                        tableBody2.appendChild(row);
+                    }
+
                 }
             })
             .catch(err => {
                 console.error('axios请求错误' + err)
             })
+
     }
 
-    // 拖动开始时触发
+    var table1 = document.getElementById('model_table1');
+    var table2 = document.getElementById('model_table2');
+
+    table1.addEventListener('dragover', dragOver);
+    table1.addEventListener('drop', drop_from_table2);
+    table2.addEventListener('dragover', dragOver);
+    table2.addEventListener('drop', drop_from_table1);
+
     function dragStart(event) {
-        event.dataTransfer.setData('text/plain', event.target.textContent); // 存储拖动的数据
+        // 设置被拖动数据的类型和值
+        var rowData = event.target.innerHTML;
+        event.dataTransfer.setData('text/html', rowData);
     }
 
-    // 元素在可放置区域上拖动时触发
     function dragOver(event) {
+        // 阻止默认的拖放行为
         event.preventDefault();
     }
 
-    // 元素在可放置区域上释放时触发
-    function drop(event) {
+    function drop_from_table2(event) {
+        // 阻止默认的拖放行为
         event.preventDefault();
-        var data = event.dataTransfer.getData('text/plain'); // 获取拖动的数据
-        event.target.textContent = data; // 将数据添加到目标元素
+        // 获取被拖动的行数据
+        var draggedData = event.dataTransfer.getData('text/html');
+        console.log('拖动的数据1', draggedData)
+        // 在目标表格中插入被拖动的行
+        var newRow = document.createElement('tr');
+        newRow.innerHTML = draggedData;
+        newRow.draggable = true; // 设置元素可拖动
+        newRow.ondragstart = dragStart;
+
+        var selectedColumn = [];
+        var fileName = newRow.cells[0].textContent;
+        var value = newRow.cells[1].textContent;
+        fileName = fileName.slice(0, -4);
+        fileName = fileName + '_' + value.slice(0, 2) + value.slice(3, 6) + '.pkl'
+        selectedColumn.push(fileName);
+
+
+        // 将选中的列数据发送到后端
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/remove_models_from_pool');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                // 处理后端响应
+                if (xhr.status === 200) {
+                    updatetable();
+                    console.log(xhr.responseText);
+                } else {
+                    // 请求失败
+                    console.error('请求失败');
+                }
+            }
+        };
+        xhr.send(JSON.stringify(selectedColumn));
     }
 
-    var droppableElements = document.querySelectorAll('.droppable');
-    droppableElements.forEach(function (element) {
-        element.addEventListener('dragover', dragOver);
-        element.addEventListener('drop', drop);
-    });
+    function drop_from_table1(event) {
+        // 阻止默认的拖放行为
+        event.preventDefault();
+        // 获取被拖动的行数据
+        var draggedData = event.dataTransfer.getData('text/html');
+        console.log('拖动的数据1', draggedData)
+        // 在目标表格中插入被拖动的行
+        var newRow = document.createElement('tr');
+        newRow.innerHTML = draggedData;
+        newRow.draggable = true; // 设置元素可拖动
+        newRow.ondragstart = dragStart;
+
+        var selectedColumn = [];
+        var fileName = newRow.cells[0].textContent;
+        var value = newRow.cells[1].textContent;
+        fileName = fileName.slice(0, -4);
+        fileName = fileName + '_' + value.slice(0, 2) + value.slice(3, 6) + '.pkl'
+        selectedColumn.push(fileName);
+
+
+        // 将选中的列数据发送到后端
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/add_models_to_pool');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                // 处理后端响应
+                if (xhr.status === 200) {
+                    updatetable();
+                    console.log(xhr.responseText);
+                } else {
+                    // 请求失败
+                    console.error('请求失败');
+                }
+            }
+        };
+        console.log(JSON.stringify(selectedColumn));
+        xhr.send(JSON.stringify(selectedColumn));
+    }
 
     function addmodels() {
         // 获取提交按钮元素
@@ -242,6 +326,9 @@
             checkboxes.forEach(function (checkbox) {
                 var row = checkbox.parentNode.parentNode;
                 var fileName = row.cells[0].textContent;
+                var value = row.cells[1].textContent;
+                fileName = fileName.slice(0, -4);
+                fileName = fileName + '_' + value.slice(0, 2) + value.slice(3, 6) + '.pkl'
                 selectedColumns1.push(fileName);
             });
             // 将选中的列数据发送到后端
@@ -260,6 +347,7 @@
                     }
                 }
             };
+            console.log(selectedColumns1);
             xhr.send(JSON.stringify(selectedColumns1));
         });
     }
@@ -276,6 +364,9 @@
             checkboxes.forEach(function (checkbox) {
                 var row = checkbox.parentNode.parentNode;
                 var fileName = row.cells[0].textContent;
+                var value = row.cells[1].textContent;
+                fileName = fileName.slice(0, -4);
+                fileName = fileName + '_' + value.slice(0, 2) + value.slice(3, 6) + '.pkl'
                 selectedColumns2.push(fileName);
             });
             // 将选中的列数据发送到后端
@@ -310,6 +401,9 @@
             checkboxes.forEach(function (checkbox) {
                 var row = checkbox.parentNode.parentNode;
                 var fileName = row.cells[0].textContent;
+                var value = row.cells[1].textContent;
+                fileName = fileName.slice(0, -4);
+                fileName = fileName + '_' + value.slice(0, 2) + value.slice(3, 6) + '.pkl'
                 selectedColumns3.push(fileName);
             });
             // 将选中的列数据发送到后端
