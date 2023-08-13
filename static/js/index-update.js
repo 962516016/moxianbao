@@ -12,7 +12,7 @@ async function main_update() {
 
 async function main2_update() {
     await main()
-    await main2()
+    await main2();
 }
 
 async function rose_update() {

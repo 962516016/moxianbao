@@ -1,9 +1,5 @@
 let id = document.getElementById('turb-input').value;
-
-let firstdate = ['2021-11-01 00:00:00', '2021-11-01 00:00:00', '2021-04-02 00:00:00', '2021-04-02 00:00:00', '2021-04-02 00:00:00', '2020-10-02 00:00:00', '2021-04-02 00:00:00', '2022-01-02 00:00:00', '2022-01-01 00:00:00', '2020-10-01 00:00:00'];
-
-dataurl = '/getiddata?id=' + id
-
+const dataurl = '/getiddata?id=' + id;
 let Data = {
     datetime: [],
     actual: [],
@@ -11,10 +7,6 @@ let Data = {
     yd15: [],
     pre_yd15: []
 };
-
-let sum_yd15 = [136080275, 136080367, 136080464, 136080565, 136080669, 136080770, 136080883, 136080966, 136081051, 136081152, 136081262, 136081356, 136081454, 136081538, 136081648, 136081764, 136081868, 136081952, 136082037, 136082133, 136082237, 136082332, 136082412, 136082492, 136082597, 136082682, 136082796, 136082913, 136083004, 136083111, 136083213, 136083318, 136083438, 136083539, 136083636, 136083733, 136083846, 136083941, 136084022, 136084108, 136084202, 136084289, 136084386, 136084498, 136084601, 136084701, 136084804, 136084896, 136084989, 136085101, 136085198, 136085293, 136085391, 136085505, 136085602, 136085711, 136085820, 136085913, 136086022, 136086132, 136086238, 136086357, 136086472, 136086557, 136086665, 136086777, 136086874, 136086981, 136087079, 136087174, 136087292, 136087387, 136087474, 136087579, 136087699, 136087783, 136087890, 136088004, 136088124, 136088206, 136088319, 136088418, 136088506, 136088611, 136088721, 136088823, 136088928, 136089046, 136089134, 136089222, 136089326, 136089407, 136089521, 136089612, 136089724, 136089842, 136089958];
-let sum_pre_yd15 = [137281894, 137281894, 137281894, 137281894, 137281894, 137281894, 137281894, 137281894, 136081052, 136081136, 136081267, 136081356, 136081454, 136081575, 136081643, 136081764, 136081873, 136081956, 136082049, 136082124, 136082254, 136082353, 136082420, 136082521, 136082577, 136082705, 136082767, 136082903, 136083016, 136083101, 136083202, 136083328, 136083417, 136083554, 136083646, 136083750, 136083855, 136083945, 136084026, 136084123, 136084202, 136084294, 136084381, 136084501, 136084623, 136084714, 136084790, 136084928, 136084991, 136085086, 136085190, 136085292, 136085378, 136085511, 136085623, 136085716, 136085820, 136085926, 136086026, 136086116, 136086223, 136086333, 136086449, 136086596, 136086665, 136086790, 136086863, 136086982, 136087097, 136087201, 136087263, 136087381, 136087497, 136087598, 136087672, 136087821, 136087907, 136087996, 136088106, 136088245, 136088293, 136088412, 136088527, 136088625, 136088700, 136088832, 136088918, 136089026, 136089164, 136089255, 136089341, 136089412, 136089524, 136089642, 136089717, 136089849, 136089960];
-
 let datetime = [];
 let actual = [];
 let pre_actual = [];
@@ -25,14 +17,20 @@ const N = 96;
 let start = 1;
 let end = N;
 
-
 let year_i = 0;
 let year_list = ['2020', '2021', '2022']
 let delta = 1;
 
+let DATA = [];
+let DATAper = [];
+let titlename = [];
+let valdata = [];
+let myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6"];
+let i = 11;
+let data = [];
+
 
 (async function () {
-
     fetch(dataurl)
         .then(res => res.json())
         .then(res => {
@@ -44,20 +42,23 @@ let delta = 1;
             Data.pre_yd15 = res.PREYD15
 
             datetime = Data.datetime.slice(0, N);
-            console.log('7777', datetime)
+            // console.log('7777', datetime)
             actual = Data.actual.slice(0, N);
             pre_actual = Data.pre_actual.slice(0, N);
             yd15 = Data.yd15.slice(0, N);
             pre_yd15 = Data.pre_yd15.slice(0, N);
 
+            preRightUp()
             preActual()
             preYd15()
             preLeftdown(id)
             preLeftup(id)
 
+
         }).catch(err => {
         console.error('axios请求错误' + err)
     })
+
 })();
 
 // 刷新数据的函数 - 全局实际功率倍增10%
@@ -96,9 +97,9 @@ function preLeftup(id) {
             for (let i = 15; i < 27; i++) {
                 data2022.push(parseFloat(res.values[i]))
             }
-            console.log('供电量2020', data2020)
-            console.log('供电量2021', data2021)
-            console.log('供电量2022', data2022)
+            // console.log('供电量2020', data2020)
+            // console.log('供电量2021', data2021)
+            // console.log('供电量2022', data2022)
             // 实例化对象
 
             var datax = []
@@ -213,15 +214,7 @@ function preLeftup(id) {
 
 // 每2秒执行1次刷新数据的函数 - 左上轮询2021和2022
 setInterval(async function () {
-    if (year_i === year_list.length - 1) {
-        year_i = 0;
-    } else {
-        year_i = year_i + 1;
-    }
-    console.log('测试year_i', year_i);
-    let year = year_list[year_i]
-    document.getElementById('year').innerHTML = year
-    document.getElementById(year).click()
+
 }, 2000);
 
 // 发电功率实时预测 - 左中
@@ -319,8 +312,6 @@ function preActual() {
 
 // 风向统计 - 左下
 function preLeftdown(id) {
-
-
     let winddirection = [];
 
     const url = '/get_winddirection?' + 'turbid=' + id
@@ -404,12 +395,13 @@ function preLeftdown(id) {
         }).catch(err => {
         console.error('axios请求错误' + err)
     });
-
-
 }
 
 // 刷新数据的函数 - 左中 + 右中
 async function update() {
+    // ---------------------右上-------------------------
+    await updateRU()
+    // ---------------------左中+右中-------------------------
     var myChart = echarts.init(document.querySelector(".line .chart"), null, {renderer: 'svg'});
     var myChart1 = echarts.init(document.querySelector(".line1 .chart"), null, {renderer: 'svg'});
 
@@ -425,7 +417,6 @@ async function update() {
     let minute;
 
     var nowid = document.getElementById('turb-input').value;
-
     if (nowid !== id) {
         //图重画
         id = nowid;
@@ -448,7 +439,6 @@ async function update() {
                 yd15 = Data.yd15.slice(0, N);
                 pre_yd15 = Data.pre_yd15.slice(0, N);
 
-
             }).catch(err => {
                 console.error('axios请求错误' + err)
             })
@@ -468,9 +458,8 @@ async function update() {
         hour = nowdate.getHours();
         minute = nowdate.getMinutes();
 
-
         const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
-        console.log(url)
+        // console.log(url)
         await fetch(url)
             .then(res => res.json())
             .then(res => {
@@ -485,7 +474,6 @@ async function update() {
             }).catch(err => {
                 console.error('axios请求错误' + err)
             });
-
 
         datetime = datetime.slice(1, N)
         datetime.push(newoneDATATIME)
@@ -503,8 +491,6 @@ async function update() {
         pre_yd15.push(newonePREYD15)
     }
 
-
-// 2. 指定配置和数据
     const option = {
         color: ["#00f2f1", "#ed3f35"],
         tooltip: {
@@ -747,11 +733,23 @@ async function update() {
             }
         ]
     };
-// 3. 把配置和数据给实例对象
     myChart.setOption(option);
     myChart1.setOption(option1);
-}
 
+
+    // ---------------------左上-------------------------
+    if (year_i === year_list.length - 1) {
+        year_i = 0;
+    } else {
+        year_i = year_i + 1;
+    }
+    // console.log('测试year_i', year_i);
+    let yearLU = year_list[year_i]
+    document.getElementById('year').innerHTML = yearLU
+    document.getElementById(yearLU).click()
+
+
+}
 
 // 每秒执行1次刷新数据的函数 - 左中 + 右中
 (async function () {
@@ -778,57 +776,173 @@ setInterval(function () {
 
     formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
 
-    console.log(formattedDate);  // 输出格式化后的日期和时间
+    // console.log(formattedDate);  // 输出格式化后的日期和时间
 
     datetime_dom.innerHTML = formattedDate
 }, 1000);
 
-
 // 风场累计供电量 - 右上
-(async function () {
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.querySelector(".bar1 .chart"), null, {renderer: 'svg'});
-
-    // const url = '/queryonedatabyidandtime?id=' + id + '&&year=' + year.toString() + '&&month=' + month.toString() + '&&day=' + day.toString() + '&&hour=' + hour.toString() + '&&minute=' + minute.toString()
-    // console.log(url)
-    // await fetch(url)
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         // console.log(res)
-    //         newoneDATATIME = res.DATATIME
-    //         newoneACTUAL = res.ACTUAL
-    //         newonePREACTUAL = res.PREACTUAL
-    //         newoneYD15 = res.YD15
-    //         newonePREYD15 = res.PREYD15
-    //         // console.log('newone', newoneDATATIME)
-    //     }).catch(err => {
-    //         console.error('axios请求错误' + err)
-    //     });
-
-
+function preRightUp() {
     const sumURL = '/sum_by_turbid'
     fetch(sumURL)
         .then(res => res.json())
         .then(res => {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.querySelector(".bar1 .chart"), null, {renderer: 'svg'});
+
+            let sum = 0;
             for (let i = 11; i <= 20; i++) {
-
+                // console.log('测试sumby', res[i])
+                var tmp = res[i] / 100000000.0
+                DATA.push(parseFloat(tmp.toFixed(1)))
+                sum += DATA[i - 11];
             }
-        }).catch(err => {
-            console.error('sumByTurb请求错误' + err)
-        })
-    var data = [11, 7, 19, 12, 51];
-    var titlename = [];
-    var valdata = ['2.8M', '2.0M', '4.8M', '3.1M', '13M'];
-    var myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6"];
+            for (let i = 11; i <= 20; i++) {
+                let tmp = DATA[i - 11] / sum * 100
+                DATAper[i - 11] = parseFloat(tmp.toFixed(1));
+            }
+            // console.log('测试DATA', DATA)
 
-    for (let i = 11; i <= 15; i++) {
-        titlename.push('Turb-' + i)
+            for (i = 11; i <= 15; i++) {
+                titlename.push('Turb-' + i)
+                let tmp = DATA[i - 11]
+                valdata.push(tmp.toString() + 'M');
+                data.push(DATAper[i - 11]);
+            }
+
+            option = {
+                //图标位置
+                grid: {
+                    top: "10%",
+                    left: "18%",
+                    right: "15%",
+                    bottom: "10%"
+                },
+                xAxis: {
+                    show: false
+                },
+                yAxis: [
+                    {
+                        show: true,
+                        data: titlename,
+                        inverse: true,
+                        axisLine: {
+                            show: false
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: "#fff",
+
+                            rich: {
+                                lg: {
+                                    backgroundColor: "#339911",
+                                    color: "#fff",
+                                    borderRadius: 15,
+                                    // padding: 5,
+                                    align: "center",
+                                    width: 15,
+                                    height: 15
+                                }
+                            }
+                        }
+                    },
+                    {
+                        show: true,
+                        inverse: true,
+                        data: valdata,
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: 12,
+                                color: "#fff"
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: "条",
+                        type: "bar",
+                        yAxisIndex: 0,
+                        data: data,
+                        barCategoryGap: 50,
+                        barWidth: 10,
+                        itemStyle: {
+                            normal: {
+                                barBorderRadius: 20,
+                                color: function (params) {
+                                    var num = myColor.length;
+                                    return myColor[params.dataIndex % num];
+                                }
+                            }
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: "inside",
+                                formatter: "{c}%"
+                            }
+                        }
+                    },
+                    {
+                        name: "框",
+                        type: "bar",
+                        yAxisIndex: 1,
+                        barCategoryGap: 50,
+                        data: data,
+                        barWidth: 15,
+                        itemStyle: {
+                            normal: {
+                                color: 'none',
+                                borderColor: "#00c1de",
+                                borderWidth: 3,
+                                barBorderRadius: 15
+                            }
+                        }
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        }).catch(err => {
+        console.error('sumByTurb请求错误' + err)
+    })
+
+}
+
+async function updateRU() {
+    var myChart = echarts.init(document.querySelector(".bar1 .chart"), null, {renderer: 'svg'});
+
+    titlename = titlename.slice(1, 5);
+    titlename.push('Turb-' + i);
+    valdata = valdata.slice(1, 5);
+    var temp = DATA[i - 11]
+    valdata.push(temp.toString() + 'M')
+    data = data.slice(1, 5);
+    data.push(DATAper[i - 11])
+    let colort = myColor[0];
+    myColor = myColor.slice(1, 5);
+    myColor.push(colort)
+
+    i += 1;
+    if (i >= 21) {
+        i = 10 + i % 20;
     }
+
     option = {
         //图标位置
         grid: {
             top: "10%",
-            left: "22%",
+            left: "18%",
+            right: "15%",
             bottom: "10%"
         },
         xAxis: {
@@ -906,7 +1020,7 @@ setInterval(function () {
                 type: "bar",
                 yAxisIndex: 1,
                 barCategoryGap: 50,
-                data: [11, 7, 19, 12, 51],
+                data: data,
                 barWidth: 15,
                 itemStyle: {
                     normal: {
@@ -919,13 +1033,10 @@ setInterval(function () {
             }
         ]
     };
-
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
-    window.addEventListener("resize", function () {
-        myChart.resize();
-    });
-})();
+}
+
 
 // 供电功率实时预测 - 右中
 function preYd15() {
@@ -1103,7 +1214,7 @@ function preYd15() {
         myChart.resize();
     });
 };
-// 风场地区分布 - 右下
+// 风场地区分布 - 右下 - 静态
 (async function () {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".pie .chart"), null, {renderer: 'svg'});

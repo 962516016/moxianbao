@@ -1,12 +1,12 @@
 import glob
 import json
 import os
-import requests
 import secrets
 import shutil
+import socket
 import zipfile
 from datetime import datetime, timedelta
-import KNN_FillNaN, DataDeduplication, Resample, IQR_OutlierCorrection, Normal
+
 import joblib
 import matplotlib.pyplot as plt
 import matplotx
@@ -14,17 +14,21 @@ import numpy as np
 import openai
 import pandas as pd
 import pymysql
+import requests
 from flask import Flask, jsonify, request, send_file, render_template, session, redirect
-from flask import url_for
 from flask_cors import CORS
 from lightgbm import LGBMRegressor, early_stopping
 from matplotlib.ticker import MaxNLocator
 from sklearn.model_selection import train_test_split
-import socket
 
+import DataDeduplication
+import IQR_OutlierCorrection
+import KNN_FillNaN
+import Normal
+import Resample
 import env
 # from dialog import *
-from env import GPT_API, DB_CONFIG
+from env import DB_CONFIG
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -1387,7 +1391,6 @@ def api_aianalysis():
             res_windspeed = df[-172:]['WINDSPEED'].tolist()
             res_power = df[-172:]['YD15'].tolist()
 
-
             # 编辑prompt
             openai.api_key = env.GPT_API
             openai.api_base = "https://chat-api.leyoubaloy.xyz/v1"
@@ -1699,21 +1702,36 @@ static_list = [
 
 @app.route('/sum_by_turbid', methods=['GET'])
 def sum_by_turbid():
-    connection = get_connection()  # 从连接池获取连接
-    cursor = connection.cursor()
+    # connection = get_connection()  # 从连接池获取连接
+    # cursor = connection.cursor()
+    #
+    # try:
+    #     # 执行查询语句
+    #     cursor.execute("SELECT turbid, SUM(yd15) AS sum_yd15 FROM datatmp GROUP BY TurbID")
+    #     result = cursor.fetchall()
+    #     resDict = {item[0]: item[1] for item in result}
+    #     print('sum:', resDict)
+    #
+    #     # 返回 JSON 格式的结果
+    #       return jsonify(resDict)
+    # finally:
+    #     cursor.close()
+    #     # release(connection)  # 将连接释放回连接池
+    return jsonify({
+        "11": 875243253.858176,
+        "12": 831182995.9716837,
+        "13": 1137271137.9981165,
+        "14": 621854739.6179744,
+        "15": 1962467735.8125446,
+        "16": 2256899187.198111,
+        "17": 1101151908.2103438,
+        "18": 198365430.37620512,
+        "19": 1390901559.3073874,
+        "20": 495908518.4166046
+    })
 
-    try:
-        # 执行查询语句
-        cursor.execute("SELECT turbid, SUM(yd15) AS sum_yd15 FROM datatmp GROUP BY TurbID")
-        result = cursor.fetchall()
-        resDict = {item[0]: item[1] for item in result}
-        print('sum:', resDict)
 
-        # 返回 JSON 格式的结果
-        return jsonify(resDict)
-    finally:
-        cursor.close()
-        # release(connection)  # 将连接释放回连接池
+
 
 
 # _________________________________________________________________________导航栏foot_________________________________________________________________________

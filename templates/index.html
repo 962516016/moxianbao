@@ -293,7 +293,6 @@
 <script>
 
 
-
     let mn = 10000000000
     let mx = -10000000000
     let TEMP = 0
@@ -301,6 +300,7 @@
     async function main() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+        myChart.showLoading()
 
 
         var input = document.getElementById('time-input');
@@ -357,9 +357,7 @@
                         position: 'left'
                     },
                     title: {
-                        textStyle: {
-                            align: 'center',
-                        },
+                        left: 'center',
                         text: '功率数据',
                     },
                     legend: {
@@ -423,6 +421,7 @@
                         },
                     ]
                 };
+                myChart.hideLoading()
                 myChart.setOption(option);
                 // myChart.hideLoading();
                 // const container = document.getElementById()
@@ -443,9 +442,8 @@
         // 基于准备好的dom，初始化echarts实例
         let chartdom = document.getElementById('main2')
         chartdom.innerHTML = ''
-
         var myChart = echarts.init(chartdom, null, {renderer: 'svg'});
-
+        myChart.showLoading()
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
         var timeinput = input.value.split('T')[1].split(':')
@@ -539,8 +537,6 @@
                     ]
                 };
                 myChart.setOption(option);
-                // myChart.showLoading();
-                // const container = document.getElementById()
                 window.onresize = function () {
                     myChart.resize();
                 }
@@ -559,7 +555,6 @@
         // 基于准备好的dom，初始化echarts实例
         let mydom = document.getElementById('main2');
         var myChart = echarts.init(mydom, null, {renderer: 'svg'});
-
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -676,37 +671,7 @@
                         },
                     ]
                 };
-                // option = myChart.getOption()
-                // console.log('option是', option)
-                // if (option.series === null) {
-                //     option.series = []
-                //     option.legend = {
-                //         data: ['供电功率', '发电功率'],
-                //         show: true,
-                //         itemHeight: 20,
-                //         top: '6%'
-                //     }
-                //     option.series.append([{
-                //         name: '供电功率',
-                //         type: 'line',
-                //         smooth: true,
-                //         symbol: 'none',
-                //         //areaStyle: {},
-                //         data: yd15
-                //     },
-                //         {
-                //             name: '发电功率',
-                //             type: 'line',
-                //             smooth: true,
-                //             symbol: 'none',
-                //             //areaStyle: {},
-                //             data: round
-                //         }],)
-                // } else {
-                //     option.series[0].data = yd15
-                //     option.series[1].data = round
-                // }
-                // option.series.splice(2, 2)
+                myChart.hideLoading()
                 myChart.setOption(option);
                 // myChart.resize()
                 // myChart.showLoading();
@@ -728,7 +693,7 @@
     async function main2() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main2'), null, {renderer: 'svg'});
-        // myChart.showLoading();
+        myChart.showLoading();
 
         var input = document.getElementById('time-input');
         var dateinput = input.value.split('T')[0].split('-')
@@ -863,7 +828,7 @@
 
                     ]
                 };
-
+                myChart.hideLoading()
                 myChart.setOption(option);
                 // myChart.hideLoading();
                 // myChart.resize();
