@@ -24954,10 +24954,10 @@ body.avgrund-active {
 #settings-trigger {
   position: fixed;
   bottom: 40px;
-  right: 30px;
+  right: 25px;
   height: 45px;
   width: 45px;
-  background: #f2125e;
+  background: rgb(56, 56, 72);
   z-index: 99;
   display: -webkit-flex;
   display: flex;
