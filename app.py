@@ -33,7 +33,6 @@ import env
 from env import DB_CONFIG
 import base64
 
-
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 CORS(app)
@@ -1000,29 +999,25 @@ def get_file():
 
 
 # 数据分析
-@app.route('/data_analyze')
+@app.route('/data_analyze', methods=['GET'])
 def data_analysis():
+    select = request.args.get('select')
     now = datetime.now()
     operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    csvid = '1'
+    tmp_path = 'userdata/%s/当前上传数据集/tmp.csv' % session.get('username')
+    df = pd.read_csv(tmp_path)
+    turbid = df['TurbID'].iloc[0]
+    if turbid == 1:
+        csvid = '1'
+    else :
+        csvid = '2'
     # 添加日志
     addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    return render_template('report.html')
+    print(csvid+'_report'+select+'.html')
+    return render_template('/report/'+csvid+'_report'+select+'.html')
+    # return render_template('1_report0000.html')
 
-
-# 暂时跳转版本
-@app.route('/data_analyze1')
-def data_analysis1():
-    # profile = ProfileReport(df_upload_file)
-    # profile.to_file("templates/report.html")
-    now = datetime.now()
-    operate_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    # 添加日志
-    addlog(username=session['username'], operate_time=operate_time, api=api_list['data_analyze'], note="数据分析处理")
-    return render_template('report_new.html', i18n=jsonify({
-        'test': '66666666666',
-        'test2': 6666666677777766666666,
-
-    }))
 
 
 # 对上传的文件进行预测并返回（功率预测）
@@ -1155,6 +1150,7 @@ def download_offine_soft():
 def newsdkoffline():
     sdk = secrets.token_hex(16).__str__()
     username = session.get('username')
+
     connection = get_connection()
     cursor = connection.cursor()
     time = datetime.now() + timedelta(days=31)
@@ -1170,6 +1166,7 @@ def newsdkoffline():
         sdk = None
     print('申请sdk测试', sdk)
     session['sdk'] = sdk
+    session['sdktime'] = time
     # jsonify({'sdk': sdk})
     return redirect('/offline')
 
@@ -1206,6 +1203,7 @@ def newsdkapi():
     print('申请sdk测试', sdk)
     session['sdk'] = sdk
     session['sdktime'] = time
+
     # jsonify({'sdk': sdk})
     return redirect('/api')
 
@@ -1484,6 +1482,7 @@ def removemodels():
         shutil.move(path_pool + filenames[i], path_root + filenames[i])
     return 'ok'
 
+
 # _________________________________________________________________________日志____________________________________________________________________________
 
 # 用户日志界面跳转
@@ -1727,9 +1726,6 @@ def sum_by_turbid():
         "19": 1390901559.3073874,
         "20": 495908518.4166046
     })
-
-
-
 
 
 # _________________________________________________________________________导航栏foot_________________________________________________________________________

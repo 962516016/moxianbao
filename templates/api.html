@@ -95,118 +95,118 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div style="background: white;width: 100%;height: 100%">
-                    <h1 class="title_1">Python SDK文档</h1>
-                    <div id="api-doc-content">
+                    <h1 class="title_1 p-0" style="margin-left: 0!important;margin-right: 0!important;">Python SDK文档</h1>
+                    <div id="api-doc-content" >
                         <h2 class="title_2">简介</h2>
                         <h3 class="title_3">Hi，您好，欢迎使用风电功率预测与分析服务。<br>
                             本文档主要针对Python开发者，描述预测与分析接口服务的相关技术内容。如果您对文档内容有任何疑问，可以通过liuyuange811@gmail.com或luodaobin2001@gmail.com联系我们，或进入<a
                                     href="https://github.com/962516016/windpower_upc">API主页</a>交流。
                         </h3>
-                        <h2 class="title_2">参数详情</h2>
-                        <h3 class="title_3">SDK客户端主要包括processing_data、save_predict_file、ai_analysis三大模块，分别用于数据分析和预处理、模型训练预测及可视化、AI智能分析。
+                        <h2 class="title_2" >参数详情</h2>
+                        <h3 class="title_3" >SDK客户端主要包括processing_data、save_predict_file、ai_analysis三大模块，分别用于数据分析和预处理、模型训练预测及可视化、AI智能分析。
                         </h3>
                         <h3 class="title_3">processing_data模块
                         </h3>
-                        <table class="api_table">
+                        <table class="api_table d-flex align-items-center justify-content-start" style="margin-left: 25px!important;margin-right: 25px!important;">
                             <tr style="background: lightgray">
-                                <td>参数名称</td>
-                                <td>是否必选</td>
-                                <td>类型</td>
-                                <td>说明</td>
+                                <td style="font-weight: bold">参数名称</td>
+                                <td style="font-weight: bold">是否必选</td>
+                                <td style="font-weight: bold">类型</td>
+                                <td style="font-weight: bold">说明</td>
                             </tr>
                             <tr>
-                                <td>csv_file</td>
+                                <td style="font-family: Courier New,serif;">csv_file</td>
                                 <td>是</td>
-                                <td>str</td>
+                                <td style="font-family: Courier New,serif;">str</td>
                                 <td>通过该参数选择数据集路径</td>
                             </tr>
                             <tr>
-                                <td>fill</td>
+                                <td style="font-family: Courier New,serif;">fill</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否对0值进行重新填充</td>
                             </tr>
                             <tr>
-                                <td>deduplication</td>
+                                <td style="font-family: Courier New,serif;">deduplication</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否进行数据去重</td>
                             </tr>
                             <tr>
-                                <td>outlier</td>
+                                <td style="font-family: Courier New,serif;">outlier</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否对离群点检测并修正</td>
                             </tr>
                             <tr>
-                                <td>normal</td>
+                                <td style="font-family: Courier New,serif;">normal</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否对数据进行归一化处理</td>
                             </tr>
                             <tr>
-                                <td>resample</td>
+                                <td style="font-family: Courier New,serif;">resample</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否对缺失时间点的数据进行重采样</td>
                             </tr>
                         </table>
                         </h3>
                         <h3 class="title_3">save_predict_file模块
                         </h3>
-                        <table class="api_table">
+                        <table class="api_table d-flex align-items-center justify-content-start" style="margin-left: 25px!important;margin-right: 25px!important;">
                             <tr style="background: lightgray">
-                                <td>参数名称</td>
-                                <td>是否必选</td>
-                                <td>类型</td>
-                                <td>说明</td>
+                                <td style="font-weight: bold">参数名称</td>
+                                <td style="font-weight: bold">是否必选</td>
+                                <td style="font-weight: bold">类型</td>
+                                <td style="font-weight: bold">说明</td>
                             </tr>
 
                             <tr>
-                                <td>csv_file</td>
+                                <td style="font-family: Courier New,serif;">csv_file</td>
                                 <td>是</td>
-                                <td>str</td>
+                                <td style="font-family: Courier New,serif;">str</td>
                                 <td>通过该参数选择数据集路径</td>
                             </tr>
                             <tr>
-                                <td>figure</td>
+                                <td style="font-family: Courier New,serif;">figure</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否导出可视化图片</td>
                             </tr>
                             <tr>
-                                <td>file</td>
+                                <td style="font-family: Courier New,serif;">file</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否导出预测后的表格文件</td>
                             </tr>
                             <tr>
-                                <td>train</td>
+                                <td style="font-family: Courier New,serif;">train</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择训练并预测/预训练模型直接预测</td>
                             </tr>
                         </table>
                         </h3>
                         <h3 class="title_3">ai_analysis模块
                         </h3>
-                        <table class="api_table">
+                        <table class="api_table d-flex align-items-center justify-content-start w-auto" style="margin-left: 25px!important;margin-right: 25px!important;">
                             <tr style="background: lightgray">
-                                <td>参数名称</td>
-                                <td>是否必选</td>
-                                <td>类型</td>
-                                <td>说明</td>
+                                <td style="font-weight: bold">参数名称</td>
+                                <td style="font-weight: bold">是否必选</td>
+                                <td style="font-weight: bold">类型</td>
+                                <td style="font-weight: bold">说明</td>
                             </tr>
                             <tr>
-                                <td>csv_file</td>
+                                <td style="font-family: Courier New,serif;">csv_file</td>
                                 <td>是</td>
-                                <td>str</td>
+                                <td style="font-family: Courier New,serif;">str</td>
                                 <td>通过该参数选择数据集路径</td>
                             </tr>
                             <tr>
-                                <td>ai</td>
+                                <td style="font-family: Courier New,serif;">ai</td>
                                 <td>否</td>
-                                <td>bool</td>
+                                <td style="font-family: Courier New,serif;">bool</td>
                                 <td>通过该参数选择是否对结果进行AI智能分析</td>
                             </tr>
                         </table>
@@ -215,13 +215,15 @@
                         <h3 class="title_2_5">风电功率预测与分析服务</h3>
                         <h3 class="title_2_5">Python SDK目录结构</h3>
 
-                        <pre class="pre"><code class="code"
-                        >├── README.md
-├── windpower_upc                   //SDK目录
-│   ├── __init__.py                       //导出类
-│   ├── windpower_upc.py        //windpower基类
-│   └── LICENSE                         //开源许可协议
-└── setup.py                               //setuptools安装
+                        <pre class="pre p-0 w-auto d-flex justify-content-center align-items-center" style="margin-left: 25px!important;margin-right: 25px!important;">
+                            <code class="code p-0 m-0" style="margin-left: 0!important;margin-right: 0!important;">
+ ├── README.md
+ ├── windpower_upc                               //SDK目录
+ │   ├── __init__.py                             //导出类
+ │   ├── windpower_upc.py                        //windpower基类
+ │   └── LICENSE                                 //开源许可协议
+ └── setup.py                                    //setuptools安装
+
 </code></pre>
                         <h3 class="title_2_5">安装 Python SDK</h3>
                         <h3 class="title_3">安装使用Python SDK有如下方式：<br>
@@ -232,22 +234,26 @@
                             SDK客户端，为使用风电功率预测与分析的开发人员提供了一系列的交互方法。
                             参考如下代码<br>新建一个windpowerapi.py：
                         </h3>
-                        <pre class="pre"><code class="code">import windpower_upc as wp
+                        <pre class="pre p-0 w-auto" style="margin-left: 25px!important;margin-right: 25px!important;">
+                            <code class="code p-0 m-0" style="margin-left: 0!important;margin-right: 0!important;">
+ import windpower_upc as wp
 
-api_url = 'http://localhost:5446/windpowerapi'
-api_key = 'your API_KEY'
-filepath = '数据集路径'
-api = wp.windpowerapi(api_url, api_key)
+ api_url = 'http://localhost:5446/windpowerapi'
+ api_key = 'your API_KEY'
+ filepath = '数据集路径'
+ api = wp.windpowerapi(api_url, api_key)
 
-# 对数据集进行预测并保存结果文件
-api.savepredictfile(filepath, figure=False, file=True, train=False)
-api.savepredictfile(filepath, figure=True, file=False, train=False)
-# 对数据集进行预测并保存处理后的结果文件
-api.processingdata(filepath, fill=True, outlier=True, normal=False, resample=True, deduplication=True)
-# 对预测的数据集进行AI分析
-api.aianalysis(csv_file='predictions.csv', ai=True)
+ # 对数据集进行预测并保存结果文件
+ api.savepredictfile(filepath, figure=False, file=True, train=False)
+ api.savepredictfile(filepath, figure=True, file=False, train=False)
+
+ # 对数据集进行预测并保存处理后的结果文件
+ api.processingdata(filepath, fill=True, outlier=True, normal=False, resample=True, deduplication=True)
+
+ # 对预测的数据集进行AI分析
+ api.aianalysis(csv_file='predictions.csv', ai=True)
 </code></pre>
-                        <h3 class="title_3">
+                        <h3 class="title_3 mb-5 pb-5">
                             在上面代码中，API_KEY是系统分配给用户的，为字符串，用于标识用户，为访问做签名验证，可在个人中心查看。</h3>
                     </div>
                 </div>

@@ -12620,7 +12620,7 @@ input[type="button"].btn-block {
 .nav {
   display: flex;
   flex-wrap: wrap;
-  width: 205px !important;
+  width: auto;
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
@@ -18921,7 +18921,7 @@ pre {
 code {
   padding: 5px;
   color: #ff0000;
-  font-family: "Roboto", sans-serif;
+  font-family: "Courier New", sans-serif;
   font-weight: 300;
   font-size: 0.875rem;
   border-radius: 4px;
@@ -18988,7 +18988,7 @@ code {
   -webkit-transition: all 0.25s ease;
   -ms-transition: all 0.25s ease;
   font-size: calc(0.875rem - 0.05rem);
-  font-family: "Roboto", sans-serif;
+  font-family: "Courier New", sans-serif;
   font-weight: 400;
 }
 
@@ -23146,18 +23146,18 @@ body.avgrund-active {
 .main-panel {
   position: absolute;
   transition: width 0.25s ease, margin 0.25s ease;
-  width: calc(100% - 205px) ;
+  width: calc(100% - 255px) ;
   min-height: calc(100vh - 64px);
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
-  margin-left: 205px;
+  margin-left: 255px;
 }
 
 @media (max-width: 991px) {
   .main-panel {
-    margin-left: 0;
+    margin-left: 0px;
     width: 100%;
   }
 }
@@ -23184,7 +23184,7 @@ body.avgrund-active {
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   padding: 0;
-  width: 205px;
+  width: 255px;
   z-index: 11;
   transition: width 0.25s ease, background 0.25s ease;
   -webkit-transition: width 0.25s ease, background 0.25s ease;
@@ -23602,7 +23602,7 @@ body.avgrund-active {
     top: 64px;
     bottom: 0;
     overflow: auto;
-    right: -205px;
+    right: -255px;
     -webkit-transition: all 0.25s ease-out;
     -o-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
@@ -24502,6 +24502,7 @@ body.avgrund-active {
   }
   .sidebar-icon-only .main-panel {
     width: calc(100% - 70px);
+    margin-left: 70px
   }
 }
 
@@ -24560,7 +24561,7 @@ body.avgrund-active {
   .sidebar-fixed .sidebar .nav.sub-menu {
     max-height: none;
   }
-  .sidebar-fixed .main-panel {
+  .sidebar-fixed {
     margin-left: 255px;
   }
   .sidebar-fixed.sidebar-icon-only .main-panel {
@@ -24711,7 +24712,7 @@ body.avgrund-active {
 .settings-panel .settings-heading {
   padding: 16px 0 13px 35px;
   font-size: 0.875rem;
-  font-family: "Roboto", sans-serif;
+  font-family: "Courier New", sans-serif;
   font-weight: 500;
   line-height: 1;
   color: rgba(0, 0, 0, 0.9);
@@ -24906,7 +24907,7 @@ body.avgrund-active {
 }
 
 .settings-panel .events p {
-  font-family: "Roboto", sans-serif;
+  font-family: "Courier New", sans-serif;
   font-weight: 400;
 }
 
@@ -24996,7 +24997,6 @@ body.avgrund-active {
 
 @media (max-width: 991px) {
   #settings-trigger {
-    display: none;
   }
 }
 
@@ -25326,26 +25326,26 @@ body.avgrund-active {
 .title_1{
   font-size: 30px;
   font-weight: bold;
-  text-indent: 50px;
+  text-indent: 25px;
   line-height: 100px;
 }
 .title_2{
   font-size: 25px;
   font-weight: bold;
-  text-indent: 50px;
+  text-indent: 25px;
   line-height: 30px;
 }
 .title_2_5{
   font-size: 20.5px;
   font-weight: bold;
-  text-indent: 50px;
+  text-indent: 25px;
   line-height: 30px;
 }
 .title_3{
   font-size: 19px;
   line-height: 30px;
-  margin-left: 50px;
-  margin-right: 50px;
+  margin-left: 25px;
+  margin-right: 25px;
 }
 .pre{
   background: white;
@@ -25356,7 +25356,7 @@ body.avgrund-active {
 .code{
   display: block; /* 设置为块级元素 */
   margin-left: 30px;
-  width: 95%; /* 设置宽度 */
+  width: 100%; /* 设置宽度 */
   height: auto;
   overflow: auto;
   word-wrap: break-word; /* 自动换行 */

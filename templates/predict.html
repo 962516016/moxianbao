@@ -138,7 +138,17 @@
                                         flg_report = true;
                                         reportDisplay()
                                         let iframe = document.getElementById('report1');
-                                        iframe.src = "/data_analyze";
+
+                                        let select = '0000'
+                                        var checkbox1 = document.getElementById("checkbox1").checked ? 1 : 0;
+                                        var checkbox2 = document.getElementById("checkbox2").checked ? 1 : 0;
+                                        var checkbox3 = document.getElementById("checkbox3").checked ? 1 : 0;
+                                        var checkbox4 = document.getElementById("checkbox4").checked ? 1 : 0;
+
+                                        select = checkbox1.toString() + checkbox2.toString() + checkbox3.toString() + checkbox4.toString();
+                                        console.log('select测试', select);  // 打印生成的select变量
+
+                                        iframe.src = "/data_analyze?select="+select;
                                         iframe.style.display = 'block'
                                         iframe.style.border = '2px #000'
                                     }
@@ -182,7 +192,8 @@
                                         myChart.clear();
                                         var aitextarea = document.getElementById('aianswer');
                                         var linechartdom = document.getElementById('linechart');
-
+                                        myChart = echarts.init(linechartdom, 'canvas');
+                                        myChart.showLoading();
                                         // 在这里发送请求到后端获取数据并绘图
                                         let json_data;
                                         fetch('/online_predict')
@@ -237,6 +248,7 @@
                                                         },
                                                     ]
                                                 };
+                                                myChart.hideLoading();
                                                 myChart.setOption(option);
 
 
@@ -415,47 +427,40 @@
                                 <div class="row mb-2 mt-2 flex-grow justify-content-center align-items-center d-flex">
                                     <div class="col-xl-4 px-0 pr-0 d-flex justify-content-center align-items-center">
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
-                                            <input type="checkbox">
-                                            <span style="font-weight: bold">空缺值填充</span>
+                                            <label>
+                                                <input type="checkbox" id="checkbox1">
+                                                <span style="font-weight: bold">空缺值填充</span>
+                                            </label>
+
                                         </div>
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
-                                            <input type="checkbox">
-                                            <span style="font-weight: bold">离群点修正</span>
+                                            <label>
+                                                <input type="checkbox" id="checkbox2">
+                                                <span style="font-weight: bold">离群点修正</span>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 px-0 pr-0 d-flex justify-content-center align-items-center">
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
-                                            <input type="checkbox">
-                                            <span style="font-weight: bold">重复值去除</span>
-
+                                            <label>
+                                                <input type="checkbox" id="checkbox3">
+                                                <span style="font-weight: bold">重复值去除</span>
+                                            </label>
                                         </div>
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
-                                            <input type="checkbox">
-                                            <span style="font-weight: bold">数据重采样</span>
-
+                                            <label>
+                                                <input type="checkbox" id="checkbox4">
+                                                <span style="font-weight: bold">数据重采样</span>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-xl-2 px-0 pr-0 d-flex justify-content-center align-items-center">
                                         <div class="col-lg-12 px-0 pr-0 d-flex justify-content-center align-items-center">
-                                            <button class="btn-tmp" onclick="openReport1()">
-                                                提交
+                                            <button class="btn-tmp" onclick="openReport()">
+                                                提交更改
                                             </button>
                                         </div>
                                     </div>
-
-                                    <script>
-                                        function openReport1() {
-                                            document.getElementById('chart').style.display = 'none'
-                                            document.getElementById('buttons').style.display = 'block'
-                                            document.getElementById('report1').style.display = 'block'
-                                            // $('#report').load('/data_analyze1')
-
-                                            let iframe = document.getElementById('report1');
-                                            iframe.src = "/data_analyze1";
-                                            iframe.style.display = 'block'
-                                            iframe.style.border = '0px'
-                                        }
-                                    </script>
                                 </div>
                                 <!--                                </div>-->
                                 <div class="card-body w-100 p-0 d-flex justify-content-center align-items-center">
