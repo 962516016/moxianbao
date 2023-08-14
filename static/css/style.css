@@ -24650,9 +24650,9 @@ body.avgrund-active {
   display: block;
   position: fixed;
   top: 64px;
-  right: -300px;
+  right: -205px;
   bottom: 0;
-  width: 300px;
+  width: 205px;
   height: 100vh;
   min-height: 100%;
   background: #ffffff;
