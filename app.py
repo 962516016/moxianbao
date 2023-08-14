@@ -1592,12 +1592,6 @@ def changepassword():
         return '修改失败，请重试'
 
 
-# 弹出续费界面
-@app.route('/addsdktime')
-def addsdktime():
-    username = session.get('username')
-    return render_template('addsdktime.html', username=username)
-
 
 # 将续费时长添加
 @app.route('/sdktimeadd', methods=['GET'])

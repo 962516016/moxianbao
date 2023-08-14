@@ -16,6 +16,11 @@
     <script src="../static/js/modernizr-2.8.3.min.js"></script>
     <script src="../static/js/jquery.js"></script>
     <script src="../static/js/echarts.js"></script>
+    <script>
+        let flg_report = false;
+        let flg_predict = false;
+        let flg_ai = false;
+    </script>
 </head>
 <body>
 <i id="bannerClose"></i>
@@ -59,18 +64,21 @@
             <div class="settings-panel" id="theme-settings">
                 <i class="settings-close typcn typcn-delete-outline"></i>
                 <p class="settings-heading mt-5 mb-5" style="font-weight: bold; font-size: 20px">页面切换</p>
-                <a class="sidebar-bg-options" href="#" id="sidebar-report">
-                    <div class="img-ss rounded-circle bg-light border mr-3 " onclick="reportDisplay()"></div>
+                <a class="sidebar-bg-options" href="#" id="sidebar-report" style="text-decoration: none"
+                   onclick="reportDisplay()">
+                    <div class=" typcn typcn-arrow-right-outline mr-2 "></div>
                     数据分析页面
 
                 </a>
-                <a class="sidebar-bg-options" href="#" id="sidebar-predict" onclick="linechart()">
-                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>
+                <a class="sidebar-bg-options" href="#" id="sidebar-predict" onclick="linechart()"
+                   style="text-decoration: none">
+                    <div class="typcn typcn-arrow-right-outline mr-2"></div>
                     预测功率页面
 
                 </a>
-                <a class="sidebar-bg-options" href="#" id="sidebar-dialog" onclick="dialogDisplay()" >
-                    <div class="img-ss rounded-circle bg-light border mr-3"></div>
+                <a class="sidebar-bg-options" href="#" id="sidebar-dialog" onclick="dialogDisplay()"
+                   style="text-decoration: none">
+                    <div class="typcn typcn-arrow-right-outline mr-2"></div>
                     AI 分析页面
                     <!--                    <li class="idebar-bg-options selected nav-item">-->
                     <!--                    <a class="nav-link" href="/personalcenter">-->
@@ -127,6 +135,7 @@
                                 </button>
                                 <script>
                                     function openReport() {
+                                        flg_report = true;
                                         reportDisplay()
                                         let iframe = document.getElementById('report1');
                                         iframe.src = "/data_analyze";
@@ -135,15 +144,26 @@
                                     }
 
                                     function reportDisplay() {
-                                        document.getElementById('buttonsContainer').style.display = 'block'
-                                        document.getElementById('chartContainer').style.display = 'none'
-                                        document.getElementById('dialogContainer').style.display = 'none'
+                                        if (flg_report === true) {
+
+                                            document.getElementById('chartContainer').style.display = 'none'
+                                            document.getElementById('dialogContainer').style.display = 'none'
+                                            document.getElementById('buttonsContainer').style.display = 'block'
+                                        } else {
+                                            openReport();
+                                        }
                                     }
 
                                     function linechart() {
-                                        document.getElementById('buttonsContainer').style.display = 'none'
-                                        document.getElementById('chartContainer').style.display = 'block'
-                                        document.getElementById('dialogContainer').style.display = 'none'
+                                        if (flg_predict === true) {
+
+                                            document.getElementById('chartContainer').style.display = 'block'
+                                            document.getElementById('dialogContainer').style.display = 'none'
+                                            document.getElementById('buttonsContainer').style.display = 'none'
+                                        } else {
+                                            initmychart();
+                                        }
+
                                     }
 
                                 </script>
@@ -156,94 +176,95 @@
                                 </button>
                                 <script>
                                     function initmychart() {
-                                        document.getElementById('predictionBtn').addEventListener('click', function () {
-                                            linechart()
-                                            myChart.dispose();
-                                            myChart.clear();
-                                            var aitextarea = document.getElementById('aianswer');
-                                            var linechartdom = document.getElementById('linechart');
+                                        flg_predict = true;
+                                        linechart()
+                                        myChart.dispose();
+                                        myChart.clear();
+                                        var aitextarea = document.getElementById('aianswer');
+                                        var linechartdom = document.getElementById('linechart');
 
-                                            // 在这里发送请求到后端获取数据并绘图
-                                            let json_data;
-                                            fetch('/online_predict')
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    json_data = data;
-                                                    console.log(json_data)
-                                                    myChart = echarts.init(linechartdom, 'canvas');
-                                                    // 指定图表的配置项和数据
-                                                    var datatime = json_data.DATATIME;
-                                                    var yd15 = json_data.PRE_YD15;
-                                                    var power = json_data.PRE_POWER;
-                                                    var option = {
-                                                        tooltip: {
-                                                            trigger: 'axis',
-                                                            position: 'left'
+                                        // 在这里发送请求到后端获取数据并绘图
+                                        let json_data;
+                                        fetch('/online_predict')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                json_data = data;
+                                                console.log(json_data)
+                                                myChart = echarts.init(linechartdom, 'canvas');
+                                                // 指定图表的配置项和数据
+                                                var datatime = json_data.DATATIME;
+                                                var yd15 = json_data.PRE_YD15;
+                                                var power = json_data.PRE_POWER;
+                                                var option = {
+                                                    tooltip: {
+                                                        trigger: 'axis',
+                                                        position: 'left'
+                                                    },
+                                                    legend: {
+                                                        data: ['发电功率预测', '供电功率预测']
+                                                    },
+                                                    grid: {
+                                                        left: '3%',
+                                                        right: '4%',
+                                                        bottom: '3%',
+                                                        containLabel: true
+                                                    },
+                                                    toolbox: {
+                                                        feature: {
+                                                            saveAsImage: {}
+                                                        }
+                                                    },
+                                                    xAxis: {
+                                                        type: 'category',
+                                                        boundaryGap: false,
+                                                        data: datatime
+                                                    },
+                                                    yAxis: {
+                                                        type: 'value'
+                                                    },
+                                                    series: [
+                                                        {
+                                                            name: '发电功率预测',
+                                                            type: 'line',
+                                                            data: power,
+                                                            animation: true
                                                         },
-                                                        legend: {
-                                                            data: ['发电功率预测', '供电功率预测']
+                                                        {
+                                                            name: '供电功率预测',
+                                                            type: 'line',
+                                                            data: yd15,
+                                                            animation: true
                                                         },
-                                                        grid: {
-                                                            left: '3%',
-                                                            right: '4%',
-                                                            bottom: '3%',
-                                                            containLabel: true
-                                                        },
-                                                        toolbox: {
-                                                            feature: {
-                                                                saveAsImage: {}
-                                                            }
-                                                        },
-                                                        xAxis: {
-                                                            type: 'category',
-                                                            boundaryGap: false,
-                                                            data: datatime
-                                                        },
-                                                        yAxis: {
-                                                            type: 'value'
-                                                        },
-                                                        series: [
-                                                            {
-                                                                name: '发电功率预测',
-                                                                type: 'line',
-                                                                data: power,
-                                                                animation: true
-                                                            },
-                                                            {
-                                                                name: '供电功率预测',
-                                                                type: 'line',
-                                                                data: yd15,
-                                                                animation: true
-                                                            },
-                                                        ]
-                                                    };
-                                                    myChart.setOption(option)
+                                                    ]
+                                                };
+                                                myChart.setOption(option);
 
 
-                                                    // var canvas = myChart.renderToCanvas();
-                                                    // var dataURL = canvas.toDataURL('image/png');
-                                                    // var xhr = new XMLHttpRequest();
-                                                    // xhr.open('POST', '/receive', true); // 将 '/receive' 替换为您的后端接口的URL
-                                                    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                                                    //
-                                                    // xhr.onreadystatechange = function () {
-                                                    //     if (xhr.readyState === 4 && xhr.status === 200) {
-                                                    //         console.log('图表数据已成功发送至后端接口');
-                                                    //     }
-                                                    //     else{
-                                                    //         console.log(xhr)
-                                                    //     }
-                                                    // };
-                                                    // xhr.send('imageData=' + encodeURIComponent(dataURL));
-                                                    aitextarea.value = '预测完成~';
-                                                })
-                                                .catch(error => {
-                                                    console.error('获取数据时发生错误:', error);
-                                                });
-                                        });
+                                                // var canvas = myChart.renderToCanvas();
+                                                // var dataURL = canvas.toDataURL('image/png');
+                                                // var xhr = new XMLHttpRequest();
+                                                // xhr.open('POST', '/receive', true); // 将 '/receive' 替换为您的后端接口的URL
+                                                // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                                //
+                                                // xhr.onreadystatechange = function () {
+                                                //     if (xhr.readyState === 4 && xhr.status === 200) {
+                                                //         console.log('图表数据已成功发送至后端接口');
+                                                //     }
+                                                //     else{
+                                                //         console.log(xhr)
+                                                //     }
+                                                // };
+                                                // xhr.send('imageData=' + encodeURIComponent(dataURL));
+
+                                                aitextarea.value = '预测完成~';
+                                            })
+                                            .catch(error => {
+                                                console.error('获取数据时发生错误:', error);
+                                            });
                                     }
 
-                                    initmychart()
+
+                                    // initmychart()
 
 
                                 </script>
@@ -255,6 +276,7 @@
                                 </button>
                                 <script>
                                     async function aiAnalyze() {
+                                        flg_ai = true;
                                         dialogDisplay()
                                         // var aitextarea = document.getElementById('aianswer');
                                         // aitextarea.value = '正在分析...';
@@ -271,7 +293,6 @@
                                         iframe.src = "/dialog";
                                         iframe.style.display = 'block'
                                         iframe.style.border = '2px #000'
-
                                     }
 
                                     async function initDialog() {
@@ -280,9 +301,14 @@
                                     }
 
                                     function dialogDisplay() {
-                                        document.getElementById('buttonsContainer').style.display = 'none'
-                                        document.getElementById('chartContainer').style.display = 'none'
-                                        document.getElementById('dialogContainer').style.display = 'block'
+                                        if (flg_ai === true) {
+                                            document.getElementById('buttonsContainer').style.display = 'none'
+                                            document.getElementById('chartContainer').style.display = 'none'
+                                            document.getElementById('dialogContainer').style.display = 'block'
+                                        } else {
+                                            aiAnalyze();
+                                        }
+
                                     }
                                 </script>
 
