@@ -22,7 +22,36 @@
                 <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
                     <img id="animation"
                          style="width: 80%;height: 80%;">
+                    <!--动图-->
+                    <script>
+                        var animationDiv = document.getElementById("animation");
+                        var frameIndex = 0;
+                        var totalFrames = 30;
+                        var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
+                        var images = []; // 存储图片对象的数组
 
+                        // 预加载所有图片
+                        for (var i = 1; i <= totalFrames; i++) {
+                            var img = new Image();
+                            img.src = "static/picture/gif/glyc" + i + ".png";
+                            images.push(img);
+                        }
+
+                        // 播放动画
+                        async function playAnimation() {
+                            animationDiv.src = images[frameIndex].src;
+                            // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
+                            frameIndex++;
+                            if (frameIndex >= totalFrames) {
+                                frameIndex = 0;
+                            }
+
+                            setTimeout(playAnimation, animationSpeed);
+                        }
+
+                        // 开始播放动画
+                        playAnimation();
+                    </script>
                 </div>
                 <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5 min-vw-50">
@@ -53,6 +82,22 @@
                                 <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
                                         onclick="submitdiy()" value="登录">登录
                                 </button>
+                                <!--登录-->
+                                <script>
+                                    async function submitdiy() {
+                                        var username = document.getElementById('username').value()
+                                        var form = document.getElementById('login-form');
+                                        // if(username!=='admin'){
+                                        //     form.setAttribute('action', '/index?username=' + username)
+                                        // console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
+                                        // form.submit()
+                                        // }
+
+                                        form.setAttribute('action', '/index?username=' + username)
+                                        console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
+                                        form.submit()
+                                    }
+                                </script>
                             </div>
                             <div class="my-2 d-flex justify-content-between align-items-center">
                                 <a class="auth-link text-primary" href="#">忘记密码？</a>
@@ -97,52 +142,8 @@
 <script src="../static/js/settings.js"></script>
 <script src="../static/js/todolist.js"></script>
 <!-- endinject -->
-<!--动图-->
-<script>
-    var animationDiv = document.getElementById("animation");
-    var frameIndex = 0;
-    var totalFrames = 30;
-    var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
-    var images = []; // 存储图片对象的数组
 
-    // 预加载所有图片
-    for (var i = 1; i <= totalFrames; i++) {
-        var img = new Image();
-        img.src = "static/picture/gif/glyc" + i + ".png";
-        images.push(img);
-    }
 
-    // 播放动画
-    function playAnimation() {
-        animationDiv.src = images[frameIndex].src;
-        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
-        frameIndex++;
-        if (frameIndex >= totalFrames) {
-            frameIndex = 0;
-        }
-
-        setTimeout(playAnimation, animationSpeed);
-    }
-
-    // 开始播放动画
-    playAnimation();
-</script>
-<!--登录-->
-<script>
-                            function submitdiy() {
-                                var username = document.getElementById('username').value()
-                                var form = document.getElementById('login-form');
-                                // if(username!=='admin'){
-                                //     form.setAttribute('action', '/index?username=' + username)
-                                // console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
-                                // form.submit()
-                                // }
-
-                                form.setAttribute('action', '/index?username=' + username)
-                                console.log('测试form:' + form.url + '|||action:' + form.getAttribute('action'))
-                                form.submit()
-                            }
-                        </script>
 </body>
 
 </html>

@@ -9,6 +9,7 @@
     <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
     <link href="../static/css/style.css" rel="stylesheet">
 
+
 </head>
 
 <body>
@@ -22,12 +23,42 @@
                 <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
                     <img id="animation"
                          style="width: 80%;height: 80%;">
+                    <!--动图-->
+                    <script>
+                        var animationDiv = document.getElementById("animation");
+                        var frameIndex = 0;
+                        var totalFrames = 30;
+                        var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
+                        var images = []; // 存储图片对象的数组
 
+                        // 预加载所有图片
+                        for (var i = 1; i <= totalFrames; i++) {
+                            var img = new Image();
+                            img.src = "static/picture/gif/glyc" + i + ".png";
+                            images.push(img);
+                        }
+
+                        // 播放动画
+                        async function playAnimation() {
+                            animationDiv.src = images[frameIndex].src;
+                            // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
+                            frameIndex++;
+                            if (frameIndex >= totalFrames) {
+                                frameIndex = 0;
+                            }
+
+                            setTimeout(playAnimation, animationSpeed);
+                        }
+
+                        // 开始播放动画
+                        playAnimation();
+                    </script>
                 </div>
                 <div class="col-lg-6 mx-0 mr-0 justify-content-center align-items-center d-flex">
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                         <div class="brand-logo">
                             <img alt="logo" src="static/picture/logo.svg">
+
                         </div>
                         <h4>欢迎使用风电功率预测系统油专特供版online</h4>
                         <h5 class="font-weight-light" id="response">请注册</h5>
@@ -59,7 +90,7 @@
                                         type="button">注册
                                 </button>
                                 <!--                                <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"-->
-                                <!--                                   >注册</a>-->
+                                <!--注册-->
                                 <script>
                                     var registerButton = document.getElementById('registerBtn');
                                     registerButton.addEventListener('click', function () {
@@ -135,35 +166,8 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <!-- endinject -->
-<script>
-    var animationDiv = document.getElementById("animation");
-    var frameIndex = 0;
-    var totalFrames = 30;
-    var animationSpeed = 100; // 帧间隔时间（单位：毫秒）
-    var images = []; // 存储图片对象的数组
 
-    // 预加载所有图片
-    for (var i = 1; i <= totalFrames; i++) {
-        var img = new Image();
-        img.src = "static/picture/gif/glyc" + i + ".png";
-        images.push(img);
-    }
 
-    // 播放动画
-    function playAnimation() {
-        animationDiv.src = images[frameIndex].src;
-        // {{ url_for('static', filename='/picture/gif/glyc1.png') }};
-        frameIndex++;
-        if (frameIndex >= totalFrames) {
-            frameIndex = 0;
-        }
-
-        setTimeout(playAnimation, animationSpeed);
-    }
-
-    // 开始播放动画
-    playAnimation();
-</script>
 </body>
 
 </html>
