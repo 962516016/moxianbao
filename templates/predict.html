@@ -59,33 +59,43 @@
     </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-        <div class="theme-setting-wrapper">
+        <div class="theme-setting-wrapper page-changer">
             <div id="settings-trigger"><i class="typcn typcn-chevron-right-outline"></i></div>
             <div class="settings-panel" id="theme-settings">
                 <i class="settings-close typcn typcn-delete-outline"></i>
-                <p class="settings-heading mt-5 mb-5" style="font-weight: bold; font-size: 20px">页面切换</p>
-                <a class="sidebar-bg-options" href="#" id="sidebar-report" style="text-decoration: none"
-                   onclick="reportDisplay()">
-                    <div class=" typcn typcn-arrow-right-outline mr-2 "></div>
-                    数据分析页面
+                <p class="settings-heading mt-3 mb-3" style="font-weight: bold; font-size: 20px">在线预测</p>
+                <a class="sidebar-bg-options" href="#" id="sidebar-upload"
+                   style="text-decoration: none;border: none">
+                    <div class=" typcn typcn-arrow-right-outline mr-2 " id="up-icon"></div>
+                    <span>上传数据</span>
 
                 </a>
+
+                <a class="sidebar-bg-options" href="#" id="sidebar-report" onclick="reportDisplay()"
+                   style="text-decoration: none">
+                    <div class=" typcn typcn-arrow-right-outline mr-2 "></div>
+                    数据分析
+
+                </a>
+
                 <a class="sidebar-bg-options" href="#" id="sidebar-predict" onclick="linechart()"
                    style="text-decoration: none">
                     <div class="typcn typcn-arrow-right-outline mr-2"></div>
-                    预测功率页面
+                    预测功率
 
                 </a>
+
                 <a class="sidebar-bg-options" href="#" id="sidebar-dialog" onclick="dialogDisplay()"
                    style="text-decoration: none">
                     <div class="typcn typcn-arrow-right-outline mr-2"></div>
-                    AI 分析页面
-                    <!--                    <li class="idebar-bg-options selected nav-item">-->
-                    <!--                    <a class="nav-link" href="/personalcenter">-->
-                    <!--                        <i class="typcn typcn-user-outline menu-icon"></i>-->
-                    <!--                        <span class="menu-title">个 人 中 心</span>-->
-                    <!--                    </a>-->
-                    <!--                </li>-->
+                    AI 分析
+
+                </a>
+
+                <a class="sidebar-bg-options" href="#" id="sidebar-download"
+                   style="text-decoration: none">
+                    <div class="typcn typcn-arrow-right-outline mr-2"></div>
+                    下载结果
 
                 </a>
 
@@ -101,11 +111,11 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="row d-flex">
-                    <div class="col-lg-3 grid-margin  stretch-card" id="left">
+                    <div class="col-lg-3 grid-margin page-starter stretch-card" id="left">
                         <div class="card">
                             <div class="card-body">
                                 <!--上传数据-->
-                                <button id="uploadBtn" onclick="linechart()"
+                                <button id="uploadBtn"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-top: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-upload " style="height: 10%"></i><br>上传数据
                                 </button>
@@ -116,7 +126,7 @@
                                     });
                                 </script>
                                 <script>
-                                    document.getElementById('fileInput').addEventListener('change', function (event) {
+                                    function upload(event) {
                                         var file = event.target.files[0];
                                         var formData = new FormData();
                                         formData.append('file', file);
@@ -124,12 +134,25 @@
                                         xhr.open('POST', '/upload_file', true);
                                         xhr.send(formData);
                                         var aitextarea = document.getElementById('aianswer');
+                                        example_linechart();
+                                        document.getElementById('chartContainer').style.display = 'block'
+                                        document.getElementById('dialogContainer').style.display = 'none'
+                                        document.getElementById('buttonsContainer').style.display = 'none'
+                                        flg_ai = false;
+                                        flg_report = false;
+                                        flg_predict = false;
                                         aitextarea.value = '上传成功~';
+                                    }
+
+                                    document.getElementById('fileInput').addEventListener('change', upload);
+
+                                    document.getElementById('sidebar-upload').addEventListener('click', function () {
+                                        document.getElementById('fileInput').click();
                                     });
                                 </script>
 
                                 <!--数据分析-->
-                                <button onclick="openReport()"
+                                <button onclick="reportDisplay()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-chart-bar-outline"></i><br>数据分析
                                 </button>
@@ -148,14 +171,13 @@
                                         select = checkbox1.toString() + checkbox2.toString() + checkbox3.toString() + checkbox4.toString();
                                         console.log('select测试', select);  // 打印生成的select变量
 
-                                        iframe.src = "/data_analyze?select="+select;
+                                        iframe.src = "/data_analyze?select=" + select;
                                         iframe.style.display = 'block'
                                         iframe.style.border = '2px #000'
                                     }
 
                                     function reportDisplay() {
                                         if (flg_report === true) {
-
                                             document.getElementById('chartContainer').style.display = 'none'
                                             document.getElementById('dialogContainer').style.display = 'none'
                                             document.getElementById('buttonsContainer').style.display = 'block'
@@ -166,20 +188,18 @@
 
                                     function linechart() {
                                         if (flg_predict === true) {
-
                                             document.getElementById('chartContainer').style.display = 'block'
                                             document.getElementById('dialogContainer').style.display = 'none'
                                             document.getElementById('buttonsContainer').style.display = 'none'
                                         } else {
                                             initmychart();
                                         }
-
                                     }
 
                                 </script>
 
                                 <!--预测功率-->
-                                <button id="predictionBtn" onclick="initmychart()"
+                                <button id="predictionBtn" onclick="linechart()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%"
                                 >
                                     <i class="my_typcn typcn-device-laptop"></i><br>预测功率
@@ -192,7 +212,7 @@
                                         myChart.clear();
                                         var aitextarea = document.getElementById('aianswer');
                                         var linechartdom = document.getElementById('linechart');
-                                        myChart = echarts.init(linechartdom, 'canvas');
+                                        myChart = echarts.init(linechartdom, null, {renderer: 'svg'});
                                         myChart.showLoading();
                                         // 在这里发送请求到后端获取数据并绘图
                                         let json_data;
@@ -201,7 +221,7 @@
                                             .then(data => {
                                                 json_data = data;
                                                 console.log(json_data)
-                                                myChart = echarts.init(linechartdom, 'canvas');
+                                                var myChart = echarts.init(linechartdom, null, {renderer: 'svg'});
                                                 // 指定图表的配置项和数据
                                                 var datatime = json_data.DATATIME;
                                                 var yd15 = json_data.PRE_YD15;
@@ -251,23 +271,6 @@
                                                 myChart.hideLoading();
                                                 myChart.setOption(option);
 
-
-                                                // var canvas = myChart.renderToCanvas();
-                                                // var dataURL = canvas.toDataURL('image/png');
-                                                // var xhr = new XMLHttpRequest();
-                                                // xhr.open('POST', '/receive', true); // 将 '/receive' 替换为您的后端接口的URL
-                                                // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                                                //
-                                                // xhr.onreadystatechange = function () {
-                                                //     if (xhr.readyState === 4 && xhr.status === 200) {
-                                                //         console.log('图表数据已成功发送至后端接口');
-                                                //     }
-                                                //     else{
-                                                //         console.log(xhr)
-                                                //     }
-                                                // };
-                                                // xhr.send('imageData=' + encodeURIComponent(dataURL));
-
                                                 aitextarea.value = '预测完成~';
                                             })
                                             .catch(error => {
@@ -275,14 +278,11 @@
                                             });
                                     }
 
-
                                     // initmychart()
-
-
                                 </script>
 
                                 <!--AI分析对话-->
-                                <button id="aiBtn" onclick="aiAnalyze()"
+                                <button id="aiBtn" onclick="dialogDisplay()"
                                         style="width: 80%;height: auto;border-radius: 10px;font-weight: bold;background: white;margin-bottom: 10%;margin-left: 10%">
                                     <i class="my_typcn typcn-zoom"></i><br>AI分析
                                 </button>
@@ -335,6 +335,9 @@
                                     document.getElementById('downloadBtn').addEventListener('click', function () {
                                         document.getElementById('fileDownload').click();
                                     });
+                                    document.getElementById('sidebar-download').addEventListener('click', function () {
+                                        document.getElementById('fileDownload').click();
+                                    });
                                 </script>
                             </div>
                         </div>
@@ -349,53 +352,59 @@
                                         <div class=" w-100 h-100" id="linechart">
                                             <script>
                                                 var myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
-                                                // 指定图表的配置项和数据
-                                                var option = {
-                                                    tooltip: {
-                                                        trigger: 'axis',
-                                                        position: 'left'
-                                                    },
-                                                    legend: {
-                                                        data: ['示例曲线1', '示例曲线2']
-                                                    },
-                                                    grid: {
-                                                        left: '3%',
-                                                        right: '4%',
-                                                        bottom: '3%',
-                                                        containLabel: true
-                                                    },
-                                                    toolbox: {
-                                                        feature: {
-                                                            saveAsImage: {}
-                                                        }
-                                                    },
-                                                    xAxis: {
-                                                        type: 'category',
-                                                        boundaryGap: false,
-                                                        data: [1, 2, 3, 4, 5]
-                                                    },
-                                                    yAxis: {
-                                                        type: 'value'
-                                                    },
-                                                    series: [
-                                                        {
-                                                            name: '示例曲线1',
-                                                            type: 'line',
-                                                            data: [2, 4, 6, 13, 18]
+
+                                                function example_linechart() {
+                                                    // 指定图表的配置项和数据
+                                                    var option = {
+                                                        tooltip: {
+                                                            trigger: 'axis',
+                                                            position: 'left'
                                                         },
-                                                        {
-                                                            name: '示例曲线2',
-                                                            type: 'line',
+                                                        legend: {
+                                                            data: ['示例曲线1', '示例曲线2']
+                                                        },
+                                                        grid: {
+                                                            left: '3%',
+                                                            right: '4%',
+                                                            bottom: '3%',
+                                                            containLabel: true
+                                                        },
+                                                        toolbox: {
+                                                            feature: {
+                                                                saveAsImage: {}
+                                                            }
+                                                        },
+                                                        xAxis: {
+                                                            type: 'category',
+                                                            boundaryGap: false,
                                                             data: [1, 2, 3, 4, 5]
                                                         },
-                                                    ]
-                                                };
-                                                myChart.setOption(option)
+                                                        yAxis: {
+                                                            type: 'value'
+                                                        },
+                                                        series: [
+                                                            {
+                                                                name: '示例曲线1',
+                                                                type: 'line',
+                                                                data: [2, 4, 6, 13, 18]
+                                                            },
+                                                            {
+                                                                name: '示例曲线2',
+                                                                type: 'line',
+                                                                data: [1, 2, 3, 4, 5]
+                                                            },
+                                                        ]
+                                                    };
+                                                    myChart.setOption(option)
+                                                }
+
+                                                example_linechart();
 
                                                 window.addEventListener('resize', function () {
+                                                    var myChart = echarts.init(document.getElementById('linechart'), null, {renderer: 'svg'});
                                                     myChart.setOption({
                                                         tooltip: {
-                                                            position: ['45%', '50%']
+                                                            position: ['50%', '50%']
                                                         }
                                                     })
                                                     myChart.resize();
@@ -428,14 +437,14 @@
                                     <div class="col-xl-4 px-0 pr-0 d-flex justify-content-center align-items-center">
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
                                             <label>
-                                                <input type="checkbox" id="checkbox1">
+                                                <input id="checkbox1" type="checkbox">
                                                 <span style="font-weight: bold">空缺值填充</span>
                                             </label>
 
                                         </div>
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
                                             <label>
-                                                <input type="checkbox" id="checkbox2">
+                                                <input id="checkbox2" type="checkbox">
                                                 <span style="font-weight: bold">离群点修正</span>
                                             </label>
                                         </div>
@@ -443,13 +452,13 @@
                                     <div class="col-xl-4 px-0 pr-0 d-flex justify-content-center align-items-center">
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
                                             <label>
-                                                <input type="checkbox" id="checkbox3">
+                                                <input id="checkbox3" type="checkbox">
                                                 <span style="font-weight: bold">重复值去除</span>
                                             </label>
                                         </div>
                                         <div class="col-lg-6 px-0 pr-0 d-flex justify-content-center align-items-center">
                                             <label>
-                                                <input type="checkbox" id="checkbox4">
+                                                <input id="checkbox4" type="checkbox">
                                                 <span style="font-weight: bold">数据重采样</span>
                                             </label>
                                         </div>

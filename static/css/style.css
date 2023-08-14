@@ -9266,6 +9266,7 @@ pre code {
   position: relative;
   width: 100%;
   padding-right: 15px;
+  padding-right: 15px;
   padding-left: 15px;
 }
 
@@ -9869,6 +9870,12 @@ pre code {
   .offset-lg-11 {
     margin-left: 91.66667%;
   }
+  .page-starter{
+    display: block;
+  }
+  .page-changer{
+    display: none!important;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -10330,6 +10337,12 @@ pre code {
   }
   .table-responsive-lg > .table-bordered {
     border: 0;
+  }
+  .page-starter{
+    display: none!important;
+  }
+  .page-changer{
+    display: block;
   }
 }
 
@@ -24993,11 +25006,6 @@ body.avgrund-active {
 .rtl #settings-trigger {
   right: auto;
   left: 30px;
-}
-
-@media (max-width: 991px) {
-  #settings-trigger {
-  }
 }
 
 .session-by-channel-legend {
