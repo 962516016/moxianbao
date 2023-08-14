@@ -23146,13 +23146,13 @@ body.avgrund-active {
 .main-panel {
   position: absolute;
   transition: width 0.25s ease, margin 0.25s ease;
-  width: calc(100% - 255px) ;
+  width: calc(100% - 205px) ;
   min-height: calc(100vh - 64px);
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
-  margin-left: 255px;
+  margin-left: 205px;
 }
 
 @media (max-width: 991px) {
@@ -23184,7 +23184,7 @@ body.avgrund-active {
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   padding: 0;
-  width: 255px;
+  width: 205px;
   z-index: 11;
   transition: width 0.25s ease, background 0.25s ease;
   -webkit-transition: width 0.25s ease, background 0.25s ease;
@@ -23602,7 +23602,7 @@ body.avgrund-active {
     top: 64px;
     bottom: 0;
     overflow: auto;
-    right: -255px;
+    right: -205px;
     -webkit-transition: all 0.25s ease-out;
     -o-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
@@ -23628,7 +23628,7 @@ body.avgrund-active {
   -webkit-transition: width 0.25s ease, background 0.25s ease;
   -moz-transition: width 0.25s ease, background 0.25s ease;
   -ms-transition: width 0.25s ease, background 0.25s ease;
-  width: 255px;
+  width: 205px;
   height: 64px;
 }
 
@@ -23652,7 +23652,7 @@ body.avgrund-active {
 }
 
 .navbar .navbar-brand-wrapper .navbar-brand img {
-  width: calc(255px - 130px);
+  width: calc(205px - 130px);
   max-width: 100%;
   height: 34px;
   margin: auto;
@@ -23683,7 +23683,7 @@ body.avgrund-active {
   color: #000000;
   padding-left: 2.5rem;
   padding-right: 2.5rem;
-  width: calc(100% - 255px);
+  width: calc(100% - 205px);
   height: 64px;
 }
 
@@ -24562,7 +24562,7 @@ body.avgrund-active {
     max-height: none;
   }
   .sidebar-fixed {
-    margin-left: 255px;
+    margin-left: 205px;
   }
   .sidebar-fixed.sidebar-icon-only .main-panel {
     margin-left: 70px;
