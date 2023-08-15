@@ -9876,6 +9876,7 @@ pre code {
   .page-changer{
     display: none!important;
   }
+
 }
 
 @media (min-width: 1200px) {
@@ -10343,6 +10344,69 @@ pre code {
   }
   .page-changer{
     display: block;
+  }
+}
+/*手机竖屏*/
+@media screen and  (max-width: 1000px) and (orientation: portrait) {
+  .chartContainer{
+    height: 650px!important;
+  }
+  .dialogContainer{
+    height: 650px!important;
+  }
+  .buttonsContainer{
+    height: 650px!important;
+  }
+}
+/*平板竖屏*/
+@media screen and  (max-width: 1000px) and (min-width:600px) and (orientation: portrait) {
+  .chartContainer{
+    height: 750px!important;
+  }
+  .dialogContainer{
+    height: 750px!important;
+  }
+  .buttonsContainer{
+    height: 750px!important;
+  }
+}
+
+/*手机横屏*/
+@media screen and  (orientation: landscape) and (max-width: 800px) {
+  .chartContainer{
+    height: 550px!important;
+  }
+  .dialogContainer{
+    height: 550px!important;
+  }
+  .buttonsContainer{
+    height: 550px!important;
+  }
+}
+
+/*电脑横屏*/
+@media screen and  (orientation: landscape) and (min-width: 1300px)  {
+  .chartContainer{
+    height: 550px!important;
+  }
+  .dialogContainer{
+    height: 550px!important;
+  }
+  .buttonsContainer{
+    height: 550px!important;
+  }
+}
+
+/*平板横屏*/
+@media screen and  (orientation: landscape) and (max-width: 1300px) and (min-width: 900px) {
+  .chartContainer{
+    height: 350px!important;
+  }
+  .dialogContainer{
+    height: 350px!important;
+  }
+  .buttonsContainer{
+    height: 350px!important;
   }
 }
 
@@ -23166,6 +23230,13 @@ body.avgrund-active {
   -webkit-flex-direction: column;
   flex-direction: column;
   margin-left: 205px;
+}
+
+@media (max-width: 991px) {
+  .main-panel {
+    margin-left: 0px;
+    width: 100%;
+  }
 }
 
 @media (max-width: 991px) {
