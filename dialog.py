@@ -523,7 +523,7 @@ def new_chat_dict(user_id, name, send_time):
 
 def new_user_dict(user_id, send_time):
     chat_id = str(uuid.uuid1())
-    user_dict = {"chats": {chat_id: new_chat_dict(user_id, "AI对话分析", send_time)},
+    user_dict = {"chats": {chat_id: new_chat_dict(user_id, "ERNIE智能对话分析", send_time)},
                  "selected_chat_id": chat_id,
                  "default_chat_id": chat_id}
 

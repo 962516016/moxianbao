@@ -753,7 +753,7 @@ def login_verify():
         # 为该用户创建ai对话账户
         print('我在创建ai用户')
         url1 = 'http://' + get_host_ip() + ':5445/createUser?username=' + username
-        # requests.get(url1)
+        requests.get(url1)
 
         if username == 'admin':
             return redirect('/admin')

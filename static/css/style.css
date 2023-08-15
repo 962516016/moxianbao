@@ -10359,15 +10359,15 @@ pre code {
   }
 }
 /*平板竖屏*/
-@media screen and  (max-width: 1000px) and (min-width:600px) and (orientation: portrait) {
+@media screen and  (max-width: 1000px) and (min-width:579px) and (orientation: portrait) {
   .chartContainer{
-    height: 750px!important;
+    height: 800px!important;
   }
   .dialogContainer{
-    height: 750px!important;
+    height: 800px!important;
   }
   .buttonsContainer{
-    height: 750px!important;
+    height: 800px!important;
   }
 }
 
@@ -10400,13 +10400,13 @@ pre code {
 /*平板横屏*/
 @media screen and  (orientation: landscape) and (max-width: 1300px) and (min-width: 900px) {
   .chartContainer{
-    height: 350px!important;
+    height: 480px!important;
   }
   .dialogContainer{
-    height: 350px!important;
+    height: 480px!important;
   }
   .buttonsContainer{
-    height: 350px!important;
+    height: 480px!important;
   }
 }
 

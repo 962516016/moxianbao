@@ -31,7 +31,7 @@
         .all-container {
             height: 100%;
             width: 100%;
-            min-height: 480px;
+            min-height: 360px;
             display: flex;
             border: #aaaaaa;
             flex-flow: row;
@@ -655,7 +655,7 @@
                     <img alt="" src="/static/chatgpt.png">
                 </div>
                 <div class="head-info">
-                    <div class="head-chat-name">AI对话分析</div>
+                    <div class="head-chat-name">ERNIE智能对话分析</div>
                     <div class="head-chat-info">共0条记录</div>
                 </div>
             </div>
@@ -960,7 +960,7 @@
     function generateChatInfo(id) {
         return {
             "id": id,
-            "name": "AI对话分析",
+            "name": "ERNIE智能对话分析",
             "selected": true,
             "mode": "continuous",
             "memory_summarize": "你是一个AI助手",
@@ -1033,7 +1033,7 @@
                     $(".chat-list").append(newchat);
                     // 将选中的selectedChat添加selected属性
                     $("#" + selectedChatId).addClass("selected");
-                    if ($("#" + selectedChatId).data('name') !== 'AI对话分析') {
+                    if ($("#" + selectedChatId).data('name') !== 'ERNIE智能对话分析') {
                         $("#del-btn").html("分析预测结果");
                     } else {
                         $("#del-btn").html("分析预测结果");
@@ -1117,7 +1117,7 @@
                     selectedChatId = id;
                     $(click).addClass("selected");
                     $('.content').empty();
-                    if ($("#" + selectedChatId).data('name') !== 'AI对话分析') {
+                    if ($("#" + selectedChatId).data('name') !== 'ERNIE智能对话分析') {
                         $("#del-btn").html("分析预测结果");
                     } else {
                         $("#del-btn").html("分析预测结果");
@@ -1278,7 +1278,6 @@
             html += '<div class="item item-center"><span>' + get_time_str(send_time) + '</span></div>';
             last_time = send_time.getTime();
             display_time = true;
-
         }
         html += '<div class="item item-right"><div class="bubble bubble-right markdown">' + marked.marked(text) + '</div><div class="avatar"><img src="./static/usertouxiang/{{username}}/touxiang.png" /></div></div>';
         $(".content").append(html);
@@ -1341,15 +1340,19 @@
         };
         console.log("[Request]");
         console.log(request_data);
-        let response_text = "";
+
         let headers = createHeaders();
         headers["Content-Type"] = "application/json";
+
         let index = 0;
+        let response_text = "";
+        let restart = 0;
+
+        let indexi = 0;
+
         let codeBacktickNum = 0;
-        let baseURL = '{{baseURL}}'
-        console.log(baseURL + "/selectChat")
         returnMessageAjax = $.ajax({
-            url: baseURL + "/returnMessage",
+            url: '{{baseURL}}'+"/returnMessage",
             headers: headers,
             data: JSON.stringify(request_data),
             type: "Post",
@@ -1357,22 +1360,25 @@
             xhrFields: {
                 onprogress: function (e) {
                     let response = e.currentTarget.response;
-                    if (response.slice(index).includes("`")) {
-                        if (response.slice(index).includes("```")) {
+                    console.log('response', response)
+                    if (response.slice(indexi).includes("`")) {
+                        if (response.slice(indexi).includes("```")) {
                             codeBacktickNum += 1;
-                            index = response.length;
+                            indexi = response.length;
                         }
                         console.log("codeBacktickNum: " + codeBacktickNum);
                     } else {
-                        index = response.length;
+                        indexi = response.length;
                     }
                     if (codeBacktickNum % 2 === 1) {
                         response += "\n```"
                     }
                     response_text = response;
-                    console.log('我就是一次响应：', response);
+                    console.log("这就是一次响应123：", response);
+                    console.log('index->', index)
                     if (response.includes("url_redirect")) {
                         let response_json = JSON.parse(response.trim());
+                        console.log("这才是一次响应：", response)
                         let url_redirect = response_json["url_redirect"];
                         // 判断user_id非空
                         if (response_json.hasOwnProperty("user_id") && response_json["user_id"] !== "") {
@@ -1382,17 +1388,63 @@
                         window.location.href = url_redirect;
 
                     } else {
-                        get_times += 1;
-                        if (get_times === 2) {
-                            $("#stop-btn").show();
+                        console.log("这是一次响应?：", response)
+                        if (index === 0) {
+                            let timer = setInterval(function () {
+                                response = response_text[index];
+                                console.log("本次打印文字：", response.toString())
+                                get_times += 1;
+                                if (get_times === 2) {
+                                    $("#stop-btn").show();
+                                }
+
+                                let div = document.createElement('div');
+                                old_response = chat_item.find(".bubble").text().trim();
+                                if (old_response === '正在等待回复') {
+                                    old_response = ''
+                                }
+                                div.innerHTML = marked.marked(old_response + response.trim());
+                                MathJax.Hub.Typeset(div);
+                                chat_item.find(".bubble").empty();
+                                chat_item.find(".bubble").append(div);
+                                $(".content").scrollTop($(".content")[0].scrollHeight);
+
+                                index++;
+                                if (index >= response_text.length) {
+                                    clearInterval(timer);
+                                    restart = 1;
+                                    console.log('我完事了')
+                                }
+                            }, 40);
                         }
-                        let div = document.createElement('div');
-                        div.innerHTML = marked.marked(response);
-                        MathJax.Hub.Typeset(div);
-                        chat_item.find(".bubble").empty();
-                        chat_item.find(".bubble").append(div);
-                        $(".content").scrollTop($(".content")[0].scrollHeight);
+                        if (restart === 1){
+                            restart = 0;
+                            let timer = setInterval(function () {
+                                response = response_text[index];
+                                console.log("本次打印文字：", response.toString())
+
+                                let div = document.createElement('div');
+                                old_response = chat_item.find(".bubble").text().trim();
+                                if (old_response === '正在等待回复') {
+                                    old_response = ''
+                                }
+                                div.innerHTML = marked.marked(old_response + response);
+                                MathJax.Hub.Typeset(div);
+                                chat_item.find(".bubble").empty();
+                                chat_item.find(".bubble").append(div);
+                                $(".content").scrollTop($(".content")[0].scrollHeight);
+
+                                index++;
+                                if (index >= response_text.length) {
+                                    clearInterval(timer);
+                                    restart = 1;
+                                    console.log('我完事了')
+                                }
+                            }, 40);
+                        }
                     }
+
+                    console.log("这TM响应完了11：", response)
                 },
                 onload: function (e) {
                     $("#stop-btn").hide();
