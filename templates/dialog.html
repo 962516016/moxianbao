@@ -924,9 +924,9 @@
 </script>
 <script>
 
-    window.onload = function () {     //页面加载完成后，自动将光标定位至输入框
-        document.getElementById('textarea').focus();
-    }
+    // window.onload = function () {     //页面加载完成后，自动将光标定位至输入框
+    //     document.getElementById('textarea').focus();
+    // }
 
     let newchat = $("#newchat");
 
@@ -1370,7 +1370,7 @@
                         response += "\n```"
                     }
                     response_text = response;
-                    // console.log(response);
+                    console.log('我就是一次响应：', response);
                     if (response.includes("url_redirect")) {
                         let response_json = JSON.parse(response.trim());
                         let url_redirect = response_json["url_redirect"];

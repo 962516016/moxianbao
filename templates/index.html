@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>主页-油专特供</title>
     <link href="../favicon.ico" rel="shortcut icon">
-    <!-- base:css -->
     <link href="../static/css/typicons.css" rel="stylesheet">
     <link href="../static/css/vendor.bundle.base.css" rel="stylesheet">
-    <!-- endinject -->
-    <!-- inject:css -->
     <link href="../static/css/style.css" rel="stylesheet">
-    <!-- endinject -->
-
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../static/js/jquery.js"></script>
     <script src="../static/js/echarts.js"></script>
@@ -492,8 +486,8 @@
                         position: 'left'
                     },
                     title: {
-                        left: 'left',
-                        text: '供、发电功率预测数据',
+                        left: 'center',
+                        text: '功率预测数据',
                     },
                     legend: {
                         data: ['供电功率', '发电功率'],
@@ -605,8 +599,8 @@
                         position: 'left'
                     },
                     title: {
-                        left: 'left',
-                        text: '供、发电功率预测数据',
+                        left: 'center',
+                        text: '功率预测数据',
                     },
                     legend: {
                         data: ['供电功率', '发电功率'],
@@ -620,10 +614,6 @@
                     },
                     toolbox: {
                         feature: {
-                            dataZoom: {
-                                // yAxisIndex: 'none'
-                            },
-                            restore: {},
                             saveAsImage: {}
                         }
                     },
@@ -749,8 +739,8 @@
                         position: 'left'
                     },
                     title: {
-                        left: 'left',
-                        text: '供、发电功率预测数据',
+                        left: 'center',
+                        text: '功率预测数据',
                     },
                     legend: {
                         data: ['供电功率', '发电功率', '供电功率预测', '发电功率预测'],
@@ -880,9 +870,6 @@
                     toolbox: {
                         show: true,
                         feature: {
-                            mark: {show: true},
-                            dataView: {show: true, readOnly: false},
-                            restore: {show: true},
                             saveAsImage: {show: true}
                         }
                     },
